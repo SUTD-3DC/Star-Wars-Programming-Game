@@ -1,4 +1,4 @@
-import pygame
+import pygame, eztext
 import time
 import random
 
@@ -143,6 +143,27 @@ def gameLoop():
     snakeLength = 1
     randAppleX, randAppleY = randAppleGen()
     step_count = 0
+    #eztext
+    txtbx=[]
+    elemNumber = 30
+    ypos=0
+    xpos=810
+    deltay = 20
+    a=['' for i in range(elemNumber)]
+    b=['default' for i in range(elemNumber)]
+    # here is the magic: making the text input
+    # create an input with a max length of 45,
+    # and a red color and a prompt saying 'type here $i: '
+    for i in range(elemNumber):
+        txtbx.append(eztext.Input(maxlength=45,
+                                color=red,y=ypos,x=xpos
+                                    ))
+        ypos+=deltay
+
+    foci=0 #The focus index
+    txtbx[foci].focus=True
+    txtbx[foci].color=red
+
 
     barrier_width = 60
     xlocation = (map_width/2)+ random.randint(-0.2*map_width, 0.2*map_width)
@@ -243,7 +264,7 @@ def gameLoop():
         snake(block_size, (lead_x, lead_y))
         status(snakeLength - 1, 10,seconds)
         barrier(xlocation,randomHeight, barrier_width)
-        pygame.display.update()
+        
         
 ####################### barrier collision detection #############################
         if randomHeight + barrier_width > lead_y and lead_y + block_size > randomHeight:
@@ -268,6 +289,52 @@ def gameLoop():
                 snakeLength+=1
 
         clock.tick(30)
+        #eztext
+        # events for txtbx
+        events = pygame.event.get()
+
+        for i in range(elemNumber):
+            # update txtbx and get return val
+            a[i]=txtbx[i].update(events)
+            if i==foci:
+                txtbx[i].focus=True
+                txtbx[i].color=red
+            else:
+                txtbx[i].focus=False
+                txtbx[i].color=black
+                
+            # blit txtbx[i] on the screen
+            txtbx[i].draw(gameDisplay)
+            
+
+        #Changing the focus to the next element 
+        #every time enter is pressed
+        for i in range(elemNumber):
+            if a[i] != None:
+                b[i]=a[i]
+                if b[i]=="self.movedown()":
+                    lead_y_change = block_size
+                    step_count +=1
+                    direction = "down"
+                elif b[i]=="self.moveup()":
+                    lead_y_change = -block_size
+                    step_count +=1
+                    direction = "up"
+                elif b[i]=="self.moveright()":
+                    lead_x_change = block_size
+                    step_count +=1
+                    direction = "right"
+                elif b[i]=="self.moveleft()":
+                    lead_x_change = -block_size
+                    step_count +=1
+                    direction = "left"
+                txtbx[i].focus=False
+                txtbx[i].color=black
+                txtbx[(i+1)%elemNumber].focus=True
+                txtbx[(i+1)%elemNumber].color=red
+                foci=(i+1)%elemNumber
+        pygame.display.update()
+
 
     pygame.quit()
     quit()

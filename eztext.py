@@ -19,7 +19,7 @@ class Input:
     """ A text input for pygame apps """
     def __init__(self, **options):
         """ Options: x, y, font, color, restricted, maxlength, prompt """
-        self.options = Config(options, ['x', '0'], ['y', '0'], ['font','pygame.font.Font("Times_New_Roman.ttf", 16)'],
+        self.options = Config(options, ['x', '0'], ['y', '0'], ['font','pygame.font.Font("cour.ttf", 16)'],
                               ['color', '(0,0,0)'], ['restricted',
  '\'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!"#$%&\\\'()*+,-./:;<=>?@[\]^_`{|}~\''],
                               ['maxlength', '-1'], ['prompt', '\'\''],['focus','False'])
