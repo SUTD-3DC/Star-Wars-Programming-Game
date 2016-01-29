@@ -1,6 +1,8 @@
+from collections import deque
 import pygame, eztext
 import time
 import random
+
 
 pygame.init()
 
@@ -8,6 +10,9 @@ white = (255,255,255)
 black = (0,0,0)
 red = (255,0,0)
 green = (0, 155, 0)
+
+# Global settings
+time_limit = 15 # Time limit that affects Time Bar and Duration countdown
 
 map_width = 800
 map_height = 600
@@ -35,8 +40,6 @@ largefont = pygame.font.SysFont("comicsansms", 80)
 
 def barrier(xlocation,randomHeight, barrier_width):
     pygame.draw.rect(gameDisplay,black, [xlocation, randomHeight, barrier_width, barrier_width])
-
-
 
 def pause():
 
@@ -143,20 +146,24 @@ def gameLoop():
     snakeLength = 1
     randAppleX, randAppleY = randAppleGen()
     step_count = 0
+
+    #Buffer to hold the moves
+    move_buffer = []
+    move_hash = hash(tuple(move_buffer))
+    
     #eztext
     txtbx=[]
-    elemNumber = 30
+    elemNumber = 32
     ypos=0
     xpos=810
     deltay = 20
     a=['' for i in range(elemNumber)]
     b=['default' for i in range(elemNumber)]
-    # here is the magic: making the text input
-    # create an input with a max length of 45,
-    # and a red color and a prompt saying 'type here $i: '
+    # Line number to show each line
+    # create an input with a max length of 34,
     for i in range(elemNumber):
-        txtbx.append(eztext.Input(maxlength=45,
-                                color=red,y=ypos,x=xpos
+        txtbx.append(eztext.Input(maxlength=34,
+                                color=red,y=ypos,x=xpos,prompt= "{:>2}: ".format(str(i+1))
                                     ))
         ypos+=deltay
 
@@ -165,7 +172,7 @@ def gameLoop():
     txtbx[foci].color=red
 
 
-    barrier_width = 60
+    barrier_width = 30
     xlocation = (map_width/2)+ random.randint(-0.2*map_width, 0.2*map_width)
     randomHeight = random.randrange(map_height*0.1,map_height*0.6)
 
@@ -195,7 +202,7 @@ def gameLoop():
 
         ############## timer ##########################
         seconds=(pygame.time.get_ticks()-start_ticks)/1000.0 #calculate how many seconds
-        print (seconds) #print how many seconds
+        #print (seconds) #print how many seconds
         
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -246,11 +253,20 @@ def gameLoop():
                     direction = "down"
         
 
-###################### out of bound detection ###########################
-        if lead_x > map_width - block_size or lead_x < 0 or lead_y > map_height - block_size or lead_y<0 or seconds > 10:
+###################### END GAME CONDITIONS: Out of bound detection, Timelimit ###########################
+        if lead_x > map_width - block_size or lead_x < 0 or lead_y > map_height - block_size or lead_y<0 or seconds > time_limit:
             gameOver = True
+
+####################### UPDATES PLAYER LOCATION ################################
         lead_x += lead_x_change
         lead_y += lead_y_change
+
+####################### POP MOVE FROM MOVE BUFFER ###################################
+        if move_buffer != []:
+            move_process = move_buffer.pop(0)
+            lead_x_change = 0
+            lead_y_change = 0
+            step_count = 0
 
 ####################### displaying it on screen ################################
         gameDisplay.fill(white)
@@ -262,7 +278,7 @@ def gameLoop():
 ##        snakeHead.append(lead_y)
 ##        snakeList.append(snakeHead)
         snake(block_size, (lead_x, lead_y))
-        status(snakeLength - 1, 10,seconds)
+        status(snakeLength - 1, time_limit,seconds)
         barrier(xlocation,randomHeight, barrier_width)
         
         
@@ -295,6 +311,7 @@ def gameLoop():
 
         for i in range(elemNumber):
             # update txtbx and get return val
+            a[i]=txtbx[i].update(None) #Add cursor to indicate where you are typing add (lose ability to type 'cursor')
             a[i]=txtbx[i].update(events)
             if i==foci:
                 txtbx[i].focus=True
@@ -316,23 +333,32 @@ def gameLoop():
                     lead_y_change = block_size
                     step_count +=1
                     direction = "down"
+                    move_buffer.append(direction) # Store text into buffer
                 elif b[i]=="self.moveup()":
                     lead_y_change = -block_size
                     step_count +=1
                     direction = "up"
+                    move_buffer.append(direction)
                 elif b[i]=="self.moveright()":
                     lead_x_change = block_size
                     step_count +=1
                     direction = "right"
+                    move_buffer.append(direction)
                 elif b[i]=="self.moveleft()":
                     lead_x_change = -block_size
                     step_count +=1
                     direction = "left"
+                    move_buffer.append(direction)
                 txtbx[i].focus=False
                 txtbx[i].color=black
                 txtbx[(i+1)%elemNumber].focus=True
                 txtbx[(i+1)%elemNumber].color=red
                 foci=(i+1)%elemNumber
+
+        if hash(tuple(move_buffer)) != move_hash: # Prints buffer iff it has changed
+            move_hash = hash(tuple(move_buffer))
+            print move_buffer
+        
         pygame.display.update()
 
 

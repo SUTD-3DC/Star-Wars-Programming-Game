@@ -32,6 +32,7 @@ class Input:
         self.shifted = False
         self.pause = 0
         self.focus = self.options.focus
+        self.bar = False
 
     def set_pos(self, x, y):
         """ Set the position to x, y """
@@ -52,7 +53,14 @@ class Input:
         if self.focus != True:
             return
 
-        pressed = pygame.key.get_pressed()#Add ability to hold down delete key and delete text
+        if events == None: #S: Adds cursor for indication of where the next letter will be typed
+            if self.value == '':
+                self.value += '|'
+            elif self.value[-1] != '|':
+                self.value += '|'
+            return
+
+        pressed = pygame.key.get_pressed() #S: Add ability to hold down delete key and delete text
         if self.pause == 3 and pressed[K_BACKSPACE]:
             self.pause = 0
             self.value = self.value[:-1]
@@ -64,8 +72,11 @@ class Input:
         for event in events:
             if event.type == KEYUP:
                 if event.key == K_LSHIFT or event.key == K_RSHIFT: self.shifted = False
-            if event.type == KEYDOWN:
+            if event.type == KEYDOWN: #S: Removes cursor when new letter is typed
+                if self.value[-1] == '|':
+                    self.value = self.value[:-1]
                 if event.key == K_BACKSPACE: self.value = self.value[:-1]
+                elif event.key == K_TAB: self.value += '    ' #S: Allow tabs
                 elif event.key == K_LSHIFT or event.key == K_RSHIFT: self.shifted = True
                 elif event.key == K_SPACE: self.value += ' '
                 elif event.key == K_RETURN: return self.value#return value
