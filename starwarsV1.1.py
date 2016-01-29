@@ -2,6 +2,13 @@ import pygame, eztext
 import time
 import random
 
+## 
+## TODO:
+##     text editor:
+##         - add a button to submit code?
+##         - syntax highlighting
+## 
+
 pygame.init()
 
 white = (255,255,255)
@@ -15,6 +22,7 @@ status_bar = 40
 display_width = map_width +400
 display_height = map_height + status_bar
 
+time_limit = 60
 AppleThickness = 30
 block_size = 10
 FPS = 30
@@ -247,7 +255,7 @@ def gameLoop():
         
 
 ###################### out of bound detection ###########################
-        if lead_x > map_width - block_size or lead_x < 0 or lead_y > map_height - block_size or lead_y<0 or seconds > 10:
+        if lead_x > map_width - block_size or lead_x < 0 or lead_y > map_height - block_size or lead_y<0 or seconds > time_limit:
             gameOver = True
         lead_x += lead_x_change
         lead_y += lead_y_change
@@ -262,7 +270,7 @@ def gameLoop():
 ##        snakeHead.append(lead_y)
 ##        snakeList.append(snakeHead)
         snake(block_size, (lead_x, lead_y))
-        status(snakeLength - 1, 10,seconds)
+        status(snakeLength - 1, time_limit,seconds)
         barrier(xlocation,randomHeight, barrier_width)
         
         
