@@ -11,8 +11,8 @@ red = (255,0,0)
 green = (0, 155, 0)
 
 # Global settings
-control_mode = 'KEYPRESS' # 'KEYPRESS' or 'TYPE'
-time_limit = 15 # Time limit that affects Time Bar and Duration countdown
+control_mode = 'TYPE' # 'KEYPRESS' or 'TYPE'
+time_limit = 120 # Time limit that affects Time Bar and Duration countdown
 
 map_width = 800
 map_height = 600
@@ -20,7 +20,6 @@ status_bar = 40
 display_width = map_width +400
 display_height = map_height + status_bar
 
-time_limit = 60
 AppleThickness = 30
 block_size = 10
 FPS = 30
@@ -207,15 +206,70 @@ def gameLoop():
         #print (seconds) #print how many seconds
 
 
+###################### END GAME CONDITIONS: Out of bound detection, Timelimit ###########################
+        if lead_x > map_width - block_size or lead_x < 0 or lead_y > map_height - block_size \
+            or lead_y<0 or seconds > time_limit:
+            gameOver = True
+
+####################### UPDATES PLAYER LOCATION ################################
+        lead_x += lead_x_change
+        lead_y += lead_y_change
+
+####################### POP first item from move buffer ###################################
+        if move_buffer != []:
+            move_process = move_buffer.pop(0)
+            lead_x_change = 0
+            lead_y_change = 0
+            step_count = 0
+
+####################### displaying it on screen ################################
+        gameDisplay.fill(white)
+        pygame.draw.line(gameDisplay,black,(map_width,display_height),(map_width,0), 2)#draw boundary for user to type code
+        pygame.draw.line(gameDisplay,black,(0,map_height),(map_width,map_height), 2)#draw boundary for status bar
+        gameDisplay.blit(appleimg, (randAppleX, randAppleY))
+##        snakeHead = []
+##        snakeHead.append(lead_x)
+##        snakeHead.append(lead_y)
+##        snakeList.append(snakeHead)
+        snake(block_size, (lead_x, lead_y))
+        status(snakeLength - 1, time_limit,seconds)
+        barrier(xlocation,randomHeight, barrier_width)
+        
+        
+####################### barrier collision detection #############################
+        if randomHeight + barrier_width > lead_y and lead_y + block_size > randomHeight:
+            if lead_x - (block_size/2) < xlocation + barrier_width and lead_x > xlocation + barrier_width/2:
+                lead_x += block_size
+            if lead_x + (3*block_size/2) > xlocation and lead_x < xlocation + barrier_width/2:
+                lead_x -= block_size
+        elif xlocation + barrier_width > lead_x and lead_x + block_size > xlocation:
+            if lead_y - (block_size/2) < randomHeight + barrier_width and lead_y > randomHeight + barrier_width/2:
+                lead_y += block_size
+            if lead_y + (3*block_size/2) > randomHeight and lead_y < randomHeight + barrier_width/2:
+                lead_y -= block_size
+        
+######################## when apple have been collected ###########################
+        if lead_x >= randAppleX and lead_x <= randAppleX + AppleThickness or lead_x + block_size >= randAppleX and lead_x + block_size <= randAppleX + AppleThickness:
+            if lead_y >= randAppleY and lead_y <= randAppleY + AppleThickness:
+                randAppleX, randAppleY = randAppleGen()
+                snakeLength+=1
+                
+            elif lead_y + block_size >= randAppleY and lead_y + block_size <= randAppleY + AppleThickness:
+                randAppleX, randAppleY = randAppleGen()
+                snakeLength+=1
+
+        clock.tick(30)
+
     ######################### Player controls - Keypress or Typed text #########################
         
         if control_mode == 'TYPE':
             # eztext
             # events for txtbx
+            events = pygame.event.get()
             for i in range(elemNumber):
                 # update txtbx and get return val
                 a[i]=txtbx[i].update(None) #Add cursor to indicate where you are typing add (lose ability to type 'cursor')
-                a[i]=txtbx[i].update(pygame.event.get())
+                a[i]=txtbx[i].update(events)
                 if i==foci:
                     txtbx[i].focus=True
                     txtbx[i].color=red
@@ -310,61 +364,6 @@ def gameLoop():
                         step_count = 0
                         lead_x_change = 0
                         direction = "down"
-        
-
-###################### END GAME CONDITIONS: Out of bound detection, Timelimit ###########################
-        if lead_x > map_width - block_size or lead_x < 0 or lead_y > map_height - block_size \
-            or lead_y<0 or seconds > time_limit:
-            gameOver = True
-
-####################### UPDATES PLAYER LOCATION ################################
-        lead_x += lead_x_change
-        lead_y += lead_y_change
-
-####################### POP first item from move buffer ###################################
-        if move_buffer != []:
-            move_process = move_buffer.pop(0)
-            lead_x_change = 0
-            lead_y_change = 0
-            step_count = 0
-
-####################### displaying it on screen ################################
-        gameDisplay.fill(white)
-        pygame.draw.line(gameDisplay,black,(map_width,display_height),(map_width,0), 2)#draw boundary for user to type code
-        pygame.draw.line(gameDisplay,black,(0,map_height),(map_width,map_height), 2)#draw boundary for status bar
-        gameDisplay.blit(appleimg, (randAppleX, randAppleY))
-##        snakeHead = []
-##        snakeHead.append(lead_x)
-##        snakeHead.append(lead_y)
-##        snakeList.append(snakeHead)
-        snake(block_size, (lead_x, lead_y))
-        status(snakeLength - 1, time_limit,seconds)
-        barrier(xlocation,randomHeight, barrier_width)
-        
-        
-####################### barrier collision detection #############################
-        if randomHeight + barrier_width > lead_y and lead_y + block_size > randomHeight:
-            if lead_x - (block_size/2) < xlocation + barrier_width and lead_x > xlocation + barrier_width/2:
-                lead_x += block_size
-            if lead_x + (3*block_size/2) > xlocation and lead_x < xlocation + barrier_width/2:
-                lead_x -= block_size
-        elif xlocation + barrier_width > lead_x and lead_x + block_size > xlocation:
-            if lead_y - (block_size/2) < randomHeight + barrier_width and lead_y > randomHeight + barrier_width/2:
-                lead_y += block_size
-            if lead_y + (3*block_size/2) > randomHeight and lead_y < randomHeight + barrier_width/2:
-                lead_y -= block_size
-        
-######################## when apple have been collected ###########################
-        if lead_x >= randAppleX and lead_x <= randAppleX + AppleThickness or lead_x + block_size >= randAppleX and lead_x + block_size <= randAppleX + AppleThickness:
-            if lead_y >= randAppleY and lead_y <= randAppleY + AppleThickness:
-                randAppleX, randAppleY = randAppleGen()
-                snakeLength+=1
-                
-            elif lead_y + block_size >= randAppleY and lead_y + block_size <= randAppleY + AppleThickness:
-                randAppleX, randAppleY = randAppleGen()
-                snakeLength+=1
-
-        clock.tick(30)
         
         pygame.display.update()
 
