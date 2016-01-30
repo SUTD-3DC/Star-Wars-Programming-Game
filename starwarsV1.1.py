@@ -255,11 +255,17 @@ def gameLoop():
         clock.tick(30)
 
     ######################### Player controls - Keypress or Typed text #########################
+
+        events = pygame.event.get()
+
+        # to quit game
+        for event in events:
+            if event.type == pygame.QUIT:
+                gameExit = True
         
         if control_mode == 'TYPE':
             # eztext
             # events for txtbx
-            events = pygame.event.get()
             for i in range(elemNumber):
                 # update txtbx and get return val
                 a[i]=txtbx[i].update(None) #Add cursor to indicate where you are typing add (lose ability to type 'cursor')
@@ -295,9 +301,7 @@ def gameLoop():
                     foci=(i+1)%elemNumber
 
         elif control_mode == 'KEYPRESS':
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    gameExit = True
+            for event in events:
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_LEFT:
                         lead_x_change = -block_size
