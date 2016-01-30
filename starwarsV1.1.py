@@ -4,6 +4,7 @@ import time
 import random
 
 from Movement import Movement
+from Timer import Timer
 
 pygame.init()
 
@@ -14,7 +15,10 @@ green = (0, 155, 0)
 
 # Global settings
 control_mode = 'TYPE' # 'KEYPRESS' or 'TYPE'
-time_limit = 120 # Time limit that affects Time Bar and Duration countdown
+time_limit = 10 # Time limit that affects Time Bar and Duration countdown
+
+# Use a timer
+timer = Timer()
 
 map_width = 800
 map_height = 600
@@ -46,6 +50,7 @@ def barrier(xlocation,randomHeight, barrier_width):
 def pause():
 
     paused = True
+    timer.pause()
     message_to_screen("Paused", black, -100, size = "large")
     message_to_screen("Press c to continue", black, 25, size = "small")
     pygame.display.update()
@@ -57,6 +62,7 @@ def pause():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_c:
                     paused = False
+                    timer.unpause()
                 elif event.key == pygame.K_q:
                     pygame.quit()
                     quit()
@@ -152,6 +158,10 @@ def gameLoop():
 
     # Use the Movement class to keep track of movements
     movement = Movement()
+
+    # use get_ticks to time
+    timer.set_ticks_func(pygame.time.get_ticks)
+    timer.reset()
     
     #eztext
     txtbx=[]
@@ -178,8 +188,6 @@ def gameLoop():
     xlocation = (map_width/2)+ random.randint(-0.2*map_width, 0.2*map_width)
     randomHeight = random.randrange(map_height*0.1,map_height*0.6)
 
-    start_ticks=pygame.time.get_ticks() #starter tick
-    
     while not gameExit:
     
         if gameOver == True:
@@ -203,7 +211,8 @@ def gameLoop():
                         gameLoop()
 
     ############## timer ##########################
-        seconds=(pygame.time.get_ticks()-start_ticks+pause_duration)/1000.0 #calculate how many seconds
+        timer.update()
+        seconds = timer.get_time() #calculate how many seconds
         #print (seconds) #print how many seconds
 
 
