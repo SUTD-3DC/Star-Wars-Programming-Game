@@ -3,6 +3,8 @@ import pygame, eztext
 import time
 import random
 
+from Movement import Movement
+
 pygame.init()
 
 white = (255,255,255)
@@ -148,9 +150,8 @@ def gameLoop():
     step_count = 0
     pause_duration = 0
 
-    #Buffer to hold the moves
-    move_buffer = []
-    move_hash = hash(tuple(move_buffer))
+    # Use the Movement class to keep track of movements
+    movement = Movement()
     
     #eztext
     txtbx=[]
@@ -214,13 +215,6 @@ def gameLoop():
 ####################### UPDATES PLAYER LOCATION ################################
         lead_x += lead_x_change
         lead_y += lead_y_change
-
-####################### POP first item from move buffer ###################################
-        if move_buffer != []:
-            move_process = move_buffer.pop(0)
-            lead_x_change = 0
-            lead_y_change = 0
-            step_count = 0
 
 ####################### displaying it on screen ################################
         gameDisplay.fill(white)
@@ -287,34 +281,18 @@ def gameLoop():
                 if a[i] != None:
                     b[i]=a[i]
                     if b[i]=="self.movedown()":
-                        lead_y_change = block_size
-                        step_count +=1
-                        direction = "down"
-                        move_buffer.append(direction) # Store text into buffer
+                        movement.add_move('down')
                     elif b[i]=="self.moveup()":
-                        lead_y_change = -block_size
-                        step_count +=1
-                        direction = "up"
-                        move_buffer.append(direction)
+                        movement.add_move('up')
                     elif b[i]=="self.moveright()":
-                        lead_x_change = block_size
-                        step_count +=1
-                        direction = "right"
-                        move_buffer.append(direction)
+                        movement.add_move('right')
                     elif b[i]=="self.moveleft()":
-                        lead_x_change = -block_size
-                        step_count +=1
-                        direction = "left"
-                        move_buffer.append(direction)
+                        movement.add_move('left')
                     txtbx[i].focus=False
                     txtbx[i].color=black
                     txtbx[(i+1)%elemNumber].focus=True
                     txtbx[(i+1)%elemNumber].color=red
                     foci=(i+1)%elemNumber
-
-            if hash(tuple(move_buffer)) != move_hash: # Prints buffer iff it has changed
-                move_hash = hash(tuple(move_buffer))
-                print move_buffer
 
         elif control_mode == 'KEYPRESS':
             for event in pygame.event.get():
@@ -364,7 +342,31 @@ def gameLoop():
                         step_count = 0
                         lead_x_change = 0
                         direction = "down"
-        
+
+        # Use the Movement class to keep track of moves.
+        if control_mode == 'TYPE':
+            next_move = movement.get_next_move()
+
+            if next_move == 'stationary':
+                lead_x_change = 0
+                lead_y_change = 0
+            elif next_move == 'up':
+                direction = 'up'
+                lead_x_change = 0
+                lead_y_change = -block_size
+            elif next_move == 'down':
+                direction = 'down'
+                lead_x_change = 0
+                lead_y_change = block_size
+            elif next_move == 'left':
+                direction = 'left'
+                lead_x_change = -block_size
+                lead_y_change = 0
+            elif next_move == 'right':
+                direction = 'right'
+                lead_x_change = block_size
+                lead_y_change = 0
+
         pygame.display.update()
 
 
