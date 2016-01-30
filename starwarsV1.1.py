@@ -11,6 +11,7 @@ red = (255,0,0)
 green = (0, 155, 0)
 
 # Global settings
+control_mode = 'KEYPRESS' # 'KEYPRESS' or 'TYPE'
 time_limit = 15 # Time limit that affects Time Bar and Duration countdown
 
 map_width = 800
@@ -146,6 +147,7 @@ def gameLoop():
     snakeLength = 1
     randAppleX, randAppleY = randAppleGen()
     step_count = 0
+    pause_duration = 0
 
     #Buffer to hold the moves
     move_buffer = []
@@ -200,68 +202,126 @@ def gameLoop():
                     if event.key == pygame.K_c:
                         gameLoop()
 
-        ############## timer ##########################
-        seconds=(pygame.time.get_ticks()-start_ticks)/1000.0 #calculate how many seconds
+    ############## timer ##########################
+        seconds=(pygame.time.get_ticks()-start_ticks+pause_duration)/1000.0 #calculate how many seconds
         #print (seconds) #print how many seconds
+
+
+    ######################### Player controls - Keypress or Typed text #########################
         
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                gameExit = True
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_LEFT:
-                    lead_x_change = -block_size
-                    step_count += 1
-                    lead_y_change = 0
-                    direction = "left"
-                elif event.key == pygame.K_RIGHT:
-                    lead_x_change = block_size
-                    step_count += 1
-                    lead_y_change = 0
-                    direction = "right"
-                elif event.key == pygame.K_UP:
-                    lead_y_change = -block_size
-                    step_count += 1
-                    lead_x_change = 0
-                    direction = "up"
-                elif event.key == pygame.K_DOWN:
-                    lead_y_change = block_size
-                    step_count += 1
-                    lead_x_change = 0
-                    direction = "down"
-                elif event.key == pygame.K_p:
-                    pause()
-            if event.type == pygame.KEYUP:
-                if event.key == pygame.K_LEFT:
-                    lead_x_change = 0
-                    step_count = 0
-                    lead_y_change = 0
-                    direction = "left"
-                elif event.key == pygame.K_RIGHT:
-                    lead_x_change = 0
-                    step_count = 0
-                    lead_y_change = 0
-                    direction = "right"
-                elif event.key == pygame.K_UP:
-                    lead_y_change = 0
-                    step_count = 0
-                    lead_x_change = 0
-                    direction = "up"
-                elif event.key == pygame.K_DOWN:
-                    lead_y_change = 0
-                    step_count = 0
-                    lead_x_change = 0
-                    direction = "down"
+        if control_mode == 'TYPE':
+            # eztext
+            # events for txtbx
+            for i in range(elemNumber):
+                # update txtbx and get return val
+                a[i]=txtbx[i].update(None) #Add cursor to indicate where you are typing add (lose ability to type 'cursor')
+                a[i]=txtbx[i].update(pygame.event.get())
+                if i==foci:
+                    txtbx[i].focus=True
+                    txtbx[i].color=red
+                else:
+                    txtbx[i].focus=False
+                    txtbx[i].color=black
+                    
+                # blit txtbx[i] on the screen
+                txtbx[i].draw(gameDisplay)
+                
+
+            #Changing the focus to the next element 
+            #every time enter is pressed
+            for i in range(elemNumber):
+                if a[i] != None:
+                    b[i]=a[i]
+                    if b[i]=="self.movedown()":
+                        lead_y_change = block_size
+                        step_count +=1
+                        direction = "down"
+                        move_buffer.append(direction) # Store text into buffer
+                    elif b[i]=="self.moveup()":
+                        lead_y_change = -block_size
+                        step_count +=1
+                        direction = "up"
+                        move_buffer.append(direction)
+                    elif b[i]=="self.moveright()":
+                        lead_x_change = block_size
+                        step_count +=1
+                        direction = "right"
+                        move_buffer.append(direction)
+                    elif b[i]=="self.moveleft()":
+                        lead_x_change = -block_size
+                        step_count +=1
+                        direction = "left"
+                        move_buffer.append(direction)
+                    txtbx[i].focus=False
+                    txtbx[i].color=black
+                    txtbx[(i+1)%elemNumber].focus=True
+                    txtbx[(i+1)%elemNumber].color=red
+                    foci=(i+1)%elemNumber
+
+            if hash(tuple(move_buffer)) != move_hash: # Prints buffer iff it has changed
+                move_hash = hash(tuple(move_buffer))
+                print move_buffer
+
+        elif control_mode == 'KEYPRESS':
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    gameExit = True
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_LEFT:
+                        lead_x_change = -block_size
+                        step_count += 1
+                        lead_y_change = 0
+                        direction = "left"
+                    elif event.key == pygame.K_RIGHT:
+                        lead_x_change = block_size
+                        step_count += 1
+                        lead_y_change = 0
+                        direction = "right"
+                    elif event.key == pygame.K_UP:
+                        lead_y_change = -block_size
+                        step_count += 1
+                        lead_x_change = 0
+                        direction = "up"
+                    elif event.key == pygame.K_DOWN:
+                        lead_y_change = block_size
+                        step_count += 1
+                        lead_x_change = 0
+                        direction = "down"
+                    elif event.key == pygame.K_p:
+                        pause()
+                if event.type == pygame.KEYUP:
+                    if event.key == pygame.K_LEFT:
+                        lead_x_change = 0
+                        step_count = 0
+                        lead_y_change = 0
+                        direction = "left"
+                    elif event.key == pygame.K_RIGHT:
+                        lead_x_change = 0
+                        step_count = 0
+                        lead_y_change = 0
+                        direction = "right"
+                    elif event.key == pygame.K_UP:
+                        lead_y_change = 0
+                        step_count = 0
+                        lead_x_change = 0
+                        direction = "up"
+                    elif event.key == pygame.K_DOWN:
+                        lead_y_change = 0
+                        step_count = 0
+                        lead_x_change = 0
+                        direction = "down"
         
 
 ###################### END GAME CONDITIONS: Out of bound detection, Timelimit ###########################
-        if lead_x > map_width - block_size or lead_x < 0 or lead_y > map_height - block_size or lead_y<0 or seconds > time_limit:
+        if lead_x > map_width - block_size or lead_x < 0 or lead_y > map_height - block_size \
+            or lead_y<0 or seconds > time_limit:
             gameOver = True
 
 ####################### UPDATES PLAYER LOCATION ################################
         lead_x += lead_x_change
         lead_y += lead_y_change
 
-####################### POP MOVE FROM MOVE BUFFER ###################################
+####################### POP first item from move buffer ###################################
         if move_buffer != []:
             move_process = move_buffer.pop(0)
             lead_x_change = 0
@@ -305,59 +365,6 @@ def gameLoop():
                 snakeLength+=1
 
         clock.tick(30)
-        #eztext
-        # events for txtbx
-        events = pygame.event.get()
-
-        for i in range(elemNumber):
-            # update txtbx and get return val
-            a[i]=txtbx[i].update(None) #Add cursor to indicate where you are typing add (lose ability to type 'cursor')
-            a[i]=txtbx[i].update(events)
-            if i==foci:
-                txtbx[i].focus=True
-                txtbx[i].color=red
-            else:
-                txtbx[i].focus=False
-                txtbx[i].color=black
-                
-            # blit txtbx[i] on the screen
-            txtbx[i].draw(gameDisplay)
-            
-
-        #Changing the focus to the next element 
-        #every time enter is pressed
-        for i in range(elemNumber):
-            if a[i] != None:
-                b[i]=a[i]
-                if b[i]=="self.movedown()":
-                    lead_y_change = block_size
-                    step_count +=1
-                    direction = "down"
-                    move_buffer.append(direction) # Store text into buffer
-                elif b[i]=="self.moveup()":
-                    lead_y_change = -block_size
-                    step_count +=1
-                    direction = "up"
-                    move_buffer.append(direction)
-                elif b[i]=="self.moveright()":
-                    lead_x_change = block_size
-                    step_count +=1
-                    direction = "right"
-                    move_buffer.append(direction)
-                elif b[i]=="self.moveleft()":
-                    lead_x_change = -block_size
-                    step_count +=1
-                    direction = "left"
-                    move_buffer.append(direction)
-                txtbx[i].focus=False
-                txtbx[i].color=black
-                txtbx[(i+1)%elemNumber].focus=True
-                txtbx[(i+1)%elemNumber].color=red
-                foci=(i+1)%elemNumber
-
-        if hash(tuple(move_buffer)) != move_hash: # Prints buffer iff it has changed
-            move_hash = hash(tuple(move_buffer))
-            print move_buffer
         
         pygame.display.update()
 
