@@ -2,9 +2,12 @@ from collections import deque
 import pygame, eztext
 import time
 import random
+import threading
+import traceback
 
 from Movement import Movement
 from Timer import Timer
+import ParserThread
 
 pygame.init()
 
@@ -15,10 +18,20 @@ green = (0, 155, 0)
 
 # Global settings
 control_mode = 'TYPE' # 'KEYPRESS' or 'TYPE'
-time_limit = 10 # Time limit that affects Time Bar and Duration countdown
+time_limit = 30 # Time limit that affects Time Bar and Duration countdown
 
 # Use a timer
 timer = Timer()
+
+# Use the Movement class to keep track of movements
+movement = Movement()
+
+# Game state
+game_state = 'idle'
+parsing = False
+
+# Use ParserThread to create a separate thread for parsing user code
+parser_thread = ParserThread.Thread()
 
 map_width = 800
 map_height = 600
@@ -43,6 +56,46 @@ clock = pygame.time.Clock()
 smallfont = pygame.font.SysFont("comicsansms", 25)
 medfont = pygame.font.SysFont("comicsansms", 50)
 largefont = pygame.font.SysFont("comicsansms", 80)
+
+def done_moving():
+    if movement.get_next_move() == 'stationary':
+        return True
+    return False
+
+def move_left():
+    global game_state
+    game_state = 'move_left'
+    while game_state != 'idle':
+        pass
+
+def move_right():
+    global game_state
+    game_state = 'move_right'
+    while game_state != 'idle':
+        pass
+
+def move_up():
+    global game_state
+    game_state = 'move_up'
+    while game_state != 'idle':
+        pass
+
+def move_down():
+    global game_state
+    game_state = 'move_down'
+    while game_state != 'idle':
+        pass
+
+def parser_func(code):
+    try:
+        exec(code)
+    except SystemExit:
+        print "exit from loop."
+    except:
+        traceback.print_exc()
+    finally:
+        timer.unpause()
+        parsing = False
 
 def barrier(xlocation,randomHeight, barrier_width):
     pygame.draw.rect(gameDisplay,black, [xlocation, randomHeight, barrier_width, barrier_width])
@@ -142,7 +195,7 @@ def message_to_screen(msg,color, y_displace = 0, size = "small"):
     gameDisplay.blit(textSurf, textRect)
 
 def gameLoop():
-    global direction
+    global direction, parsing, game_state
     direction = "right"
     gameExit = False
     gameOver = False
@@ -155,9 +208,6 @@ def gameLoop():
     randAppleX, randAppleY = randAppleGen()
     step_count = 0
     pause_duration = 0
-
-    # Use the Movement class to keep track of movements
-    movement = Movement()
 
     # use get_ticks to time
     timer.set_ticks_func(pygame.time.get_ticks)
@@ -199,6 +249,7 @@ def gameLoop():
             
         while gameOver == True:
             
+            parser_thread.stop()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     gameOver = False
@@ -218,7 +269,7 @@ def gameLoop():
 
 ###################### END GAME CONDITIONS: Out of bound detection, Timelimit ###########################
         if lead_x > map_width - block_size or lead_x < 0 or lead_y > map_height - block_size \
-            or lead_y<0 or seconds > time_limit:
+            or lead_y<0:
             gameOver = True
 
 ####################### UPDATES PLAYER LOCATION ################################
@@ -294,15 +345,6 @@ def gameLoop():
             #every time enter is pressed
             for i in range(elemNumber):
                 if a[i] != None:
-                    b[i]=a[i]
-                    if b[i]=="self.movedown()":
-                        movement.add_move('down')
-                    elif b[i]=="self.moveup()":
-                        movement.add_move('up')
-                    elif b[i]=="self.moveright()":
-                        movement.add_move('right')
-                    elif b[i]=="self.moveleft()":
-                        movement.add_move('left')
                     txtbx[i].focus=False
                     txtbx[i].color=black
                     txtbx[(i+1)%elemNumber].focus=True
@@ -380,11 +422,55 @@ def gameLoop():
                 lead_x_change = block_size
                 lead_y_change = 0
 
+        if seconds > time_limit:
+            timer.reset()
+            timer.pause()
+            parsing = True
+
+            code_list = []
+            for i in range(elemNumber):
+                line = txtbx[i].value
+                if line != '':
+                    if line[-1] == '|':
+                        line = line[:-1]
+                    code_list.append(line)
+
+            code = '\n'.join(code_list)
+
+            code = code.replace('self.', '')
+
+            parser_thread.start(parser_func, code)
+
+            for i in range(elemNumber):
+                txtbx[i].value = ''
+                txtbx[i].color = black
+
+            foci = 0
+
+        if parsing:
+            if game_state == 'move_left':
+                movement.add_move('left');
+                game_state = 'moving'
+            elif game_state == 'move_right':
+                movement.add_move('right');
+                game_state = 'moving'
+            elif game_state == 'move_up':
+                movement.add_move('up');
+                game_state = 'moving'
+            elif game_state == 'move_down':
+                movement.add_move('down');
+                game_state = 'moving'
+            elif game_state == 'moving':
+                if done_moving():
+                    game_state = 'idle'
+
         pygame.display.update()
 
 
+    parser_thread.stop()
     pygame.quit()
     quit()
 
 game_intro()
 gameLoop()
+
