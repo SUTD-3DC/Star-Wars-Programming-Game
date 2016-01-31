@@ -14,7 +14,8 @@ class Timer:
         self.time = 0
 
     def update(self):
-        self.time = self.ticks_func() - self.start_time
+        if not self.is_pause:
+            self.time = self.ticks_func() - self.start_time
 
     def pause(self):
         self.is_pause = True
