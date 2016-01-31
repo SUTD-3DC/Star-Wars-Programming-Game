@@ -46,10 +46,18 @@ direction = "right"
 gameDisplay = pygame.display.set_mode((display_width,display_height))
 pygame.display.set_caption('Slither')
 
-down_img = ['pictures/stationary.png','pictures/Luke_down_walk_1.png','pictures/Luke_down_walk_2.png']
-right_img = ['pictures/right_stationary.png','pictures/Luke_right_walk_1.png','pictures/Luke_right_walk_2.png']
-left_img = ['pictures/left_stationary.png','pictures/Luke_left_walk_1.png','pictures/Luke_left_walk_2.png']
-up_img = ['pictures/up_stationary.png','pictures/Luke_up_walk_1.png','pictures/Luke_up_walk_2.png']
+down_img = ['pictures/lukeMove/Luke_down_stationary.png',
+        'pictures/lukeMove/Luke_down_walk_1.png',
+        'pictures/lukeMove/Luke_down_walk_2.png']
+right_img = ['pictures/lukeMove/Luke_right_stationary.png',
+        'pictures/lukeMove/Luke_right_walk_1.png',
+        'pictures/lukeMove/Luke_right_walk_2.png']
+left_img = ['pictures/lukeMove/Luke_left_stationary.png',
+        'pictures/lukeMove/Luke_left_walk_1.png',
+        'pictures/lukeMove/Luke_left_walk_2.png']
+up_img = ['pictures/lukeMove/Luke_up_stationary.png',
+        'pictures/lukeMove/Luke_up_walk_1.png',
+        'pictures/lukeMove/Luke_up_walk_2.png']
 appleimg = pygame.image.load('pictures/apple.png')
 clock = pygame.time.Clock()
 
@@ -422,7 +430,7 @@ def gameLoop():
                 lead_x_change = block_size
                 lead_y_change = 0
 
-        if seconds > time_limit:
+        if (seconds > time_limit) and (control_mode == 'TYPE'):
             timer.reset()
             timer.pause()
             parsing = True
