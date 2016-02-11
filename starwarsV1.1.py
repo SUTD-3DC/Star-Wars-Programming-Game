@@ -15,7 +15,11 @@ pygame.init()
 white = (255,255,255)
 black = (0,0,0)
 red = (255,0,0)
-green = (0, 155, 0)
+green = (0, 255, 0)
+
+# default colour for text editor font
+txtfont_default = white
+txtfont_focus = green
 
 # Global settings
 control_mode = 'TYPE' # 'KEYPRESS' or 'TYPE'
@@ -230,9 +234,9 @@ def gameLoop():
     
     #eztext
     txtbx=[]
-    elemNumber = 15
-    ypos=0
-    xpos=810
+    elemNumber = 14
+    ypos=60
+    xpos=840
     deltay = 20
     a=['' for i in range(elemNumber)]
     b=['default' for i in range(elemNumber)]
@@ -240,13 +244,13 @@ def gameLoop():
     # create an input with a max length of 34,
     for i in range(elemNumber):
         txtbx.append(eztext.Input(maxlength=34,
-                                color=red,y=ypos,x=xpos,prompt= "{:>2}: ".format(str(i+1))
+                                y=ypos,x=xpos,prompt= "{:>2}: ".format(str(i+1))
                                     ))
         ypos+=deltay
 
     foci=0 #The focus index
     txtbx[foci].focus=True
-    txtbx[foci].color=red
+    txtbx[foci].color=txtfont_focus
 
 
     barrier_width = 30
@@ -347,10 +351,10 @@ def gameLoop():
                 a[i]=txtbx[i].update(events)
                 if i==foci:
                     txtbx[i].focus=True
-                    txtbx[i].color=red
+                    txtbx[i].color=txtfont_focus
                 else:
                     txtbx[i].focus=False
-                    txtbx[i].color=black
+                    txtbx[i].color=txtfont_default
                     
                 # blit txtbx[i] on the screen
                 txtbx[i].draw(gameDisplay)
@@ -361,9 +365,9 @@ def gameLoop():
             for i in range(elemNumber):
                 if a[i] != None:
                     txtbx[i].focus=False
-                    txtbx[i].color=black
+                    txtbx[i].color=txtfont_default
                     txtbx[(i+1)%elemNumber].focus=True
-                    txtbx[(i+1)%elemNumber].color=red
+                    txtbx[(i+1)%elemNumber].color=txtfont_focus
                     foci=(i+1)%elemNumber
 
         elif control_mode == 'KEYPRESS':
@@ -458,6 +462,7 @@ def gameLoop():
         gameDisplay.blit(btnimg, btn_rect)
         for event in events:
             if event.type == pygame.MOUSEBUTTONUP:
+                print pygame.mouse.get_pos()
                 if btn_rect.collidepoint(pygame.mouse.get_pos()):
                     parsing = True
 
@@ -477,7 +482,7 @@ def gameLoop():
 
                     for i in range(elemNumber):
                         txtbx[i].value = ''
-                        txtbx[i].color = black
+                        txtbx[i].color = txtfont_default
 
                     foci = 0
 
