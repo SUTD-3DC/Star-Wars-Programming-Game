@@ -69,8 +69,8 @@ up_img = ['pictures/lukeMove/Luke_up_stationary.png',
 appleimg = pygame.image.load('pictures/apple.png')
 
 # for run button
-btnimg = pygame.image.load('pictures/runbtn.png').convert()
-btn_rect = pygame.Rect(850, 550, *btnimg.get_rect().size)
+btnimg = pygame.image.load('pictures/runbtn.png').convert_alpha()
+btn_rect = pygame.Rect(1075, 590, *btnimg.get_rect().size)
 
 clock = pygame.time.Clock()
 
@@ -462,7 +462,6 @@ def gameLoop():
         gameDisplay.blit(btnimg, btn_rect)
         for event in events:
             if event.type == pygame.MOUSEBUTTONUP:
-                print pygame.mouse.get_pos()
                 if btn_rect.collidepoint(pygame.mouse.get_pos()):
                     parsing = True
 
