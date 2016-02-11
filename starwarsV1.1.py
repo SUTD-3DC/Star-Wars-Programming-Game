@@ -61,6 +61,11 @@ up_img = ['pictures/lukeMove/Luke_up_stationary.png',
         'pictures/lukeMove/Luke_up_walk_1.png',
         'pictures/lukeMove/Luke_up_walk_2.png']
 appleimg = pygame.image.load('pictures/apple.png')
+
+# for run button
+btnimg = pygame.image.load('pictures/runbtn.png').convert()
+btn_rect = pygame.Rect(850, 550, *btnimg.get_rect().size)
+
 clock = pygame.time.Clock()
 
 smallfont = pygame.font.SysFont("comicsansms", 25)
@@ -104,7 +109,6 @@ def parser_func(code):
     except:
         traceback.print_exc()
     finally:
-        timer.unpause()
         parsing = False
 
 def barrier(xlocation,randomHeight, barrier_width):
@@ -225,7 +229,7 @@ def gameLoop():
     
     #eztext
     txtbx=[]
-    elemNumber = 32
+    elemNumber = 15
     ypos=0
     xpos=810
     deltay = 20
@@ -432,31 +436,6 @@ def gameLoop():
                 lead_x_change = block_size
                 lead_y_change = 0
 
-        if (seconds > time_limit) and (control_mode == 'TYPE'):
-            timer.reset()
-            timer.pause()
-            parsing = True
-
-            code_list = []
-            for i in range(elemNumber):
-                line = txtbx[i].value
-                if line != '':
-                    if line[-1] == '|':
-                        line = line[:-1]
-                    code_list.append(line)
-
-            code = '\n'.join(code_list)
-
-            code = code.replace('self.', '')
-
-            parser_thread.start(parser_func, code)
-
-            for i in range(elemNumber):
-                txtbx[i].value = ''
-                txtbx[i].color = black
-
-            foci = 0
-
         if parsing:
             if game_state == 'move_left':
                 movement.add_move('left');
@@ -473,6 +452,34 @@ def gameLoop():
             elif game_state == 'moving':
                 if done_moving():
                     game_state = 'idle'
+
+        # run code button
+        gameDisplay.blit(btnimg, btn_rect)
+        for event in events:
+            if event.type == pygame.MOUSEBUTTONUP:
+                if btn_rect.collidepoint(pygame.mouse.get_pos()):
+                    parsing = True
+
+                    code_list = []
+                    for i in range(elemNumber):
+                        line = txtbx[i].value
+                        if line != '':
+                            if line[-1] == '|':
+                                line = line[:-1]
+                            code_list.append(line)
+
+                    code = '\n'.join(code_list)
+
+                    code = code.replace('self.', '')
+
+                    parser_thread.start(parser_func, code)
+
+                    for i in range(elemNumber):
+                        txtbx[i].value = ''
+                        txtbx[i].color = black
+
+                    foci = 0
+
 
         pygame.display.update()
 
