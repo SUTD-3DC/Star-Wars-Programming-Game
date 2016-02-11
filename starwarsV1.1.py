@@ -216,11 +216,11 @@ def message_to_screen(msg,color, y_displace = 0, size = "small"):
 
 def gameLoop():
     global direction, parsing, game_state
-    direction = "right"
+    direction = "left"
     gameExit = False
     gameOver = False
-    lead_x = map_width - 50
-    lead_y = map_height - 50
+    lead_x = 750
+    lead_y = 540
     lead_x_change = 0
     lead_y_change = 0
     rebelScore = 0
