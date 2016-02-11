@@ -1,5 +1,3 @@
-# test pull request
-
 from collections import deque
 import pygame, eztext
 import time
@@ -167,14 +165,14 @@ def game_intro():
         gameDisplay.fill(white)
         message_to_screen("Welcome to the Batcave", black, -100,
                           "medium")
-        message_to_screen("Objective of the game is to help the snake eat apple",
+        message_to_screen("Objective of the game is to help the rebel collect death star blueprint",
                           black, -30,"small")
         message_to_screen("Press C to play, P to pause, Q to Quit",
                           black, 30,"small")
         pygame.display.update()
         clock.tick(5)
 
-def snake(block_size, coords):
+def rebel(block_size, coords):
 
     if direction == "right":
         head = pygame.image.load(right_img[0])
@@ -213,8 +211,8 @@ def gameLoop():
     lead_y = map_height - 50
     lead_x_change = 0
     lead_y_change = 0
-    snakeList = []
-    snakeLength = 1
+    rebelList = []
+    rebelLength = 1
     randAppleX, randAppleY = randAppleGen()
     step_count = 0
     pause_duration = 0
@@ -295,8 +293,8 @@ def gameLoop():
 ##        snakeHead.append(lead_x)
 ##        snakeHead.append(lead_y)
 ##        snakeList.append(snakeHead)
-        snake(block_size, (lead_x, lead_y))
-        status(snakeLength - 1, time_limit,seconds)
+        rebel(block_size, (lead_x, lead_y))
+        status(rebelLength - 1, time_limit,seconds)
         barrier(xlocation,randomHeight, barrier_width)
         
         
@@ -316,11 +314,11 @@ def gameLoop():
         if lead_x >= randAppleX and lead_x <= randAppleX + AppleThickness or lead_x + block_size >= randAppleX and lead_x + block_size <= randAppleX + AppleThickness:
             if lead_y >= randAppleY and lead_y <= randAppleY + AppleThickness:
                 randAppleX, randAppleY = randAppleGen()
-                snakeLength+=1
+                rebelLength+=1
                 
             elif lead_y + block_size >= randAppleY and lead_y + block_size <= randAppleY + AppleThickness:
                 randAppleX, randAppleY = randAppleGen()
-                snakeLength+=1
+                rebelLength+=1
 
         clock.tick(30)
 
