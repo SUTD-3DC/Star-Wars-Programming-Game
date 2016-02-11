@@ -1,3 +1,4 @@
+#batman is the best
 from collections import deque
 import pygame, eztext
 import time
@@ -46,6 +47,9 @@ direction = "right"
 gameDisplay = pygame.display.set_mode((display_width,display_height))
 pygame.display.set_caption('Slither')
 
+text_editor_img = 'pictures/right panel/Text editor.png'
+map_img = ['pictures/Map/Map_1.png','pictures/Map/Map_2.png',
+           'pictures/Map/Test map.png']
 down_img = ['pictures/lukeMove/Luke_down_stationary.png',
         'pictures/lukeMove/Luke_down_walk_1.png',
         'pictures/lukeMove/Luke_down_walk_2.png']
@@ -179,18 +183,18 @@ def game_intro():
 def rebel(block_size, coords):
 
     if direction == "right":
-        head = pygame.image.load(right_img[0])
+        character = pygame.image.load(right_img[0])
         
     if direction == "left":
-        head = pygame.image.load(left_img[0])
+        character = pygame.image.load(left_img[0])
         
     if direction == "up":
-        head = pygame.image.load(up_img[0])
+        character = pygame.image.load(up_img[0])
         
     if direction == "down":
-        head = pygame.image.load(down_img[0])
+        character = pygame.image.load(down_img[0])
         
-    gameDisplay.blit(head, coords)
+    gameDisplay.blit(character, coords)
     
 def text_objects(text,color,size):
     if size == "small":
@@ -215,8 +219,7 @@ def gameLoop():
     lead_y = map_height - 50
     lead_x_change = 0
     lead_y_change = 0
-    rebelList = []
-    rebelLength = 1
+    rebelScore = 0
     randAppleX, randAppleY = randAppleGen()
     step_count = 0
     pause_duration = 0
@@ -290,15 +293,15 @@ def gameLoop():
 
 ####################### displaying it on screen ################################
         gameDisplay.fill(white)
+        game_map=pygame.image.load(map_img[1]);
+        text_editor=pygame.image.load(text_editor_img);
+        gameDisplay.blit(game_map, (0,0))
+        gameDisplay.blit(text_editor, (map_width,0))
         pygame.draw.line(gameDisplay,black,(map_width,display_height),(map_width,0), 2)#draw boundary for user to type code
         pygame.draw.line(gameDisplay,black,(0,map_height),(map_width,map_height), 2)#draw boundary for status bar
         gameDisplay.blit(appleimg, (randAppleX, randAppleY))
-##        snakeHead = []
-##        snakeHead.append(lead_x)
-##        snakeHead.append(lead_y)
-##        snakeList.append(snakeHead)
         rebel(block_size, (lead_x, lead_y))
-        status(rebelLength - 1, time_limit,seconds)
+        status(rebelScore, time_limit,seconds)
         barrier(xlocation,randomHeight, barrier_width)
         
         
@@ -318,11 +321,11 @@ def gameLoop():
         if lead_x >= randAppleX and lead_x <= randAppleX + AppleThickness or lead_x + block_size >= randAppleX and lead_x + block_size <= randAppleX + AppleThickness:
             if lead_y >= randAppleY and lead_y <= randAppleY + AppleThickness:
                 randAppleX, randAppleY = randAppleGen()
-                rebelLength+=1
+                rebelScore+=1
                 
             elif lead_y + block_size >= randAppleY and lead_y + block_size <= randAppleY + AppleThickness:
                 randAppleX, randAppleY = randAppleGen()
-                rebelLength+=1
+                rebelScore+=1
 
         clock.tick(30)
 
