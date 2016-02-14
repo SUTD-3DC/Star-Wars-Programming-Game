@@ -47,25 +47,30 @@ display_height = map_height + status_bar
 AppleThickness = 30
 block_size = 10
 FPS = 30
-direction = "right" 
 gameDisplay = pygame.display.set_mode((display_width,display_height))
 pygame.display.set_caption('Slither')
 
 text_editor_img = 'pictures/right panel/Text editor.png'
 map_img = ['pictures/Map/Map_1.png','pictures/Map/Map_2.png',
            'pictures/Map/Test map.png']
-down_img = ['pictures/lukeMove/Luke_down_stationary.png',
-        'pictures/lukeMove/Luke_down_walk_1.png',
-        'pictures/lukeMove/Luke_down_walk_2.png']
-right_img = ['pictures/lukeMove/Luke_right_stationary.png',
-        'pictures/lukeMove/Luke_right_walk_1.png',
-        'pictures/lukeMove/Luke_right_walk_2.png']
-left_img = ['pictures/lukeMove/Luke_left_stationary.png',
-        'pictures/lukeMove/Luke_left_walk_1.png',
-        'pictures/lukeMove/Luke_left_walk_2.png']
-up_img = ['pictures/lukeMove/Luke_up_stationary.png',
-        'pictures/lukeMove/Luke_up_walk_1.png',
-        'pictures/lukeMove/Luke_up_walk_2.png']
+
+lukeUpStationary = pygame.image.load('pictures/lukeMove/Luke_up_stationary.png')
+lukeUpWalk1 = pygame.image.load('pictures/lukeMove/Luke_up_walk_1.png')
+lukeUpWalk2 = pygame.image.load('pictures/lukeMove/Luke_up_walk_2.png')
+lukeDownStationary = pygame.image.load('pictures/lukeMove/Luke_down_stationary.png')
+lukeDownWalk1 = pygame.image.load('pictures/lukeMove/Luke_down_walk_1.png')
+lukeDownWalk2 = pygame.image.load('pictures/lukeMove/Luke_down_walk_2.png')
+lukeRightStationary = pygame.image.load('pictures/lukeMove/Luke_right_stationary.png')
+lukeRightWalk = pygame.image.load('pictures/lukeMove/Luke_right_walk_1.png')
+lukeLeftStationary = pygame.image.load('pictures/lukeMove/Luke_left_stationary.png')
+lukeLeftWalk = pygame.image.load('pictures/lukeMove/Luke_left_walk_1.png')
+
+lukeMoveUp = [lukeUpWalk1, lukeUpWalk2, lukeUpStationary]
+lukeMoveDown = [lukeDownWalk1, lukeDownWalk2, lukeDownStationary]
+lukeMoveRight = [lukeRightStationary, lukeRightWalk, lukeRightStationary]
+lukeMoveLeft = [lukeLeftStationary, lukeLeftWalk, lukeLeftStationary]
+lukeMove = [lukeMoveUp, lukeMoveDown, lukeMoveRight, lukeMoveLeft]
+
 appleimg = pygame.image.load('pictures/apple.png')
 
 # for run button
@@ -184,22 +189,36 @@ def game_intro():
         pygame.display.update()
         clock.tick(5)
 
-def rebel(block_size, coords):
 
-    if direction == "right":
-        character = pygame.image.load(right_img[0])
-        
-    if direction == "left":
-        character = pygame.image.load(left_img[0])
-        
-    if direction == "up":
-        character = pygame.image.load(up_img[0])
-        
-    if direction == "down":
-        character = pygame.image.load(down_img[0])
-        
-    gameDisplay.blit(character, coords)
+def rebel_move(direction, playerX, playerY, xChange, yChange, rebelScore, time_limit, seconds, xlocation, randomHeight, barrier_width, randAppleX, randAppleY):
+
+    image = None
+    for img in lukeMove[direction]:
+
+        playerX += xChange
+        playerY += yChange
+
+        for i in range(5):
+            gameDisplay.fill(white)
+            gameDisplay.blit(game_map, (0,0))
+            gameDisplay.blit(text_editor, (map_width,0))
+            pygame.draw.line(gameDisplay,black,(map_width,display_height),(map_width,0), 2)#draw boundary for user to type code
+            pygame.draw.line(gameDisplay,black,(0,map_height),(map_width,map_height), 2)#draw boundary for status bar
+            status(rebelScore, time_limit,seconds)
+            barrier(xlocation, randomHeight, barrier_width)
+            gameDisplay.blit(appleimg, (randAppleX, randAppleY))
+            gameDisplay.blit(btnimg, btn_rect)
+            for i in range(elemNumber):
+                txtbx[i].draw(gameDisplay)
+
+            gameDisplay.blit(img, (playerX, playerY))
+            image = img
+
+            pygame.display.update()
+
+    return playerX, playerY, image
     
+
 def text_objects(text,color,size):
     if size == "small":
         textSurface = smallfont.render(text, True, color)
@@ -215,10 +234,10 @@ def message_to_screen(msg,color, y_displace = 0, size = "small"):
     gameDisplay.blit(textSurf, textRect)
 
 def gameLoop():
-    global direction, parsing, game_state
-    direction = "left"
+    global parsing, game_state, game_map, text_editor, elemNumber, txtbx
     gameExit = False
     gameOver = False
+    player = lukeDownStationary
     lead_x = 750
     lead_y = 540
     lead_x_change = 0
@@ -292,8 +311,8 @@ def gameLoop():
             gameOver = True
 
 ####################### UPDATES PLAYER LOCATION ################################
-        lead_x += lead_x_change
-        lead_y += lead_y_change
+        # lead_x += lead_x_change
+        # lead_y += lead_y_change
 
 ####################### displaying it on screen ################################
         gameDisplay.fill(white)
@@ -301,10 +320,10 @@ def gameLoop():
         text_editor=pygame.image.load(text_editor_img);
         gameDisplay.blit(game_map, (0,0))
         gameDisplay.blit(text_editor, (map_width,0))
-        pygame.draw.line(gameDisplay,black,(map_width,display_height),(map_width,0), 2)#draw boundary for user to type code
-        pygame.draw.line(gameDisplay,black,(0,map_height),(map_width,map_height), 2)#draw boundary for status bar
+        pygame.draw.line(gameDisplay,black,(map_width,display_height),(map_width,0), 2) #draw boundary for user to type code
+        pygame.draw.line(gameDisplay,black,(0,map_height),(map_width,map_height), 2) #draw boundary for status bar
         gameDisplay.blit(appleimg, (randAppleX, randAppleY))
-        rebel(block_size, (lead_x, lead_y))
+        gameDisplay.blit(player, (lead_x, lead_y))
         status(rebelScore, time_limit,seconds)
         barrier(xlocation,randomHeight, barrier_width)
         
@@ -377,22 +396,18 @@ def gameLoop():
                         lead_x_change = -block_size
                         step_count += 1
                         lead_y_change = 0
-                        direction = "left"
                     elif event.key == pygame.K_RIGHT:
                         lead_x_change = block_size
                         step_count += 1
                         lead_y_change = 0
-                        direction = "right"
                     elif event.key == pygame.K_UP:
                         lead_y_change = -block_size
                         step_count += 1
                         lead_x_change = 0
-                        direction = "up"
                     elif event.key == pygame.K_DOWN:
                         lead_y_change = block_size
                         step_count += 1
                         lead_x_change = 0
-                        direction = "down"
                     elif event.key == pygame.K_p:
                         pause()
                 if event.type == pygame.KEYUP:
@@ -400,46 +415,35 @@ def gameLoop():
                         lead_x_change = 0
                         step_count = 0
                         lead_y_change = 0
-                        direction = "left"
                     elif event.key == pygame.K_RIGHT:
                         lead_x_change = 0
                         step_count = 0
                         lead_y_change = 0
-                        direction = "right"
                     elif event.key == pygame.K_UP:
                         lead_y_change = 0
                         step_count = 0
                         lead_x_change = 0
-                        direction = "up"
                     elif event.key == pygame.K_DOWN:
                         lead_y_change = 0
                         step_count = 0
                         lead_x_change = 0
-                        direction = "down"
 
         # Use the Movement class to keep track of moves.
         if control_mode == 'TYPE':
             next_move = movement.get_next_move()
 
+            # 0: up, 1: down, 2: right, 3: left
             if next_move == 'stationary':
                 lead_x_change = 0
                 lead_y_change = 0
             elif next_move == 'up':
-                direction = 'up'
-                lead_x_change = 0
-                lead_y_change = -block_size
+                lead_x, lead_y, player = rebel_move(0, lead_x, lead_y, 0, -10, rebelScore, time_limit, seconds, xlocation, randomHeight, barrier_width, randAppleX, randAppleY)
             elif next_move == 'down':
-                direction = 'down'
-                lead_x_change = 0
-                lead_y_change = block_size
+                lead_x, lead_y, player = rebel_move(1, lead_x, lead_y, 0, 10, rebelScore, time_limit, seconds, xlocation, randomHeight, barrier_width, randAppleX, randAppleY)
             elif next_move == 'left':
-                direction = 'left'
-                lead_x_change = -block_size
-                lead_y_change = 0
+                lead_x, lead_y, player = rebel_move(3, lead_x, lead_y, -10, 0, rebelScore, time_limit, seconds, xlocation, randomHeight, barrier_width, randAppleX, randAppleY)
             elif next_move == 'right':
-                direction = 'right'
-                lead_x_change = block_size
-                lead_y_change = 0
+                lead_x, lead_y, player = rebel_move(2, lead_x, lead_y, 10, 0, rebelScore, time_limit, seconds, xlocation, randomHeight, barrier_width, randAppleX, randAppleY)
 
         if parsing:
             if game_state == 'move_left':
