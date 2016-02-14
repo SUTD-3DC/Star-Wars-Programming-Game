@@ -51,6 +51,7 @@ direction = "right"
 gameDisplay = pygame.display.set_mode((display_width,display_height))
 pygame.display.set_caption('Slither')
 
+wallpaper_img = 'wallpaper/Wallpaper.png'
 text_editor_img = 'pictures/right panel/Text editor.png'
 map_img = ['pictures/Map/Map_1.png','pictures/Map/Map_2.png',
            'pictures/Map/Test map.png']
@@ -77,6 +78,11 @@ clock = pygame.time.Clock()
 smallfont = pygame.font.SysFont("comicsansms", 25)
 medfont = pygame.font.SysFont("comicsansms", 50)
 largefont = pygame.font.SysFont("comicsansms", 80)
+
+#sounds
+collectSaber = pygame.mixer.Sound("sounds/saberswing2.wav")
+pressC = pygame.mixer.Sound("sounds/start.wav")
+wallbang = pygame.mixer.Sound("sounds/wallbang.ogg")
 
 def done_moving():
     if movement.get_next_move() == 'stationary':
@@ -159,8 +165,10 @@ def randAppleGen():
     return randAppleX, randAppleY
      
 def game_intro():
-
+    pygame.mixer.music.load("sounds/intro - star wars main theme.ogg")
+    pygame.mixer.music.play(0)
     intro = True
+
     while intro:
 
         for event in pygame.event.get():
@@ -174,13 +182,16 @@ def game_intro():
                     pygame.quit()
                     quit()
                     
+
+##        message_to_screen("Star Wars", black, -100,
+##                          "medium")
+##        message_to_screen("A programming education game",
+##                          black, -30,"small")
+##        message_to_screen("Press C to play, P to pause, Q to Quit",
+##                          black, 30,"small")
         gameDisplay.fill(white)
-        message_to_screen("Welcome to the Batcave", black, -100,
-                          "medium")
-        message_to_screen("Objective of the game is to help the rebel collect death star blueprint",
-                          black, -30,"small")
-        message_to_screen("Press C to play, P to pause, Q to Quit",
-                          black, 30,"small")
+        wp = pygame.image.load(wallpaper_img)
+        gameDisplay.blit(wp, (0,0))
         pygame.display.update()
         clock.tick(5)
 
@@ -257,9 +268,23 @@ def gameLoop():
     xlocation = (map_width/2)+ random.randint(-0.2*map_width, 0.2*map_width)
     randomHeight = random.randrange(map_height*0.1,map_height*0.6)
 
+    dvlist = ["sounds/darth vader - die1.wav","sounds/darth vader - i have you now.wav","sounds/darth vaer - breath.wav","sounds/darth vader - thisistheend.wav"]
+    playonce = 0
+    if playonce == 0:
+        pygame.mixer.music.load("sounds/level 1 - throne room.ogg")
+        pygame.mixer.music.play(0)
+        playonce = 1
+        
     while not gameExit:
     
         if gameOver == True:
+            randnumb = random.randint(0,len(dvlist)-1)
+            #-----sounds
+            pygame.mixer.music.stop()
+            pygame.mixer.music.load("sounds/lose - imperial march.ogg")
+            pygame.mixer.music.play(0)
+            pygame.mixer.Sound(dvlist[randnumb]).play()
+            #-----sounds
             message_to_screen("Game over", red,
                               y_displace=-50, size = "large")
             message_to_screen("Press C to play again or Q to quit", black,
@@ -278,6 +303,8 @@ def gameLoop():
                         gameExit = True
                         gameOver = False
                     if event.key == pygame.K_c:
+                        pygame.mixer.music.stop()
+                        pressC.play()
                         gameLoop()
 
     ############## timer ##########################
