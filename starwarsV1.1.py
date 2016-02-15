@@ -29,7 +29,7 @@ time_limit = 30 # Time limit that affects Time Bar and Duration countdown
 timer = Timer()
 
 # Use the Movement class to keep track of movements
-movement = Movement()
+movement = Movement(1)
 
 # Game state
 game_state = 'idle'
@@ -94,29 +94,20 @@ def done_moving():
         return True
     return False
 
-def move_left():
+def move(direction, steps):
     global game_state
-    game_state = 'move_left'
-    while game_state != 'idle':
-        pass
+    game_state = direction
 
-def move_right():
-    global game_state
-    game_state = 'move_right'
-    while game_state != 'idle':
-        pass
+    while True:
+        if game_state == 'idle':
+            steps -= 1
+            if steps <= 0: break
+            game_state = direction
 
-def move_up():
-    global game_state
-    game_state = 'move_up'
-    while game_state != 'idle':
-        pass
-
-def move_down():
-    global game_state
-    game_state = 'move_down'
-    while game_state != 'idle':
-        pass
+moveUp = lambda steps = 1: move('move_up', steps)
+moveDown = lambda steps = 1: move('move_down', steps)
+moveLeft = lambda steps = 1: move('move_left', steps)
+moveRight = lambda steps = 1: move('move_right', steps)
 
 def parser_func(code):
     try:
