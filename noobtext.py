@@ -51,22 +51,22 @@ class Textbox:
             if event.type == KEYDOWN:
                 self.cursor_pos[self.foci] = self.txtbx[self.foci].get_cursor()
                 if event.key == K_RETURN:
-                    self.move_foci(1)
+                    self.set_foci(self.foci + 1)
                 elif event.key == K_UP:
-                    self.move_foci(-1)
+                    self.set_foci(self.foci - 1)
                 elif event.key == K_DOWN:
-                    self.move_foci(1)
+                    self.set_foci(self.foci + 1)
                 elif event.key == K_LEFT:
                     self.txtbx[self.foci].move_cursor_relative(-1)
                 elif event.key == K_RIGHT:
                     self.txtbx[self.foci].move_cursor_relative(1)
         self.txtbx[self.foci].update(events)
 
-    def move_foci(self, dy):
+    def set_foci(self, new_foci):
         self.txtbx[self.foci].focus = False
         self.txtbx[self.foci].color = self.default_color
         old_cursor = self.cursor_pos[self.foci]
-        self.foci += dy
+        self.foci = new_foci
         if self.foci >= self.lines:
             self.foci = self.lines - 1
         elif self.foci < 0:
@@ -94,6 +94,13 @@ class Textbox:
     def get_text(self):
         text = '\n'.join(txt.value for txt in self.txtbx)
         return text.strip()
+
+    def clear(self):
+        for i in range(len(self.txtbx)):
+            self.txtbx[i].value = ''
+            self.txtbx[i].set_cursor(0)
+            self.cursor_pos[i] = 0
+        self.set_foci(0)
 
 class ConfigError(KeyError): pass
 
