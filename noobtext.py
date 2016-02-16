@@ -100,27 +100,22 @@ class Input:
         if self.focus != True:
             return
 
-        pressed = pygame.key.get_pressed() #S: Add ability to hold down delete key and delete text
-        if self.pause == 3 and pressed[K_BACKSPACE]:
-            self.pause = 0
-            self.value = self.value[:-1]
-            # del(self.value[self.cursor_pos])
-            # self.cursor_pos = 0 if self.cursor_pos == 0 else self.cursor_pos - 1
-        elif pressed[K_BACKSPACE]:
-            self.pause += 1
-        else:
-            self.pause = 0
-
         for event in events:
             if event.type == KEYUP:
                 if event.key == K_LSHIFT or event.key == K_RSHIFT: self.shifted = False
             if event.type == KEYDOWN: #S: Removes cursor when new letter is typed
-                if event.key == K_BACKSPACE: self.value = self.value[:-1]
-                elif event.key == K_TAB: self.value += '    ' #S: Allow tabs
+                cursor_dx = 1
+                if event.key == K_BACKSPACE:
+                    self.value = self.value[:self.cursor_pos-1] + self.value[self.cursor_pos:]
+                    cursor_dx = -1
+                elif event.key == K_TAB:
+                    self.value += '    ' #S: Allow tabs
+                    cursor_dx = 4
                 elif event.key == K_LSHIFT or event.key == K_RSHIFT: self.shifted = True
-                elif event.key == K_SPACE: self.value += ' '
+                elif event.key == K_SPACE:
+                    self.value += ' '
+                    cursor_dx = 1
                 elif event.key == K_RETURN: return self.value#return value
-                move_cursor = True
                 if not self.shifted:
                     if event.key == K_a and 'a' in self.restricted: self.value += 'a'
                     elif event.key == K_b and 'b' in self.restricted: self.value += 'b'
@@ -169,6 +164,11 @@ class Input:
                     elif event.key == K_COMMA and ',' in self.restricted: self.value += ','
                     elif event.key == K_PERIOD and '.' in self.restricted: self.value += '.'
                     elif event.key == K_SLASH and '/' in self.restricted: self.value += '/'
+                    else:
+                        if event.key != K_BACKSPACE and \
+                           event.key != K_TAB and \
+                           event.key != K_SPACE:
+                               cursor_dx = 0
                 elif self.shifted:
                     if event.key == K_a and 'A' in self.restricted: self.value += 'A'
                     elif event.key == K_b and 'B' in self.restricted: self.value += 'B'
@@ -217,5 +217,13 @@ class Input:
                     elif event.key == K_COMMA and '<' in self.restricted: self.value += '<'
                     elif event.key == K_PERIOD and '>' in self.restricted: self.value += '>'
                     elif event.key == K_SLASH and '?' in self.restricted: self.value += '?'
+                    else:
+                        if event.key != K_BACKSPACE and \
+                           event.key != K_TAB and \
+                           event.key != K_SPACE:
+                               cursor_dx = 0
+                self.cursor_pos += cursor_dx
+                self.cursor_pos = 0 if self.cursor_pos < 0 else self.cursor_pos
+                print self.cursor_pos
 
         if len(self.value) > self.maxlength and self.maxlength >= 0: self.value = self.value[:-1]
