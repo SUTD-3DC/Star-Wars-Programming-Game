@@ -1,56 +1,72 @@
 from pygame.locals import *
 import pygame, string
 
+"""
+TODO:
+    - generalise dx and dy for fonts and fontsize?
+    - don't hardcode the prompt length
+    - add mouse support
+
+"""
+
 class Textbox:
 
     def __init__(self, lines=1, **options):
         
         self.txtbx = []
         self.foci = 0
-        self.cursor_pos = []
 
-        y_pos = 0
+        self.x = 0
+        self.y = 0
+        self.cursor_pos = []
+        # some magic numbers.. that needs to be generalised based on font size
+        self.dx = 10
+        self.dy = 20
+        self.prompt_length = 4
+
+        if 'x' in options.keys():
+            self.x = options['x']
         if 'y' in options.keys():
-            y_pos = options['y']
+            self.y = options['y']
+
+        y_pos = self.y
 
         for line in range(lines):
             self.txtbx.append(Input(**options))
-            y_pos += 20
+            y_pos += self.dy
             options['y'] = y_pos
 
-            self.cursor_pos.append(0)
+            self.cursor_pos.append(0) # initialise cursor_pos for each line
 
         self.txtbx[self.foci].focus = True
 
     def update(self, events):
         for event in events:
             if event.type == KEYDOWN:
+                self.cursor_pos[self.foci] = self.txtbx[self.foci].get_cursor()
                 if event.key == K_RETURN:
                     self.txtbx[self.foci].focus = False
-                    old_cursor = self.txtbx[self.foci].get_cursor()
-                    self.cursor_pos[self.foci] = old_cursor
+                    old_cursor = self.cursor_pos[self.foci]
                     self.foci += 1
-                    self.foci %= len(self.txtbx)
+                    if self.foci >= len(self.txtbx):
+                        self.foci = len(self.txtbx) - 1
                     self.txtbx[self.foci].set_cursor(old_cursor)
-                    self.cursor_pos[self.foci] = self.txtbx[self.foci].get_cursor()
                     self.txtbx[self.foci].focus = True
                 elif event.key == K_UP:
                     self.txtbx[self.foci].focus = False
-                    old_cursor = self.txtbx[self.foci].get_cursor()
-                    self.cursor_pos[self.foci] = old_cursor
+                    old_cursor = self.cursor_pos[self.foci]
                     self.foci -= 1
-                    self.foci %= len(self.txtbx)
+                    if self.foci < 0:
+                        self.foci = 0
                     self.txtbx[self.foci].set_cursor(old_cursor)
-                    self.cursor_pos[self.foci] = self.txtbx[self.foci].get_cursor()
                     self.txtbx[self.foci].focus = True
                 elif event.key == K_DOWN:
                     self.txtbx[self.foci].focus = False
-                    old_cursor = self.txtbx[self.foci].get_cursor()
-                    self.cursor_pos[self.foci] = old_cursor
+                    old_cursor = self.cursor_pos[self.foci]
                     self.foci += 1
-                    self.foci %= len(self.txtbx)
+                    if self.foci >= len(self.txtbx):
+                        self.foci = len(self.txtbx) - 1
                     self.txtbx[self.foci].set_cursor(old_cursor)
-                    self.cursor_pos[self.foci] = self.txtbx[self.foci].get_cursor()
                     self.txtbx[self.foci].focus = True
                 elif event.key == K_LEFT:
                     self.txtbx[self.foci].move_cursor_relative(-1)
@@ -61,10 +77,18 @@ class Textbox:
     def draw(self, screen):
         for txt in self.txtbx:
             txt.draw(screen)
+        self.blit_cursor(screen)
 
-    def get(self):
-        return self.txtbx
+    def blit_cursor(self, screen):
+        self.cursor_pos[self.foci] = self.txtbx[self.foci].get_cursor()
 
+        x = self.x + (self.prompt_length * self.dx)
+        y = self.y
+        x += self.cursor_pos[self.foci] * self.dx
+        y += self.foci * self.dy
+        cursor = pygame.Surface((2, 20), 0, screen)
+        cursor.fill((0, 0, 0))
+        screen.blit(cursor, (x, y))
 
 class ConfigError(KeyError): pass
 
@@ -126,7 +150,7 @@ class Input:
             self.cursor_pos = end
 
     def move_cursor_relative(self, dx):
-        self._move_cursor_relative(dx, self.maxlength)
+        self._move_cursor_relative(dx, len(self.value))
 
     def delete_char(self):
         if self.cursor_pos > 0:
@@ -268,7 +292,6 @@ class Input:
                            event.key != K_TAB and \
                            event.key != K_SPACE:
                                cursor_dx = 0
-                self._move_cursor_relative(cursor_dx, len(self.value))
-                print self.cursor_pos
+                self._move_cursor_relative(cursor_dx, self.maxlength)
 
         if len(self.value) > self.maxlength and self.maxlength >= 0: self.value = self.value[:-1]
