@@ -1,6 +1,6 @@
 #batman is the best
 from collections import deque
-import pygame, noobtext
+import pygame, ezpztext
 import time
 import random
 import threading
@@ -256,7 +256,7 @@ def gameLoop():
     timer.reset()
     
     #textbox
-    txtbx = noobtext.Textbox(lines=14, default_color=txtfont_default,
+    txtbx = ezpztext.Textbox(lines=14, default_color=txtfont_default,
                 focus_color=txtfont_focus, maxlength=34, y=60, x=840)
 
     for i in range(len(txtbx.txtbx)):
