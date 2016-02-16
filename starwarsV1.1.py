@@ -44,7 +44,7 @@ status_bar = 40
 display_width = map_width +400
 display_height = map_height + status_bar
 
-AppleThickness = 30
+BlueprintThickness = 30
 block_size = 10
 FPS = 30
 gameDisplay = pygame.display.set_mode((display_width,display_height))
@@ -72,7 +72,7 @@ lukeMoveRight = [lukeRightStationary, lukeRightWalk, lukeRightStationary]
 lukeMoveLeft = [lukeLeftStationary, lukeLeftWalk, lukeLeftStationary]
 lukeMove = [lukeMoveUp, lukeMoveDown, lukeMoveRight, lukeMoveLeft]
 
-appleimg = pygame.image.load('pictures/apple.png')
+blueprint_img = pygame.image.load('pictures/apple.png')
 
 # for run button
 btnimg = pygame.image.load('pictures/runbtn.png').convert_alpha()
@@ -155,10 +155,12 @@ def status(score,set_time,elapse_time):
     text2 = smallfont.render("Time left", True, black)
     gameDisplay.blit(text2,[3*map_width/4,map_height])
     
-def randAppleGen():
-    randAppleX = round(random.randrange(0, map_width - AppleThickness))#/10.0)*10.0
-    randAppleY = round(random.randrange(0, map_height - AppleThickness))#/10.0)*10.0
-    return randAppleX, randAppleY
+def randBlueprintGen():
+##    randBlueprintX = round(random.randrange(0, map_width - AppleThickness))#/10.0)*10.0
+##    randBlueprintY = round(random.randrange(0, map_height - AppleThickness))#/10.0)*10.0
+    randBlueprintX = 180
+    randBlueprintY = 180
+    return randBlueprintX, randBlueprintY
      
 def game_intro():
     pygame.mixer.music.load("sounds/intro - star wars main theme.ogg")
@@ -172,7 +174,7 @@ def game_intro():
                 pygame.quit()
                 quit()
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_c:
+                if event.key == pygame.K_m:
                     intro=False
                 if event.key == pygame.K_q:
                     pygame.quit()
@@ -192,7 +194,8 @@ def game_intro():
         clock.tick(5)
 
 
-def rebel_move(direction, playerX, playerY, xChange, yChange, rebelScore, time_limit, seconds, xlocation, randomHeight, barrier_width, randAppleX, randAppleY):
+def rebel_move(direction, playerX, playerY, xChange, yChange, rebelScore, time_limit, seconds, xlocation, randomHeight, barrier_width,
+               randBlueprintX, randBlueprintY):
 
     image = None
     for img in lukeMove[direction]:
@@ -200,7 +203,7 @@ def rebel_move(direction, playerX, playerY, xChange, yChange, rebelScore, time_l
         playerX += xChange
         playerY += yChange
 
-        for i in range(5):
+        for i in range(2):
             gameDisplay.fill(white)
             gameDisplay.blit(game_map, (0,0))
             gameDisplay.blit(text_editor, (map_width,0))
@@ -208,7 +211,7 @@ def rebel_move(direction, playerX, playerY, xChange, yChange, rebelScore, time_l
             pygame.draw.line(gameDisplay,black,(0,map_height),(map_width,map_height), 2)#draw boundary for status bar
             status(rebelScore, time_limit,seconds)
             barrier(xlocation, randomHeight, barrier_width)
-            gameDisplay.blit(appleimg, (randAppleX, randAppleY))
+            gameDisplay.blit(blueprint_img, (randBlueprintX, randBlueprintY))
             gameDisplay.blit(btnimg, btn_rect)
             for i in range(elemNumber):
                 txtbx[i].draw(gameDisplay)
@@ -217,6 +220,7 @@ def rebel_move(direction, playerX, playerY, xChange, yChange, rebelScore, time_l
             image = img
 
             pygame.display.update()
+            clock.tick(60)
 
     return playerX, playerY, image
     
@@ -245,7 +249,7 @@ def gameLoop():
     lead_x_change = 0
     lead_y_change = 0
     rebelScore = 0
-    randAppleX, randAppleY = randAppleGen()
+    randBlueprintX, randBlueprintY = randBlueprintGen()
     step_count = 0
     pause_duration = 0
 
@@ -340,7 +344,7 @@ def gameLoop():
         gameDisplay.blit(text_editor, (map_width,0))
         pygame.draw.line(gameDisplay,black,(map_width,display_height),(map_width,0), 2) #draw boundary for user to type code
         pygame.draw.line(gameDisplay,black,(0,map_height),(map_width,map_height), 2) #draw boundary for status bar
-        gameDisplay.blit(appleimg, (randAppleX, randAppleY))
+        gameDisplay.blit(blueprint_img, (randBlueprintX, randBlueprintY))
         gameDisplay.blit(player, (lead_x, lead_y))
         status(rebelScore, time_limit,seconds)
         barrier(xlocation,randomHeight, barrier_width)
@@ -359,13 +363,13 @@ def gameLoop():
                 lead_y -= block_size
         
 ######################## when apple have been collected ###########################
-        if lead_x >= randAppleX and lead_x <= randAppleX + AppleThickness or lead_x + block_size >= randAppleX and lead_x + block_size <= randAppleX + AppleThickness:
-            if lead_y >= randAppleY and lead_y <= randAppleY + AppleThickness:
-                randAppleX, randAppleY = randAppleGen()
+        if lead_x >= randBlueprintX and lead_x <= randBlueprintX + BlueprintThickness or lead_x + block_size >= randBlueprintX and lead_x + block_size <= randBlueprintX + BlueprintThickness:
+            if lead_y >= randBlueprintY and lead_y <= randBlueprintY + BlueprintThickness:
+                randBlueprintX, randBlueprintY = randBlueprintGen()
                 rebelScore+=1
                 
-            elif lead_y + block_size >= randAppleY and lead_y + block_size <= randAppleY + AppleThickness:
-                randAppleX, randAppleY = randAppleGen()
+            elif lead_y + block_size >= randBlueprintY and lead_y + block_size <= randBlueprintY + BlueprintThickness:
+                randBlueprintX, randBlueprintY = randBlueprintGen()
                 rebelScore+=1
 
         clock.tick(30)
@@ -455,13 +459,17 @@ def gameLoop():
                 lead_x_change = 0
                 lead_y_change = 0
             elif next_move == 'up':
-                lead_x, lead_y, player = rebel_move(0, lead_x, lead_y, 0, -10, rebelScore, time_limit, seconds, xlocation, randomHeight, barrier_width, randAppleX, randAppleY)
+                lead_x, lead_y, player = rebel_move(0, lead_x, lead_y, 0, -10, rebelScore, time_limit, seconds, xlocation, randomHeight,
+                                                    barrier_width, randBlueprintX, randBlueprintY)
             elif next_move == 'down':
-                lead_x, lead_y, player = rebel_move(1, lead_x, lead_y, 0, 10, rebelScore, time_limit, seconds, xlocation, randomHeight, barrier_width, randAppleX, randAppleY)
+                lead_x, lead_y, player = rebel_move(1, lead_x, lead_y, 0, 10, rebelScore, time_limit, seconds, xlocation, randomHeight,
+                                                    barrier_width, randBlueprintX, randBlueprintY)
             elif next_move == 'left':
-                lead_x, lead_y, player = rebel_move(3, lead_x, lead_y, -10, 0, rebelScore, time_limit, seconds, xlocation, randomHeight, barrier_width, randAppleX, randAppleY)
+                lead_x, lead_y, player = rebel_move(3, lead_x, lead_y, -10, 0, rebelScore, time_limit, seconds, xlocation, randomHeight,
+                                                    barrier_width, randBlueprintX, randBlueprintY)
             elif next_move == 'right':
-                lead_x, lead_y, player = rebel_move(2, lead_x, lead_y, 10, 0, rebelScore, time_limit, seconds, xlocation, randomHeight, barrier_width, randAppleX, randAppleY)
+                lead_x, lead_y, player = rebel_move(2, lead_x, lead_y, 10, 0, rebelScore, time_limit, seconds, xlocation, randomHeight,
+                                                    barrier_width, randBlueprintX, randBlueprintY)
 
         if parsing:
             if game_state == 'move_left':
