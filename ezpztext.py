@@ -47,6 +47,7 @@ class Textbox:
         self.txtbx[self.foci].color = self.focus_color
 
     def update(self, events):
+        to_update = True
         for event in events:
             if event.type == KEYDOWN:
                 self.cursor_pos[self.foci] = self.txtbx[self.foci].get_cursor()
@@ -60,7 +61,14 @@ class Textbox:
                     self.txtbx[self.foci].move_cursor_relative(-1)
                 elif event.key == K_RIGHT:
                     self.txtbx[self.foci].move_cursor_relative(1)
-        self.txtbx[self.foci].update(events)
+                elif event.key == K_BACKSPACE:
+                    if self.txtbx[self.foci].value == '':
+                        self.set_foci(self.foci - 1)
+                        self.txtbx[self.foci].set_cursor(len(self.txtbx[self.foci].value))
+                        self.cursor_pos[self.foci] = self.txtbx[self.foci].get_cursor()
+                        to_update = False
+        if to_update:
+            self.txtbx[self.foci].update(events)
 
     def set_foci(self, new_foci):
         self.txtbx[self.foci].focus = False
