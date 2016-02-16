@@ -11,8 +11,12 @@ TODO:
 
 class Textbox:
 
-    def __init__(self, lines=1, **options):
+    def __init__(self, lines=1, default_color=(0,0,0),
+            focus_color=(0,0,0), **options):
         
+        self.lines = lines
+        self.default_color = default_color
+        self.focus_color = focus_color
         self.txtbx = []
         self.foci = 0
 
@@ -32,6 +36,7 @@ class Textbox:
         y_pos = self.y
 
         for line in range(lines):
+            options['color'] = self.default_color
             self.txtbx.append(Input(**options))
             y_pos += self.dy
             options['y'] = y_pos
@@ -39,40 +44,36 @@ class Textbox:
             self.cursor_pos.append(0) # initialise cursor_pos for each line
 
         self.txtbx[self.foci].focus = True
+        self.txtbx[self.foci].color = self.focus_color
 
     def update(self, events):
         for event in events:
             if event.type == KEYDOWN:
                 self.cursor_pos[self.foci] = self.txtbx[self.foci].get_cursor()
                 if event.key == K_RETURN:
-                    self.txtbx[self.foci].focus = False
-                    old_cursor = self.cursor_pos[self.foci]
-                    self.foci += 1
-                    if self.foci >= len(self.txtbx):
-                        self.foci = len(self.txtbx) - 1
-                    self.txtbx[self.foci].set_cursor(old_cursor)
-                    self.txtbx[self.foci].focus = True
+                    self.move_foci(1)
                 elif event.key == K_UP:
-                    self.txtbx[self.foci].focus = False
-                    old_cursor = self.cursor_pos[self.foci]
-                    self.foci -= 1
-                    if self.foci < 0:
-                        self.foci = 0
-                    self.txtbx[self.foci].set_cursor(old_cursor)
-                    self.txtbx[self.foci].focus = True
+                    self.move_foci(-1)
                 elif event.key == K_DOWN:
-                    self.txtbx[self.foci].focus = False
-                    old_cursor = self.cursor_pos[self.foci]
-                    self.foci += 1
-                    if self.foci >= len(self.txtbx):
-                        self.foci = len(self.txtbx) - 1
-                    self.txtbx[self.foci].set_cursor(old_cursor)
-                    self.txtbx[self.foci].focus = True
+                    self.move_foci(1)
                 elif event.key == K_LEFT:
                     self.txtbx[self.foci].move_cursor_relative(-1)
                 elif event.key == K_RIGHT:
                     self.txtbx[self.foci].move_cursor_relative(1)
         self.txtbx[self.foci].update(events)
+
+    def move_foci(self, dy):
+        self.txtbx[self.foci].focus = False
+        self.txtbx[self.foci].color = self.default_color
+        old_cursor = self.cursor_pos[self.foci]
+        self.foci += dy
+        if self.foci >= self.lines:
+            self.foci = self.lines - 1
+        elif self.foci < 0:
+            self.foci = 0
+        self.txtbx[self.foci].set_cursor(old_cursor)
+        self.txtbx[self.foci].focus = True
+        self.txtbx[self.foci].color = self.focus_color
 
     def draw(self, screen):
         for txt in self.txtbx:
