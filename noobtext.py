@@ -91,6 +91,10 @@ class Textbox:
         cursor.fill((0, 0, 0))
         screen.blit(cursor, (x, y))
 
+    def get_text(self):
+        text = '\n'.join(txt.value for txt in self.txtbx)
+        return text.strip()
+
 class ConfigError(KeyError): pass
 
 class Config:
