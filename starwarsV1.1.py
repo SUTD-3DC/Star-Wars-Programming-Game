@@ -1,6 +1,6 @@
 #batman is the best
 from collections import deque
-import pygame, eztext
+import pygame, noobtext
 import time
 import random
 import threading
@@ -210,12 +210,10 @@ def rebel_move(direction, playerX, playerY, xChange, yChange, rebelScore, time_l
             barrier(xlocation, randomHeight, barrier_width)
             gameDisplay.blit(appleimg, (randAppleX, randAppleY))
             gameDisplay.blit(btnimg, btn_rect)
-            for i in range(elemNumber):
-                txtbx[i].draw(gameDisplay)
-
             gameDisplay.blit(img, (playerX, playerY))
             image = img
 
+            txtbx.draw(gameDisplay)
             pygame.display.update()
 
     return playerX, playerY, image
@@ -253,26 +251,12 @@ def gameLoop():
     timer.set_ticks_func(pygame.time.get_ticks)
     timer.reset()
     
-    #eztext
-    txtbx=[]
-    elemNumber = 14
-    ypos=60
-    xpos=840
-    deltay = 20
-    a=['' for i in range(elemNumber)]
-    b=['default' for i in range(elemNumber)]
-    # Line number to show each line
-    # create an input with a max length of 34,
-    for i in range(elemNumber):
-        txtbx.append(eztext.Input(maxlength=34,
-                                y=ypos,x=xpos,prompt= "{:>2}: ".format(str(i+1))
-                                    ))
-        ypos+=deltay
+    #textbox
+    txtbx = noobtext.Textbox(lines=14, default_color=txtfont_default,
+                focus_color=txtfont_focus, maxlength=34, y=60, x=840)
 
-    foci=0 #The focus index
-    txtbx[foci].focus=True
-    txtbx[foci].color=txtfont_focus
-
+    for i in range(len(txtbx.txtbx)):
+        txtbx.txtbx[i].prompt = "{:>2}: ".format(i + 1)
 
     barrier_width = 30
     xlocation = (map_width/2)+ random.randint(-0.2*map_width, 0.2*map_width)
@@ -378,73 +362,6 @@ def gameLoop():
         for event in events:
             if event.type == pygame.QUIT:
                 gameExit = True
-        
-        if control_mode == 'TYPE':
-            # eztext
-            # events for txtbx
-            for i in range(elemNumber):
-                # update txtbx and get return val
-                a[i]=txtbx[i].update(None) #Add cursor to indicate where you are typing add (lose ability to type 'cursor')
-                a[i]=txtbx[i].update(events)
-                if i==foci:
-                    txtbx[i].focus=True
-                    txtbx[i].color=txtfont_focus
-                else:
-                    txtbx[i].focus=False
-                    txtbx[i].color=txtfont_default
-                    
-                # blit txtbx[i] on the screen
-                txtbx[i].draw(gameDisplay)
-                
-
-            #Changing the focus to the next element 
-            #every time enter is pressed
-            for i in range(elemNumber):
-                if a[i] != None:
-                    txtbx[i].focus=False
-                    txtbx[i].color=txtfont_default
-                    txtbx[(i+1)%elemNumber].focus=True
-                    txtbx[(i+1)%elemNumber].color=txtfont_focus
-                    foci=(i+1)%elemNumber
-
-        elif control_mode == 'KEYPRESS':
-            for event in events:
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_LEFT:
-                        lead_x_change = -block_size
-                        step_count += 1
-                        lead_y_change = 0
-                    elif event.key == pygame.K_RIGHT:
-                        lead_x_change = block_size
-                        step_count += 1
-                        lead_y_change = 0
-                    elif event.key == pygame.K_UP:
-                        lead_y_change = -block_size
-                        step_count += 1
-                        lead_x_change = 0
-                    elif event.key == pygame.K_DOWN:
-                        lead_y_change = block_size
-                        step_count += 1
-                        lead_x_change = 0
-                    elif event.key == pygame.K_p:
-                        pause()
-                if event.type == pygame.KEYUP:
-                    if event.key == pygame.K_LEFT:
-                        lead_x_change = 0
-                        step_count = 0
-                        lead_y_change = 0
-                    elif event.key == pygame.K_RIGHT:
-                        lead_x_change = 0
-                        step_count = 0
-                        lead_y_change = 0
-                    elif event.key == pygame.K_UP:
-                        lead_y_change = 0
-                        step_count = 0
-                        lead_x_change = 0
-                    elif event.key == pygame.K_DOWN:
-                        lead_y_change = 0
-                        step_count = 0
-                        lead_x_change = 0
 
         # Use the Movement class to keep track of moves.
         if control_mode == 'TYPE':
@@ -487,27 +404,13 @@ def gameLoop():
                 if btn_rect.collidepoint(pygame.mouse.get_pos()):
                     parsing = True
 
-                    code_list = []
-                    for i in range(elemNumber):
-                        line = txtbx[i].value
-                        if line != '':
-                            if line[-1] == '|':
-                                line = line[:-1]
-                            code_list.append(line)
-
-                    code = '\n'.join(code_list)
-
+                    code = txtbx.get_text()
                     code = code.replace('self.', '')
-
                     parser_thread.start(parser_func, code)
+                    txtbx.clear()
 
-                    for i in range(elemNumber):
-                        txtbx[i].value = ''
-                        txtbx[i].color = txtfont_default
-
-                    foci = 0
-
-
+        txtbx.update(events)
+        txtbx.draw(gameDisplay)
         pygame.display.update()
 
 
