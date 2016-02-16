@@ -88,7 +88,7 @@ class Textbox:
         x += self.cursor_pos[self.foci] * self.dx
         y += self.foci * self.dy
         cursor = pygame.Surface((2, 20), 0, screen)
-        cursor.fill((0, 0, 0))
+        cursor.fill(self.focus_color)
         screen.blit(cursor, (x, y))
 
     def get_text(self):
