@@ -90,6 +90,17 @@ class Input:
         """ Set the font for the input """
         self.font = font
 
+    def set_cursor(self, cursor_pos):
+        self.cursor_pos = cursor_pos
+
+    def move_cursor_relative(self, dx):
+        self.cursor_pos += dx
+        if self.cursor_pos < 0:
+            self.cursor_pos = 0
+        if self.cursor_pos > self.maxlength:
+            self.cursor_pos = self.maxlength
+
+
     def draw(self, surface):
         """ Draw the text input to a surface """
         text = self.font.render(self.prompt+self.value, 1, self.color)
@@ -222,8 +233,7 @@ class Input:
                            event.key != K_TAB and \
                            event.key != K_SPACE:
                                cursor_dx = 0
-                self.cursor_pos += cursor_dx
-                self.cursor_pos = 0 if self.cursor_pos < 0 else self.cursor_pos
+                self.move_cursor_relative(cursor_dx)
                 print self.cursor_pos
 
         if len(self.value) > self.maxlength and self.maxlength >= 0: self.value = self.value[:-1]
