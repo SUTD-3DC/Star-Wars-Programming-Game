@@ -35,6 +35,7 @@ movement = Movement(1)
 game_state = 'idle'
 parsing = False
 
+
 # Use ParserThread to create a separate thread for parsing user code
 parser_thread = ParserThread.Thread()
 
@@ -48,7 +49,7 @@ BlueprintThickness = 30
 block_size = 10
 FPS = 30
 gameDisplay = pygame.display.set_mode((display_width,display_height))
-pygame.display.set_caption('Slither')
+pygame.display.set_caption('Star Wars: A programming education game')
 
 wallpaper_img = 'wallpaper/Wallpaper.png'
 text_editor_img = 'pictures/right panel/Text editor.png'
@@ -119,11 +120,10 @@ def parser_func(code):
     finally:
         parsing = False
 
-def barrier(xlocation,randomHeight, barrier_width):
-    pygame.draw.rect(gameDisplay,black, [xlocation, randomHeight, barrier_width, barrier_width])
+def barrier(xlocation,ylocation, barrier_width, barrier_height):
+    pygame.draw.rect(gameDisplay,black, [xlocation, ylocation, barrier_width, barrier_height])
 
 def pause():
-
     paused = True
     timer.pause()
     message_to_screen("Paused", black, -100, size = "large")
@@ -194,9 +194,11 @@ def game_intro():
         clock.tick(5)
 
 
-def rebel_move(direction, playerX, playerY, xChange, yChange, rebelScore, time_limit, seconds, xlocation, randomHeight, barrier_width,
-               randBlueprintX, randBlueprintY):
-
+def rebel_move(direction, playerX, playerY, xChange, yChange, rebelScore, time_limit, seconds, xlocation, ylocation, barrier_width,barrier_height,randBlueprintX, randBlueprintY):
+    
+    global game_map
+    lead_x = 750
+    lead_y = 540
     image = None
     for img in lukeMove[direction]:
 
@@ -210,7 +212,9 @@ def rebel_move(direction, playerX, playerY, xChange, yChange, rebelScore, time_l
             pygame.draw.line(gameDisplay,black,(map_width,display_height),(map_width,0), 2)#draw boundary for user to type code
             pygame.draw.line(gameDisplay,black,(0,map_height),(map_width,map_height), 2)#draw boundary for status bar
             status(rebelScore, time_limit,seconds)
-            barrier(xlocation, randomHeight, barrier_width)
+            #if level one
+            game_map=pygame.image.load(map_img[1]);
+            
             gameDisplay.blit(blueprint_img, (randBlueprintX, randBlueprintY))
             gameDisplay.blit(btnimg, btn_rect)
             gameDisplay.blit(img, (playerX, playerY))
@@ -237,10 +241,41 @@ def message_to_screen(msg,color, y_displace = 0, size = "small"):
     textRect.center = (map_width / 2), (map_height / 2) + y_displace
     gameDisplay.blit(textSurf, textRect)
 
+#def loadLevelOne():
+#    #load map
+#    #level 1 barriers
+#    #borders (x, y, width, height)
+#    global xlist,ylist,widthlist,heightlist
+#    xlist = [0,29,780,0,420,180,510,180,300,420,510,30,180,510,630]
+#    ylist = [600,600,569,59,59,569,569,149,119,119,149,329,389,389,329]
+#    widthlist=[29,781,30,389,784,119,119,119,89,89,119,149,119,119,149]
+#    heightlist=[600,31,569,59,59,89,89,123,95,60,89,119,209,209,119]
+    #barrier(0,600,29,600) #left border
+    #barrier(29,600,781,31)#bottom 
+    #barrier(780,569, 30,569)#right
+    #barrier(0,59,389,59)# top part 1
+    #barrier(420,59, 784,59)# top part 2
+    #barrier(180,569,119,89)# bottom left extrusion
+    #barrier(510,569, 119,89)# bottom right
+    #barrier(180,149, 119,123)# top left extrusion part 1
+    #barrier(300,119, 89,95)# top left extrusion part 2
+    #barrier(420,119, 89,60)# top right extrusion part 1
+    #barrier(510,149, 119,89)# top right extrusion part 2
+    #barrier(30,329, 149,119)# left extrusion part 1
+    #barrier(180,389, 119,209)# left extrusion part 2
+    #barrier(510,389, 119,209)# right extrusion part 1
+    #barrier(630,329, 149,119)# right extrusion part 2
+
+
+
 def gameLoop():
-    global parsing, game_state, game_map, text_editor, elemNumber, txtbx
+    global parsing, game_state, text_editor, elemNumber, txtbx,xlist,ylist,widthlist,heightlist, game_map
     gameExit = False
     gameOver = False
+    leftCollision = False
+    rightCollision = False
+    topCollision = False
+    bottomCollision = False
     player = lukeDownStationary
     lead_x = 750
     lead_y = 540
@@ -263,8 +298,9 @@ def gameLoop():
         txtbx.txtbx[i].prompt = "{:>2}: ".format(i + 1)
 
     barrier_width = 30
+    barrier_height = 30
     xlocation = (map_width/2)+ random.randint(-0.2*map_width, 0.2*map_width)
-    randomHeight = random.randrange(map_height*0.1,map_height*0.6)
+    ylocation = random.randrange(map_height*0.1,map_height*0.6)
 
     dvlist = ["sounds/darth vader - die1.wav","sounds/darth vader - i have you now.wav","sounds/darth vaer - breath.wav","sounds/darth vader - thisistheend.wav"]
     playonce = 0
@@ -315,6 +351,7 @@ def gameLoop():
         if lead_x > map_width - block_size or lead_x < 0 or lead_y > map_height - block_size \
             or lead_y<0:
             gameOver = True
+        
 
 ####################### UPDATES PLAYER LOCATION ################################
         # lead_x += lead_x_change
@@ -331,20 +368,34 @@ def gameLoop():
         gameDisplay.blit(blueprint_img, (randBlueprintX, randBlueprintY))
         gameDisplay.blit(player, (lead_x, lead_y))
         status(rebelScore, time_limit,seconds)
-        barrier(xlocation,randomHeight, barrier_width)
+        xlist = [0,29,780,0,420,180,510,180,300,420,510,30,180,510,630]
+        ylist = [600,600,569,59,59,569,569,149,119,60,60,210,180,180,210]
+        widthlist=[29,781,30,389,784,119,119,119,89,89,119,149,119,119,190]
+        heightlist=[600,31,569,59,59,89,89,123,95,60,89,119,209,209,119]#load level one barriers
         
         
 ####################### barrier collision detection #############################
-        if randomHeight + barrier_width > lead_y and lead_y + block_size > randomHeight:
-            if lead_x - (block_size/2) < xlocation + barrier_width and lead_x > xlocation + barrier_width/2:
-                lead_x += block_size
-            if lead_x + (3*block_size/2) > xlocation and lead_x < xlocation + barrier_width/2:
-                lead_x -= block_size
-        elif xlocation + barrier_width > lead_x and lead_x + block_size > xlocation:
-            if lead_y - (block_size/2) < randomHeight + barrier_width and lead_y > randomHeight + barrier_width/2:
-                lead_y += block_size
-            if lead_y + (3*block_size/2) > randomHeight and lead_y < randomHeight + barrier_width/2:
-                lead_y -= block_size
+        
+        for i in range(0,len(xlist)):
+            ylocation = ylist[i]
+            xlocation = xlist[i]
+            barrier_height = heightlist[i]
+            barrier_width = widthlist[i]
+            pygame.draw.rect(gameDisplay,red, [xlocation, ylocation, barrier_width, barrier_height])
+            if ylocation + barrier_height > lead_y and lead_y + block_size > ylocation:
+                if lead_x - (block_size/2) < xlocation + barrier_width and lead_x > xlocation + barrier_width/2:
+                    leftCollision = True
+                if lead_x + (3*block_size/2) > xlocation and lead_x < xlocation + barrier_width/2:
+                    rightCollision = True
+            elif xlocation + barrier_width > lead_x and lead_x + block_size > xlocation:
+                if lead_y - (block_size/2) < ylocation + barrier_height and lead_y > ylocation + barrier_height/2:
+                    topCollision = True
+                    print (xlocation,ylocation,barrier_height,barrier_width)
+                if lead_y + (3*block_size/2) > ylocation and lead_y < ylocation + barrier_height/2:
+                    bottomCollision = True
+        
+        
+                
         
 ######################## when apple have been collected ###########################
         if lead_x >= randBlueprintX and lead_x <= randBlueprintX + BlueprintThickness or lead_x + block_size >= randBlueprintX and lead_x + block_size <= randBlueprintX + BlueprintThickness:
@@ -376,17 +427,40 @@ def gameLoop():
                 lead_x_change = 0
                 lead_y_change = 0
             elif next_move == 'up':
-                lead_x, lead_y, player = rebel_move(0, lead_x, lead_y, 0, -10, rebelScore, time_limit, seconds, xlocation, randomHeight,
-                                                    barrier_width, randBlueprintX, randBlueprintY)
+                if topCollision:
+                    lead_x, lead_y, player = rebel_move(0, lead_x, lead_y, 0, 0, rebelScore, time_limit, seconds, xlocation, ylocation,
+                                                    barrier_width, barrier_height, randBlueprintX, randBlueprintY)
+                    topCollision = False
+                else:
+                    lead_x, lead_y, player = rebel_move(0, lead_x, lead_y, 0, -10, rebelScore, time_limit, seconds, xlocation, ylocation,
+                                                    barrier_width, barrier_height, randBlueprintX, randBlueprintY)
             elif next_move == 'down':
-                lead_x, lead_y, player = rebel_move(1, lead_x, lead_y, 0, 10, rebelScore, time_limit, seconds, xlocation, randomHeight,
-                                                    barrier_width, randBlueprintX, randBlueprintY)
+                if bottomCollision:
+                    lead_x, lead_y, player = rebel_move(1, lead_x, lead_y, 0, 0, rebelScore, time_limit, seconds, xlocation, ylocation,
+                                                    barrier_width, barrier_height, randBlueprintX, randBlueprintY)
+                    bottomCollision = False
+                else:
+                    lead_x, lead_y, player = rebel_move(1, lead_x, lead_y, 0, 10, rebelScore, time_limit, seconds, xlocation, ylocation,
+                                                    barrier_width, barrier_height, randBlueprintX, randBlueprintY)
+                
             elif next_move == 'left':
-                lead_x, lead_y, player = rebel_move(3, lead_x, lead_y, -10, 0, rebelScore, time_limit, seconds, xlocation, randomHeight,
-                                                    barrier_width, randBlueprintX, randBlueprintY)
+                if leftCollision:
+                    lead_x, lead_y, player = rebel_move(3, lead_x, lead_y, 0, 0, rebelScore, time_limit, seconds, xlocation, ylocation,
+                                                    barrier_width, barrier_height, randBlueprintX, randBlueprintY)
+                    leftCollision = False
+                else:
+                    lead_x, lead_y, player = rebel_move(3, lead_x, lead_y, -10, 0, rebelScore, time_limit, seconds, xlocation, ylocation,
+                                                    barrier_width, barrier_height, randBlueprintX, randBlueprintY)
+                
             elif next_move == 'right':
-                lead_x, lead_y, player = rebel_move(2, lead_x, lead_y, 10, 0, rebelScore, time_limit, seconds, xlocation, randomHeight,
-                                                    barrier_width, randBlueprintX, randBlueprintY)
+                
+                if rightCollision:
+                    lead_x, lead_y, player = rebel_move(2, lead_x, lead_y, 0, 0, rebelScore, time_limit, seconds, xlocation, ylocation,
+                                                    barrier_width, barrier_height, randBlueprintX, randBlueprintY)
+                    rightCollision = False
+                else:
+                    lead_x, lead_y, player = rebel_move(2, lead_x, lead_y, 10, 0, rebelScore, time_limit, seconds, xlocation, ylocation,
+                                                    barrier_width, barrier_height, randBlueprintX, randBlueprintY)
 
         if parsing:
             if game_state == 'move_left':
