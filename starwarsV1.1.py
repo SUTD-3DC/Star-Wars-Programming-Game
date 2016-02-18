@@ -390,7 +390,7 @@ def gameLoop():
             elif xlocation + barrier_width > lead_x and lead_x + block_size > xlocation:
                 if lead_y - (block_size/2) < ylocation + barrier_height and lead_y > ylocation + barrier_height/2:
                     topCollision = True
-                if lead_y + (3*block_size/2) > ylocation and lead_y < ylocation + barrier_height/2:
+                if lead_y + (4*block_size) > ylocation and lead_y < ylocation + barrier_height/2:
                     bottomCollision = True
         
         
