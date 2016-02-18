@@ -44,6 +44,7 @@ status_bar = 40
 display_width = map_width +400
 display_height = map_height + status_bar
 
+blueprintCollected = False
 BlueprintThickness = 30
 block_size = 10
 FPS = 30
@@ -72,7 +73,7 @@ lukeMoveRight = [lukeRightStationary, lukeRightWalk, lukeRightStationary]
 lukeMoveLeft = [lukeLeftStationary, lukeLeftWalk, lukeLeftStationary]
 lukeMove = [lukeMoveUp, lukeMoveDown, lukeMoveRight, lukeMoveLeft]
 
-blueprint_img = pygame.image.load('pictures/apple.png')
+blueprint_img = pygame.image.load('pictures/BLueprint.png')
 
 # for run button
 btnimg = pygame.image.load('pictures/runbtn.png').convert_alpha()
@@ -125,7 +126,6 @@ def barrier(xlocation,randomHeight, barrier_width):
 def pause():
 
     paused = True
-    timer.pause()
     message_to_screen("Paused", black, -100, size = "large")
     message_to_screen("Press c to continue", black, 25, size = "small")
     pygame.display.update()
@@ -137,7 +137,6 @@ def pause():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_c:
                     paused = False
-                    timer.unpause()
                 elif event.key == pygame.K_q:
                     pygame.quit()
                     quit()
@@ -156,8 +155,6 @@ def status(score,set_time,elapse_time):
     gameDisplay.blit(text2,[3*map_width/4,map_height])
     
 def randBlueprintGen():
-##    randBlueprintX = round(random.randrange(0, map_width - AppleThickness))#/10.0)*10.0
-##    randBlueprintY = round(random.randrange(0, map_height - AppleThickness))#/10.0)*10.0
     randBlueprintX = 180
     randBlueprintY = 180
     return randBlueprintX, randBlueprintY
@@ -210,8 +207,9 @@ def rebel_move(direction, playerX, playerY, xChange, yChange, rebelScore, time_l
             pygame.draw.line(gameDisplay,black,(map_width,display_height),(map_width,0), 2)#draw boundary for user to type code
             pygame.draw.line(gameDisplay,black,(0,map_height),(map_width,map_height), 2)#draw boundary for status bar
             status(rebelScore, time_limit,seconds)
-            barrier(xlocation, randomHeight, barrier_width)
-            gameDisplay.blit(blueprint_img, (randBlueprintX, randBlueprintY))
+            if blueprintCollected == False:
+                #barrier(xlocation, randomHeight, barrier_width)
+                gameDisplay.blit(blueprint_img, (randBlueprintX, randBlueprintY))
             gameDisplay.blit(btnimg, btn_rect)
             gameDisplay.blit(img, (playerX, playerY))
             image = img
@@ -238,7 +236,7 @@ def message_to_screen(msg,color, y_displace = 0, size = "small"):
     gameDisplay.blit(textSurf, textRect)
 
 def gameLoop():
-    global parsing, game_state, game_map, text_editor, elemNumber, txtbx
+    global parsing, game_state, game_map, text_editor, elemNumber, txtbx, blueprintCollected
     gameExit = False
     gameOver = False
     player = lukeDownStationary
@@ -250,10 +248,13 @@ def gameLoop():
     randBlueprintX, randBlueprintY = randBlueprintGen()
     step_count = 0
     pause_duration = 0
+    
+
+    timerStart=False
+    seconds=0
 
     # use get_ticks to time
-    timer.set_ticks_func(pygame.time.get_ticks)
-    timer.reset()
+    #timer.reset()
     
     #textbox
     txtbx = ezpztext.Textbox(lines=14, default_color=txtfont_default,
@@ -306,9 +307,12 @@ def gameLoop():
                         gameLoop()
 
     ############## timer ##########################
-        timer.update()
-        seconds = timer.get_time() #calculate how many seconds
-        #print (seconds) #print how many seconds
+        if timerStart:
+            timer.update()
+            seconds = timer.get_time() #calculate how many seconds
+            if (time_limit - seconds)<=0:
+                gameOver=True
+            #print (seconds) #print how many seconds
 
 
 ###################### END GAME CONDITIONS: Out of bound detection, Timelimit ###########################
@@ -328,10 +332,10 @@ def gameLoop():
         gameDisplay.blit(text_editor, (map_width,0))
         pygame.draw.line(gameDisplay,black,(map_width,display_height),(map_width,0), 2) #draw boundary for user to type code
         pygame.draw.line(gameDisplay,black,(0,map_height),(map_width,map_height), 2) #draw boundary for status bar
-        gameDisplay.blit(blueprint_img, (randBlueprintX, randBlueprintY))
+        
         gameDisplay.blit(player, (lead_x, lead_y))
         status(rebelScore, time_limit,seconds)
-        barrier(xlocation,randomHeight, barrier_width)
+        #barrier(xlocation,randomHeight, barrier_width)
         
         
 ####################### barrier collision detection #############################
@@ -347,14 +351,18 @@ def gameLoop():
                 lead_y -= block_size
         
 ######################## when apple have been collected ###########################
-        if lead_x >= randBlueprintX and lead_x <= randBlueprintX + BlueprintThickness or lead_x + block_size >= randBlueprintX and lead_x + block_size <= randBlueprintX + BlueprintThickness:
-            if lead_y >= randBlueprintY and lead_y <= randBlueprintY + BlueprintThickness:
-                randBlueprintX, randBlueprintY = randBlueprintGen()
-                rebelScore+=1
-                
-            elif lead_y + block_size >= randBlueprintY and lead_y + block_size <= randBlueprintY + BlueprintThickness:
-                randBlueprintX, randBlueprintY = randBlueprintGen()
-                rebelScore+=1
+        if blueprintCollected == False:
+            gameDisplay.blit(blueprint_img, (randBlueprintX, randBlueprintY))
+            if lead_x >= randBlueprintX and lead_x <= randBlueprintX + BlueprintThickness or lead_x + block_size >= randBlueprintX and lead_x + block_size <= randBlueprintX + BlueprintThickness:
+                if lead_y >= randBlueprintY and lead_y <= randBlueprintY + BlueprintThickness:
+                    randBlueprintX, randBlueprintY = randBlueprintGen()
+                    rebelScore+=1
+                    blueprintCollected = True
+                    
+                elif lead_y + block_size >= randBlueprintY and lead_y + block_size <= randBlueprintY + BlueprintThickness:
+                    randBlueprintX, randBlueprintY = randBlueprintGen()
+                    rebelScore+=1
+                    blueprintCollected = True
 
         clock.tick(30)
 
@@ -410,6 +418,10 @@ def gameLoop():
         for event in events:
             if event.type == pygame.MOUSEBUTTONUP:
                 if btn_rect.collidepoint(pygame.mouse.get_pos()):
+                    if timerStart==False:
+                        timer.set_ticks_func(pygame.time.get_ticks)
+                        timer.reset()
+                        timerStart=True
                     parsing = True
 
                     code = txtbx.get_text()
