@@ -16,6 +16,7 @@ white = (255,255,255)
 black = (0,0,0)
 red = (255,0,0)
 green = (0, 255, 0)
+yellow = (255, 255, 0)
 
 # default colour for text editor font
 txtfont_default = white
@@ -121,6 +122,9 @@ def parser_func(code):
 
 def barrier(xlocation,randomHeight, barrier_width):
     pygame.draw.rect(gameDisplay,black, [xlocation, randomHeight, barrier_width, barrier_width])
+
+def winGrid(xlocation, ylocation, grid_width):
+    pygame.draw.rect(gameDisplay,yellow, [xlocation, ylocation, grid_width, grid_width])
 
 def pause():
 
@@ -239,6 +243,7 @@ def message_to_screen(msg,color, y_displace = 0, size = "small"):
 
 def gameLoop():
     global parsing, game_state, game_map, text_editor, elemNumber, txtbx
+    gameWon = False
     gameExit = False
     gameOver = False
     player = lukeDownStationary
@@ -266,6 +271,11 @@ def gameLoop():
     xlocation = (map_width/2)+ random.randint(-0.2*map_width, 0.2*map_width)
     randomHeight = random.randrange(map_height*0.1,map_height*0.6)
 
+    # WinGrid - size and location for win state to be triggered
+    win_width = 30
+    win_xlocation = 390
+    win_ylocation = 0
+
     dvlist = ["sounds/darth vader - die1.wav","sounds/darth vader - i have you now.wav","sounds/darth vaer - breath.wav","sounds/darth vader - thisistheend.wav"]
     playonce = 0
     if playonce == 0:
@@ -275,7 +285,19 @@ def gameLoop():
         
     while not gameExit:
     
-        if gameOver == True:
+        if gameWon == True:
+            #-----sounds
+            pygame.mixer.music.stop()
+            pygame.mixer.music.load("sounds/lose - imperial march.ogg")
+            pygame.mixer.music.play(0)
+            #-----sounds
+            message_to_screen("You won!", red,
+                              y_displace=-50, size = "large")
+            message_to_screen("Press C to play again or Q to quit", black,
+                              50, size = "medium")
+            pygame.display.update()
+
+        elif gameOver == True:
             randnumb = random.randint(0,len(dvlist)-1)
             #-----sounds
             pygame.mixer.music.stop()
@@ -289,15 +311,17 @@ def gameLoop():
                               50, size = "medium")
             pygame.display.update()
             
-        while gameOver == True:
+        while gameOver == True or gameWon == True:
             
             parser_thread.stop()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
+                    gameWon = False
                     gameOver = False
                     gameExit = True
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_q:
+                        gameWon = False
                         gameExit = True
                         gameOver = False
                     if event.key == pygame.K_c:
@@ -310,6 +334,10 @@ def gameLoop():
         seconds = timer.get_time() #calculate how many seconds
         #print (seconds) #print how many seconds
 
+###################### WIN GAME CONDITIONS: Lands on the exit grid ###########################
+        if 0 < (lead_y+(block_size/2)) and (lead_y+(block_size/2)) < win_ylocation+win_width and \
+            win_xlocation < (lead_x+(block_size/2)) and (lead_x+(block_size/2)) < win_xlocation+win_width:
+            gameWon = True;
 
 ###################### END GAME CONDITIONS: Out of bound detection, Timelimit ###########################
         if lead_x > map_width - block_size or lead_x < 0 or lead_y > map_height - block_size \
@@ -332,6 +360,7 @@ def gameLoop():
         gameDisplay.blit(player, (lead_x, lead_y))
         status(rebelScore, time_limit,seconds)
         barrier(xlocation,randomHeight, barrier_width)
+        winGrid(win_xlocation, win_ylocation, win_width)
         
         
 ####################### barrier collision detection #############################
