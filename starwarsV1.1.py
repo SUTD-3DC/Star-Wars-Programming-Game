@@ -24,7 +24,7 @@ txtfont_focus = green
 
 # Global settings
 control_mode = 'TYPE' # 'KEYPRESS' or 'TYPE'
-time_limit = 30 # Time limit that affects Time Bar and Duration countdown
+time_limit = 50 # Time limit that affects Time Bar and Duration countdown
 
 # Use a timer
 timer = Timer()
@@ -159,8 +159,8 @@ def status(score,set_time,elapse_time):
     gameDisplay.blit(text2,[3*map_width/4,map_height])
     
 def randBlueprintGen():
-    randBlueprintX = 180
-    randBlueprintY = 180
+    randBlueprintX = 120
+    randBlueprintY = 150
     return randBlueprintX, randBlueprintY
      
 def game_intro():
@@ -403,7 +403,7 @@ def gameLoop():
         
         gameDisplay.blit(player, (lead_x, lead_y))
         status(rebelScore, time_limit,seconds)
-        winGrid(win_xlocation, win_ylocation, win_width)
+        #winGrid(win_xlocation, win_ylocation, win_width)
 
         #if level 1:
         xlist = [0,29,780,0,420,180,510,180,300,420,510,30,180,510,630]
