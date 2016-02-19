@@ -404,12 +404,10 @@ def gameLoop():
         gameDisplay.blit(player, (lead_x, lead_y))
         status(rebelScore, time_limit,seconds)
         winGrid(win_xlocation, win_ylocation, win_width)
-        #    xlist = [0,29,780,0,420,180,510,180,300,420,510,30,180,510,630]
-        #    ylist = [600,600,569,59,59,569,569,149,119,119,149,329,389,389,329]
-        #    widthlist=[29,781,30,389,784,119,119,119,89,89,119,149,119,119,149]
-        #    heightlist=[600,31,569,59,59,89,89,123,95,60,89,119,209,209,119]
+
+        #if level 1:
         xlist = [0,29,780,0,420,180,510,180,300,420,510,30,180,510,630]
-        ylist = [0,569,0,0,0,480,480,26,0,24,60,210,180,180,210]
+        ylist = [0,569,0,0,0,480,480,30,30,60,60,210,180,180,210]
         widthlist=[29,781,30,389,784,119,119,119,89,89,119,149,119,119,190]
         heightlist=[600,31,569,59,59,89,89,123,95,60,89,119,209,209,119]#load level one barriers
         
@@ -421,17 +419,15 @@ def gameLoop():
             xlocation = xlist[i]
             barrier_height = heightlist[i]
             barrier_width = widthlist[i]
-            # pygame.draw.rect(gameDisplay,red, [xlocation, ylocation, barrier_width, barrier_height])
             if ylocation + barrier_height > lead_y and lead_y + block_size > ylocation:
                 if lead_x - (block_size/2) < xlocation + barrier_width and lead_x > xlocation + barrier_width/2:
                     leftCollision = True
-                if lead_x + (3*block_size/2) > xlocation and lead_x < xlocation + barrier_width/2:
+                if lead_x + (4*block_size) > xlocation and lead_x < xlocation + barrier_width/2:
                     rightCollision = True
             elif xlocation + barrier_width > lead_x and lead_x + block_size > xlocation:
                 if lead_y - (block_size/2) < ylocation + barrier_height and lead_y > ylocation + barrier_height/2:
                     topCollision = True
-                    print (xlocation,ylocation,barrier_height,barrier_width)
-                if lead_y + (3*block_size/2) > ylocation and lead_y < ylocation + barrier_height/2:
+                if lead_y + (4*block_size) > ylocation and lead_y < ylocation + barrier_height/2:
                     bottomCollision = True
         
         
