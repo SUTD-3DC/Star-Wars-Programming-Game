@@ -12,6 +12,7 @@ import ParserThread
 
 pygame.init()
 
+level = 0
 white = (255,255,255)
 black = (0,0,0)
 red = (255,0,0)
@@ -69,11 +70,26 @@ lukeRightWalk = pygame.image.load('pictures/lukeMove/Luke_right_walk_1.png')
 lukeLeftStationary = pygame.image.load('pictures/lukeMove/Luke_left_stationary.png')
 lukeLeftWalk = pygame.image.load('pictures/lukeMove/Luke_left_walk_1.png')
 
+reyUpStationary = pygame.image.load('pictures/reyMove/Rey_up_stationary.png')
+reyUpWalk1 = pygame.image.load('pictures/reyMove/Rey_up_walk_1.png')
+reyUpWalk2 = pygame.image.load('pictures/reyMove/Rey_up_walk_2.png')
+reyDownStationary = pygame.image.load('pictures/reyMove/Rey_down_stationary.png')
+reyDownWalk1 = pygame.image.load('pictures/reyMove/Rey_down_walk_1.png')
+reyDownWalk2 = pygame.image.load('pictures/reyMove/Rey_down_walk_2.png')
+reyRightStationary = pygame.image.load('pictures/reyMove/Rey_right_walk_1.png')
+reyRightWalk = pygame.image.load('pictures/reyMove/Rey_right_walk_2.png')
+reyLeftStationary = pygame.image.load('pictures/reyMove/Rey_left_walk_1.png')
+reyLeftWalk = pygame.image.load('pictures/reyMove/Rey_left_walk_2.png')
+
 lukeMoveUp = [lukeUpWalk1, lukeUpWalk2, lukeUpStationary]
 lukeMoveDown = [lukeDownWalk1, lukeDownWalk2, lukeDownStationary]
 lukeMoveRight = [lukeRightStationary, lukeRightWalk, lukeRightStationary]
 lukeMoveLeft = [lukeLeftStationary, lukeLeftWalk, lukeLeftStationary]
-lukeMove = [lukeMoveUp, lukeMoveDown, lukeMoveRight, lukeMoveLeft]
+
+reyMoveUp = [reyUpWalk1, reyUpWalk2, reyUpStationary]
+reyMoveDown = [reyDownWalk1, reyDownWalk2, reyDownStationary]
+reyMoveRight = [reyRightStationary, reyRightWalk, reyRightStationary]
+reyMoveLeft = [reyLeftStationary, reyLeftWalk, reyLeftStationary]
 
 blueprint_img = pygame.image.load('pictures/Blueprint.png')
 
@@ -125,9 +141,6 @@ def parser_func(code):
 def barrier(xlocation,ylocation, barrier_width, barrier_height):
     pygame.draw.rect(gameDisplay,black, [xlocation, ylocation, barrier_width, barrier_height])
 
-def winGrid(xlocation, ylocation, grid_width):
-    pygame.draw.rect(gameDisplay,yellow, [xlocation, ylocation, grid_width, grid_width])
-
 def pause():
     paused = True
     message_to_screen("Paused", black, -100, size = "large")
@@ -164,6 +177,7 @@ def randBlueprintGen():
     return randBlueprintX, randBlueprintY
      
 def game_intro():
+    global characterMove
     pygame.mixer.music.load("sounds/intro - star wars main theme.ogg")
     pygame.mixer.music.play(0)
     intro = True
@@ -176,6 +190,10 @@ def game_intro():
                 quit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_m:
+                    characterMove = [lukeMoveUp, lukeMoveDown, lukeMoveRight, lukeMoveLeft]
+                    intro=False
+                if event.key == pygame.K_f:
+                    characterMove = [reyMoveUp, reyMoveDown, reyMoveRight, reyMoveLeft]
                     intro=False
                 if event.key == pygame.K_q:
                     pygame.quit()
@@ -195,13 +213,13 @@ def game_intro():
         clock.tick(5)
 
 
-def rebel_move(direction, playerX, playerY, xChange, yChange, rebelScore, time_limit, seconds, xlocation, ylocation, barrier_width,barrier_height,randBlueprintX, randBlueprintY):
+def rebel_move(direction, playerX, playerY, xChange, yChange, rebelScore, time_limit, seconds, xlocation, ylocation,barrier_width,barrier_height,randBlueprintX, randBlueprintY):
     
     global game_map
     lead_x = 750
     lead_y = 540
     image = None
-    for img in lukeMove[direction]:
+    for img in characterMove[direction]:
 
         playerX += xChange
         playerY += yChange
@@ -214,7 +232,7 @@ def rebel_move(direction, playerX, playerY, xChange, yChange, rebelScore, time_l
             pygame.draw.line(gameDisplay,black,(0,map_height),(map_width,map_height), 2)#draw boundary for status bar
             status(rebelScore, time_limit,seconds)
             #if level one
-            game_map=pygame.image.load(map_img[1]);
+            game_map=pygame.image.load(map_img[level]);
 
             if blueprintCollected == False:
                 #barrier(xlocation, randomHeight, barrier_width)
@@ -273,8 +291,7 @@ def message_to_screen(msg,color, y_displace = 0, size = "small"):
 
 
 def gameLoop():
-    global parsing, game_state, text_editor, elemNumber, \
-    txtbx,xlist,ylist,widthlist,heightlist, game_map, blueprintCollected
+    global parsing, game_state, text_editor, elemNumber, level,txtbx,xlist,ylist,widthlist,heightlist, game_map, blueprintCollected, characterMove
     gameWon = False
     gameExit = False
     gameOver = False
@@ -282,7 +299,7 @@ def gameLoop():
     rightCollision = False
     topCollision = False
     bottomCollision = False
-    player = lukeDownStationary
+    player = characterMove[1][2]
     lead_x = 750
     lead_y = 540
     lead_x_change = 0
@@ -331,6 +348,7 @@ def gameLoop():
             pygame.mixer.music.load("sounds/lose - imperial march.ogg")
             pygame.mixer.music.play(0)
             #-----sounds
+            level = (level+1)%3
             message_to_screen("You won!", red,
                               y_displace=-50, size = "large")
             message_to_screen("Press C to play again or Q to quit", black,
@@ -394,7 +412,7 @@ def gameLoop():
 
 ####################### displaying it on screen ################################
         gameDisplay.fill(white)
-        game_map=pygame.image.load(map_img[1]);
+        game_map=pygame.image.load(map_img[level]);
         text_editor=pygame.image.load(text_editor_img);
         gameDisplay.blit(game_map, (0,0))
         gameDisplay.blit(text_editor, (map_width,0))
@@ -403,7 +421,6 @@ def gameLoop():
         
         gameDisplay.blit(player, (lead_x, lead_y))
         status(rebelScore, time_limit,seconds)
-        #winGrid(win_xlocation, win_ylocation, win_width)
 
         #if level 1:
         xlist = [0,29,780,0,420,180,510,180,300,420,510,30,180,510,630]
