@@ -7,6 +7,7 @@ import threading
 import traceback
 
 from Movement import Movement
+from Hole import Hole
 from Timer import Timer
 import ParserThread
 
@@ -46,7 +47,11 @@ status_bar = 40
 display_width = map_width +400
 display_height = map_height + status_bar
 
+lead_x = 750
+lead_y = 540
+lead_direction = 'down'
 blueprintCollected = False
+
 BlueprintThickness = 30
 block_size = 10
 FPS = 30
@@ -76,6 +81,10 @@ lukeMoveLeft = [lukeLeftStationary, lukeLeftWalk, lukeLeftStationary]
 lukeMove = [lukeMoveUp, lukeMoveDown, lukeMoveRight, lukeMoveLeft]
 
 blueprint_img = pygame.image.load('pictures/Blueprint.png')
+
+# holes
+holes = [Hole(gameDisplay, (750, 420)),
+         Hole(gameDisplay, (630, 420))]
 
 # for run button
 btnimg = pygame.image.load('pictures/runbtn.png').convert_alpha()
@@ -111,6 +120,25 @@ moveUp = lambda steps = 1: move('move_up', steps)
 moveDown = lambda steps = 1: move('move_down', steps)
 moveLeft = lambda steps = 1: move('move_left', steps)
 moveRight = lambda steps = 1: move('move_right', steps)
+
+jumpUp = lambda : move('jump_up', 2)
+jumpDown = lambda : move('jump_down', 2)
+jumpLeft = lambda : move('jump_left', 2)
+jumpRight = lambda : move('jump_right', 2)
+
+def holeInFront():
+    for hole in holes:
+        player_rect = pygame.Rect(lead_x, lead_y, 30, 30)
+        collide_direction = hole.collides(player_rect)
+        print player_rect
+        print 'psuedo_holes', collide_direction
+        print 'lead_direction', lead_direction
+        # if lead_direction == collide_direction: return True
+        if lead_direction == collide_direction:
+            print True
+            return True
+    print False
+    return False
 
 def parser_func(code):
     try:
@@ -198,8 +226,6 @@ def game_intro():
 def rebel_move(direction, playerX, playerY, xChange, yChange, rebelScore, time_limit, seconds, xlocation, ylocation, barrier_width,barrier_height,randBlueprintX, randBlueprintY):
     
     global game_map
-    lead_x = 750
-    lead_y = 540
     image = None
     for img in lukeMove[direction]:
 
@@ -275,6 +301,7 @@ def message_to_screen(msg,color, y_displace = 0, size = "small"):
 def gameLoop():
     global parsing, game_state, text_editor, elemNumber, \
     txtbx,xlist,ylist,widthlist,heightlist, game_map, blueprintCollected
+    global lead_x, lead_y, lead_direction
     gameWon = False
     gameExit = False
     gameOver = False
@@ -283,8 +310,6 @@ def gameLoop():
     topCollision = False
     bottomCollision = False
     player = lukeDownStationary
-    lead_x = 750
-    lead_y = 540
     lead_x_change = 0
     lead_y_change = 0
     rebelScore = 0
@@ -449,6 +474,9 @@ def gameLoop():
 
         clock.tick(30)
 
+        holes[0].draw()
+        holes[1].draw()
+
     ######################### Player controls - Keypress or Typed text #########################
 
         events = pygame.event.get()
@@ -466,7 +494,7 @@ def gameLoop():
             if next_move == 'stationary':
                 lead_x_change = 0
                 lead_y_change = 0
-            elif next_move == 'up':
+            elif next_move == 'move_up':
                 if topCollision:
                     lead_x, lead_y, player = rebel_move(0, lead_x, lead_y, 0, 0, rebelScore, time_limit, seconds, xlocation, ylocation,
                                                     barrier_width, barrier_height, randBlueprintX, randBlueprintY)
@@ -474,7 +502,7 @@ def gameLoop():
                 else:
                     lead_x, lead_y, player = rebel_move(0, lead_x, lead_y, 0, -10, rebelScore, time_limit, seconds, xlocation, ylocation,
                                                     barrier_width, barrier_height, randBlueprintX, randBlueprintY)
-            elif next_move == 'down':
+            elif next_move == 'move_down':
                 if bottomCollision:
                     lead_x, lead_y, player = rebel_move(1, lead_x, lead_y, 0, 0, rebelScore, time_limit, seconds, xlocation, ylocation,
                                                     barrier_width, barrier_height, randBlueprintX, randBlueprintY)
@@ -483,7 +511,7 @@ def gameLoop():
                     lead_x, lead_y, player = rebel_move(1, lead_x, lead_y, 0, 10, rebelScore, time_limit, seconds, xlocation, ylocation,
                                                     barrier_width, barrier_height, randBlueprintX, randBlueprintY)
                 
-            elif next_move == 'left':
+            elif next_move == 'move_left':
                 if leftCollision:
                     lead_x, lead_y, player = rebel_move(3, lead_x, lead_y, 0, 0, rebelScore, time_limit, seconds, xlocation, ylocation,
                                                     barrier_width, barrier_height, randBlueprintX, randBlueprintY)
@@ -492,7 +520,27 @@ def gameLoop():
                     lead_x, lead_y, player = rebel_move(3, lead_x, lead_y, -10, 0, rebelScore, time_limit, seconds, xlocation, ylocation,
                                                     barrier_width, barrier_height, randBlueprintX, randBlueprintY)
                 
-            elif next_move == 'right':
+            elif next_move == 'move_right':
+                
+                if rightCollision:
+                    lead_x, lead_y, player = rebel_move(2, lead_x, lead_y, 0, 0, rebelScore, time_limit, seconds, xlocation, ylocation,
+                                                    barrier_width, barrier_height, randBlueprintX, randBlueprintY)
+                    rightCollision = False
+                else:
+                    lead_x, lead_y, player = rebel_move(2, lead_x, lead_y, 10, 0, rebelScore, time_limit, seconds, xlocation, ylocation,
+                                                    barrier_width, barrier_height, randBlueprintX, randBlueprintY)
+
+            elif next_move == 'jump_left':
+                
+                if leftCollision:
+                    lead_x, lead_y, player = rebel_move(3, lead_x, lead_y, 0, 0, rebelScore, time_limit, seconds, xlocation, ylocation,
+                                                    barrier_width, barrier_height, randBlueprintX, randBlueprintY)
+                    leftCollision = False
+                else:
+                    lead_x, lead_y, player = rebel_move(3, lead_x, lead_y, -10, 0, rebelScore, time_limit, seconds, xlocation, ylocation,
+                                                    barrier_width, barrier_height, randBlueprintX, randBlueprintY)
+
+            elif next_move == 'jump_right':
                 
                 if rightCollision:
                     lead_x, lead_y, player = rebel_move(2, lead_x, lead_y, 0, 0, rebelScore, time_limit, seconds, xlocation, ylocation,
@@ -503,21 +551,14 @@ def gameLoop():
                                                     barrier_width, barrier_height, randBlueprintX, randBlueprintY)
 
         if parsing:
-            if game_state == 'move_left':
-                movement.add_move('left');
+            movement_state = game_state[:4]
+            direction = game_state[5:]
+            if movement_state == 'jump' or movement_state == 'move':
+                movement.add_move(game_state)
+                lead_direction = direction
                 game_state = 'moving'
-            elif game_state == 'move_right':
-                movement.add_move('right');
-                game_state = 'moving'
-            elif game_state == 'move_up':
-                movement.add_move('up');
-                game_state = 'moving'
-            elif game_state == 'move_down':
-                movement.add_move('down');
-                game_state = 'moving'
-            elif game_state == 'moving':
-                if done_moving():
-                    game_state = 'idle'
+            elif game_state == 'moving' and done_moving():
+                game_state = 'idle'
 
         # run code button
         gameDisplay.blit(btnimg, btn_rect)
