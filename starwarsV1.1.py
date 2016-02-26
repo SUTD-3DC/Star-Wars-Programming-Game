@@ -122,10 +122,10 @@ moveDown = lambda steps = 1: move('move_down', steps)
 moveLeft = lambda steps = 1: move('move_left', steps)
 moveRight = lambda steps = 1: move('move_right', steps)
 
-jumpUp = lambda : move('jump_up', 2)
-jumpDown = lambda : move('jump_down', 2)
-jumpLeft = lambda : move('jump_left', 2)
-jumpRight = lambda : move('jump_right', 2)
+jumpUp = lambda steps = 1: move('jump_up', steps)
+jumpDown = lambda steps = 1: move('jump_down', steps)
+jumpLeft = lambda steps = 1: move('jump_left', steps)
+jumpRight = lambda steps = 1: move('jump_right', steps)
 
 def holeInFront():
     for hole in holes:
@@ -247,8 +247,11 @@ def rebel_move(direction, playerX, playerY, xChange, yChange, rebelScore, time_l
                 #barrier(xlocation, randomHeight, barrier_width)
                 gameDisplay.blit(blueprint_img, (randBlueprintX, randBlueprintY))
 
+            holes[0].draw()
+            holes[1].draw()
             gameDisplay.blit(btnimg, btn_rect)
             gameDisplay.blit(img, (playerX, playerY))
+
             image = img
 
             txtbx.draw(gameDisplay)
@@ -263,34 +266,59 @@ def rebel_jump(direction, playerX, playerY, xChange, yChange, rebelScore, time_l
     global game_map
     image = None
 
-    if direction == 2 or 3:
+    if direction == 0:
+        img = lukeUpStationary
+    elif direction == 1:
+        img = lukeDownStationary
+    elif direction == 2:
+        img = lukeRightStationary
+    elif direction == 3:
+        img = lukeLeftStationary
 
-        for img in lukeMove[direction]:
+    for j in range(6):
 
-            playerX += xChange
-            playerY += yChange
+        playerX += xChange
 
-            for i in range(2):
-                gameDisplay.fill(white)
-                gameDisplay.blit(game_map, (0,0))
-                gameDisplay.blit(text_editor, (map_width,0))
-                pygame.draw.line(gameDisplay,black,(map_width,display_height),(map_width,0), 2)#draw boundary for user to type code
-                pygame.draw.line(gameDisplay,black,(0,map_height),(map_width,map_height), 2)#draw boundary for status bar
-                status(rebelScore, time_limit,seconds)
-                #if level one
-                game_map=pygame.image.load(map_img[1]);
+        if direction == 2 or direction == 3:
+            if j < 3:
+                playerY -= abs(xChange)
+            else:
+                playerY += abs(xChange)
+        elif direction == 0:
+            if j < 4:
+                playerY -= int(1.7*abs(yChange))
+            else:
+                playerY += int(0.4*abs(yChange))
+        elif direction == 1:
+            if j < 2:
+                playerY -= int(0.4*abs(yChange))
+            else:
+                playerY += int(1.7*abs(yChange))
 
-                if blueprintCollected == False:
-                    #barrier(xlocation, randomHeight, barrier_width)
-                    gameDisplay.blit(blueprint_img, (randBlueprintX, randBlueprintY))
+        for i in range(2):
+            gameDisplay.fill(white)
+            gameDisplay.blit(game_map, (0,0))
+            gameDisplay.blit(text_editor, (map_width,0))
+            pygame.draw.line(gameDisplay,black,(map_width,display_height),(map_width,0), 2)#draw boundary for user to type code
+            pygame.draw.line(gameDisplay,black,(0,map_height),(map_width,map_height), 2)#draw boundary for status bar
+            status(rebelScore, time_limit,seconds)
+            #if level one
+            game_map=pygame.image.load(map_img[1]);
 
-                gameDisplay.blit(btnimg, btn_rect)
-                gameDisplay.blit(img, (playerX, playerY))
-                image = img
+            if blueprintCollected == False:
+                #barrier(xlocation, randomHeight, barrier_width)
+                gameDisplay.blit(blueprint_img, (randBlueprintX, randBlueprintY))
 
-                txtbx.draw(gameDisplay)
-                pygame.display.update()
-                clock.tick(60)
+            holes[0].draw()
+            holes[1].draw()
+            gameDisplay.blit(btnimg, btn_rect)
+            gameDisplay.blit(img, (playerX, playerY))
+
+            image = img
+
+            txtbx.draw(gameDisplay)
+            pygame.display.update()
+            clock.tick(60)
 
     return playerX, playerY, image
 
@@ -543,6 +571,7 @@ def gameLoop():
                 else:
                     lead_x, lead_y, player = rebel_move(0, lead_x, lead_y, 0, -10, rebelScore, time_limit, seconds, xlocation, ylocation,
                                                     barrier_width, barrier_height, randBlueprintX, randBlueprintY)
+
             elif next_move == 'move_down':
                 if bottomCollision:
                     lead_x, lead_y, player = rebel_move(1, lead_x, lead_y, 0, 0, rebelScore, time_limit, seconds, xlocation, ylocation,
@@ -571,24 +600,42 @@ def gameLoop():
                     lead_x, lead_y, player = rebel_move(2, lead_x, lead_y, 10, 0, rebelScore, time_limit, seconds, xlocation, ylocation,
                                                     barrier_width, barrier_height, randBlueprintX, randBlueprintY)
 
+            elif next_move == 'jump_up':
+                if topCollision:
+                    lead_x, lead_y, player = rebel_jump(0, lead_x, lead_y, 0, 0, rebelScore, time_limit, seconds, xlocation, ylocation,
+                                                    barrier_width, barrier_height, randBlueprintX, randBlueprintY)
+                    topCollision = False
+                else:
+                    lead_x, lead_y, player = rebel_jump(0, lead_x, lead_y, 0, -10, rebelScore, time_limit, seconds, xlocation, ylocation,
+                                                    barrier_width, barrier_height, randBlueprintX, randBlueprintY)
+
+            elif next_move == 'jump_down':
+                if bottomCollision:
+                    lead_x, lead_y, player = rebel_jump(1, lead_x, lead_y, 0, 0, rebelScore, time_limit, seconds, xlocation, ylocation,
+                                                    barrier_width, barrier_height, randBlueprintX, randBlueprintY)
+                    bottomCollision = False
+                else:
+                    lead_x, lead_y, player = rebel_jump(1, lead_x, lead_y, 0, 10, rebelScore, time_limit, seconds, xlocation, ylocation,
+                                                    barrier_width, barrier_height, randBlueprintX, randBlueprintY)
+
             elif next_move == 'jump_left':
 
                 if leftCollision:
-                    lead_x, lead_y, player = rebel_move(3, lead_x, lead_y, 0, 0, rebelScore, time_limit, seconds, xlocation, ylocation,
+                    lead_x, lead_y, player = rebel_jump(3, lead_x, lead_y, 0, 0, rebelScore, time_limit, seconds, xlocation, ylocation,
                                                     barrier_width, barrier_height, randBlueprintX, randBlueprintY)
                     leftCollision = False
                 else:
-                    lead_x, lead_y, player = rebel_move(3, lead_x, lead_y, -10, 0, rebelScore, time_limit, seconds, xlocation, ylocation,
+                    lead_x, lead_y, player = rebel_jump(3, lead_x, lead_y, -10, 0, rebelScore, time_limit, seconds, xlocation, ylocation,
                                                     barrier_width, barrier_height, randBlueprintX, randBlueprintY)
 
             elif next_move == 'jump_right':
 
                 if rightCollision:
-                    lead_x, lead_y, player = rebel_move(2, lead_x, lead_y, 0, 0, rebelScore, time_limit, seconds, xlocation, ylocation,
+                    lead_x, lead_y, player = rebel_jump(2, lead_x, lead_y, 0, 0, rebelScore, time_limit, seconds, xlocation, ylocation,
                                                     barrier_width, barrier_height, randBlueprintX, randBlueprintY)
                     rightCollision = False
                 else:
-                    lead_x, lead_y, player = rebel_move(2, lead_x, lead_y, 10, 0, rebelScore, time_limit, seconds, xlocation, ylocation,
+                    lead_x, lead_y, player = rebel_jump(2, lead_x, lead_y, 10, 0, rebelScore, time_limit, seconds, xlocation, ylocation,
                                                     barrier_width, barrier_height, randBlueprintX, randBlueprintY)
 
         if parsing:
