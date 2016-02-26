@@ -13,6 +13,7 @@ import ParserThread
 pygame.init()
 
 level = 0
+numOfLevels = 4
 white = (255,255,255)
 black = (0,0,0)
 red = (255,0,0)
@@ -57,7 +58,7 @@ pygame.display.set_caption('Star Wars: A programming education game')
 wallpaper_img = 'wallpaper/Wallpaper.png'
 text_editor_img = 'pictures/right panel/Text editor.png'
 map_img = ['pictures/Map/Map_1.png','pictures/Map/Map_2.png',
-           'pictures/Map/Test map.png']
+           'pictures/Map/Map_3.png']
 
 lukeUpStationary = pygame.image.load('pictures/lukeMove/Luke_up_stationary.png')
 lukeUpWalk1 = pygame.image.load('pictures/lukeMove/Luke_up_walk_1.png')
@@ -291,7 +292,7 @@ def message_to_screen(msg,color, y_displace = 0, size = "small"):
 
 
 def gameLoop():
-    global parsing, game_state, text_editor, elemNumber, level,txtbx,xlist,ylist,widthlist,heightlist, game_map, blueprintCollected, characterMove
+    global parsing, game_state, text_editor, elemNumber, level,txtbx,xlist,ylist,widthlist,heightlist, game_map, blueprintCollected, characterMove, numOfLevels
     gameWon = False
     gameExit = False
     gameOver = False
@@ -348,7 +349,7 @@ def gameLoop():
             pygame.mixer.music.load("sounds/lose - imperial march.ogg")
             pygame.mixer.music.play(0)
             #-----sounds
-            level = (level+1)%3
+            level = (level+1)%numOfLevels
             message_to_screen("You won!", red,
                               y_displace=-50, size = "large")
             message_to_screen("Press C to play again or Q to quit", black,
