@@ -263,32 +263,34 @@ def rebel_jump(direction, playerX, playerY, xChange, yChange, rebelScore, time_l
     global game_map
     image = None
 
-    for img in lukeMove[direction]:
+    if direction == 2 or 3:
 
-        playerX += xChange
-        playerY += yChange
+        for img in lukeMove[direction]:
 
-        for i in range(2):
-            gameDisplay.fill(white)
-            gameDisplay.blit(game_map, (0,0))
-            gameDisplay.blit(text_editor, (map_width,0))
-            pygame.draw.line(gameDisplay,black,(map_width,display_height),(map_width,0), 2)#draw boundary for user to type code
-            pygame.draw.line(gameDisplay,black,(0,map_height),(map_width,map_height), 2)#draw boundary for status bar
-            status(rebelScore, time_limit,seconds)
-            #if level one
-            game_map=pygame.image.load(map_img[1]);
+            playerX += xChange
+            playerY += yChange
 
-            if blueprintCollected == False:
-                #barrier(xlocation, randomHeight, barrier_width)
-                gameDisplay.blit(blueprint_img, (randBlueprintX, randBlueprintY))
+            for i in range(2):
+                gameDisplay.fill(white)
+                gameDisplay.blit(game_map, (0,0))
+                gameDisplay.blit(text_editor, (map_width,0))
+                pygame.draw.line(gameDisplay,black,(map_width,display_height),(map_width,0), 2)#draw boundary for user to type code
+                pygame.draw.line(gameDisplay,black,(0,map_height),(map_width,map_height), 2)#draw boundary for status bar
+                status(rebelScore, time_limit,seconds)
+                #if level one
+                game_map=pygame.image.load(map_img[1]);
 
-            gameDisplay.blit(btnimg, btn_rect)
-            gameDisplay.blit(img, (playerX, playerY))
-            image = img
+                if blueprintCollected == False:
+                    #barrier(xlocation, randomHeight, barrier_width)
+                    gameDisplay.blit(blueprint_img, (randBlueprintX, randBlueprintY))
 
-            txtbx.draw(gameDisplay)
-            pygame.display.update()
-            clock.tick(60)
+                gameDisplay.blit(btnimg, btn_rect)
+                gameDisplay.blit(img, (playerX, playerY))
+                image = img
+
+                txtbx.draw(gameDisplay)
+                pygame.display.update()
+                clock.tick(60)
 
     return playerX, playerY, image
 
