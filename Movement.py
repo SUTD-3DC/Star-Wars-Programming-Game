@@ -2,7 +2,7 @@ class Movement:
     """Movement keeps track of the player's moves. Each move can only have up to
     a defined number of steps. """
 
-    def __init__(self, steps=5):
+    def __init__(self, steps=1):
         self.steps_taken = None
         self.steps = steps
         self.move = 'stationary'
