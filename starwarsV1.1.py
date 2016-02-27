@@ -14,7 +14,7 @@ import ParserThread
 pygame.init()
 
 level = 0
-numOfLevels = 4
+numOfLevels = 6
 white = (255,255,255)
 black = (0,0,0)
 red = (255,0,0)
@@ -63,8 +63,9 @@ pygame.display.set_caption('Star Wars: A programming education game')
 
 wallpaper_img = 'wallpaper/Wallpaper.png'
 text_editor_img = 'pictures/right panel/Text editor.png'
-map_img = ['pictures/Map/Map_1.png','pictures/Map/Map_2.png',
-           'pictures/Map/Map_3.png']
+map_img = ['pictures/Map/Map_0.png','pictures/Map/Map_1.png',
+           'pictures/Map/Map_2.png''pictures/Map/Map_3.png','pictures/Map/Map_4.png',
+           'pictures/Map/Map_5.png']
 
 lukeUpStationary = pygame.image.load('pictures/lukeMove/Luke_up_stationary.png')
 lukeUpWalk1 = pygame.image.load('pictures/lukeMove/Luke_up_walk_1.png')
@@ -83,10 +84,12 @@ reyUpWalk2 = pygame.image.load('pictures/reyMove/Rey_up_walk_2.png')
 reyDownStationary = pygame.image.load('pictures/reyMove/Rey_down_stationary.png')
 reyDownWalk1 = pygame.image.load('pictures/reyMove/Rey_down_walk_1.png')
 reyDownWalk2 = pygame.image.load('pictures/reyMove/Rey_down_walk_2.png')
-reyRightStationary = pygame.image.load('pictures/reyMove/Rey_right_walk_1.png')
-reyRightWalk = pygame.image.load('pictures/reyMove/Rey_right_walk_2.png')
+reyRightStationary = pygame.image.load('pictures/reyMove/Rey_right_stationary.png')
+reyRightWalk1 = pygame.image.load('pictures/reyMove/Rey_right_walk_1.png')
+reyRightWalk2 = pygame.image.load('pictures/reyMove/Rey_right_walk_2.png')
 reyLeftStationary = pygame.image.load('pictures/reyMove/Rey_left_walk_1.png')
-reyLeftWalk = pygame.image.load('pictures/reyMove/Rey_left_walk_2.png')
+reyLeftWalk1 = pygame.image.load('pictures/reyMove/Rey_left_walk_1.png')
+reyLeftWalk2 = pygame.image.load('pictures/reyMove/Rey_left_walk_2.png')
 
 lukeMoveUp = [lukeUpWalk1, lukeUpWalk2, lukeUpStationary]
 lukeMoveDown = [lukeDownWalk1, lukeDownWalk2, lukeDownStationary]
@@ -95,8 +98,8 @@ lukeMoveLeft = [lukeLeftStationary, lukeLeftWalk, lukeLeftStationary]
 
 reyMoveUp = [reyUpWalk1, reyUpWalk2, reyUpStationary]
 reyMoveDown = [reyDownWalk1, reyDownWalk2, reyDownStationary]
-reyMoveRight = [reyRightStationary, reyRightWalk, reyRightStationary]
-reyMoveLeft = [reyLeftStationary, reyLeftWalk, reyLeftStationary]
+reyMoveRight = [reyRightWalk1, reyRightWalk2, reyRightStationary]
+reyMoveLeft = [reyLeftWalk1, reyLeftWalk2, reyLeftStationary]
 
 blueprint_img = pygame.image.load('pictures/Blueprint.png')
 
