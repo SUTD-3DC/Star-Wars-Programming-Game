@@ -122,6 +122,36 @@ collectSaber = pygame.mixer.Sound("sounds/saberswing2.wav")
 pressC = pygame.mixer.Sound("sounds/start.wav")
 wallbang = pygame.mixer.Sound("sounds/wallbang.ogg")
 
+def loadLevel(level):
+    position=[[180,180],[750,540],[0,510],[0,510],[0,510],[0,510],[0,510]]
+    levelXList = [[],
+             [0,29,780,0,420,180,510,180,300,420,510,30,180,510,630],
+             [],
+             [],
+             [],
+             []]
+    levelYList = [[],
+                  [0,569,0,0,0,480,480,30,30,60,60,210,180,180,210],
+                  [],
+                  [],
+                  [],
+                  []]
+    widthlist = [[],
+                 [29,781,30,389,784,119,119,119,89,89,119,149,119,119,190],
+                 [],
+                 [],
+                 [],
+                 []]
+    heightlist=[[],
+                [600,31,569,59,59,89,89,123,95,60,89,119,209,209,119],
+                [],
+                [],
+                [],
+                []]
+    win_width = [30,30,30,30,30,30,30,30]
+    win_xyCoordinates = [[390,0],[390,0],[390,0],[390,0],[390,0],[390,0],[390,0],[390,0]]
+    return position[level][0],position[level][1],levelXList[level],levelYList[level],widthlist[level],heightlist[level],win_width[level],
+win_xyCoordinates[level][1],win_xyCoordinates[level][0]
 def done_moving():
     if movement.get_next_move() == 'stationary':
         return True
@@ -381,7 +411,7 @@ def message_to_screen(msg,color, y_displace = 0, size = "small"):
 
 
 def gameLoop():
-    global parsing, game_state, text_editor, elemNumber, level,txtbx,xlist,ylist,widthlist,heightlist, game_map, blueprintCollected, characterMove, numOfLevels
+    global parsing, game_state, text_editor, elemNumber, level,txtbx, game_map, blueprintCollected, characterMove,numOfLevels
     global lead_x, lead_y, lead_direction
     gameWon = False
     gameExit = False
@@ -391,8 +421,16 @@ def gameLoop():
     topCollision = False
     bottomCollision = False
     player = characterMove[1][2]
-    lead_x = 750
-    lead_y = 540
+    lead_x,lead_y,xlist,ylist,widthlist,heightlist,win_width,win_xlocation,win_ylocation = loadLevel(level)
+##    xlist = [0,29,780,0,420,180,510,180,300,420,510,30,180,510,630]
+##    ylist = [0,569,0,0,0,480,480,30,30,60,60,210,180,180,210]
+##    widthlist=[29,781,30,389,784,119,119,119,89,89,119,149,119,119,190]
+##    heightlist=[600,31,569,59,59,89,89,123,95,60,89,119,209,209,119]#load level one barriers
+    # WinGrid - size and location for win state to be triggered
+##    win_width = 30
+##    win_xlocation = 390
+##    win_ylocation = 0
+    
     lead_x_change = 0
     lead_y_change = 0
     rebelScore = 0
@@ -418,11 +456,6 @@ def gameLoop():
     barrier_height = 30
     xlocation = (map_width/2)+ random.randint(-0.2*map_width, 0.2*map_width)
     ylocation = random.randrange(map_height*0.1,map_height*0.6)
-
-    # WinGrid - size and location for win state to be triggered
-    win_width = 30
-    win_xlocation = 390
-    win_ylocation = 0
 
     dvlist = ["sounds/darth vader - die1.wav","sounds/darth vader - i have you now.wav","sounds/darth vaer - breath.wav","sounds/darth vader - thisistheend.wav"]
     playonce = 0
@@ -518,11 +551,7 @@ def gameLoop():
         gameDisplay.blit(player, (lead_x, lead_y))
         status(rebelScore, time_limit,seconds)
 
-        #if level 1:
-        xlist = [0,29,780,0,420,180,510,180,300,420,510,30,180,510,630]
-        ylist = [0,569,0,0,0,480,480,30,30,60,60,210,180,180,210]
-        widthlist=[29,781,30,389,784,119,119,119,89,89,119,149,119,119,190]
-        heightlist=[600,31,569,59,59,89,89,123,95,60,89,119,209,209,119]#load level one barriers
+
 
 
 ####################### barrier collision detection #############################
