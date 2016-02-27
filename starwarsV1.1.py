@@ -150,8 +150,8 @@ def loadLevel(level):
                 []]
     win_width = [30,30,30,30,30,30,30,30]
     win_xyCoordinates = [[390,0],[390,0],[390,0],[390,0],[390,0],[390,0],[390,0],[390,0]]
-    return position[level][0],position[level][1],levelXList[level],levelYList[level],widthlist[level],heightlist[level],win_width[level],
-win_xyCoordinates[level][1],win_xyCoordinates[level][0]
+    return position[level][0],position[level][1],levelXList[level],levelYList[level],widthlist[level],heightlist[level],win_width[level], win_xyCoordinates[level][1],win_xyCoordinates[level][0]
+
 def done_moving():
     if movement.get_next_move() == 'stationary':
         return True
