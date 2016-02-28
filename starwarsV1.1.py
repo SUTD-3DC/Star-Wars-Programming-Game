@@ -64,7 +64,7 @@ pygame.display.set_caption('Star Wars: A programming education game')
 wallpaper_img = 'wallpaper/Wallpaper.png'
 text_editor_img = 'pictures/right panel/Text editor.png'
 map_img = ['pictures/Map/Map_0.png','pictures/Map/Map_1.png',
-           'pictures/Map/Map_2.png''pictures/Map/Map_3.png','pictures/Map/Map_4.png',
+           'pictures/Map/Map_2.png','pictures/Map/Map_3.png','pictures/Map/Map_4.png',
            'pictures/Map/Map_5.png']
 
 lukeUpStationary = pygame.image.load('pictures/lukeMove/Luke_up_stationary.png')
@@ -123,34 +123,34 @@ pressC = pygame.mixer.Sound("sounds/start.wav")
 wallbang = pygame.mixer.Sound("sounds/wallbang.ogg")
 
 def loadLevel(level):
-    position=[[180,180],[750,540],[0,510],[0,510],[0,510],[0,510],[0,510]]
-    levelXList = [[],
-             [0,29,780,0,420,180,510,180,300,420,510,30,180,510,630],
-             [],
-             [],
-             [],
-             []]
-    levelYList = [[],
-                  [0,569,0,0,0,480,480,30,30,60,60,210,180,180,210],
-                  [],
-                  [],
-                  [],
-                  []]
-    widthlist = [[],
-                 [29,781,30,389,784,119,119,119,89,89,119,149,119,119,190],
-                 [],
-                 [],
-                 [],
-                 []]
-    heightlist=[[],
-                [600,31,569,59,59,89,89,123,95,60,89,119,209,209,119],
-                [],
-                [],
-                [],
-                []]
-    win_width = [30,30,30,30,30,30,30,30]
-    win_xyCoordinates = [[390,0],[390,0],[390,0],[390,0],[390,0],[390,0],[390,0],[390,0]]
-    return position[level][0],position[level][1],levelXList[level],levelYList[level],widthlist[level],heightlist[level],win_width[level], win_xyCoordinates[level][1],win_xyCoordinates[level][0]
+    position=[[180,180],[750,540],[360,30],[420,30],[0,450],[0,330]]
+    levelXList = [[0,180,360,180,360,600,360,450],
+             [0,30,780,0,420,180,510,180,300,420,510,30,180,510,630],
+             [0,0,60,390],
+             [0,0,270,330,360,450,450,450,450,450,750],
+             [0,120,240,360,600,480,360,240,0],
+             [0,0,300,540,180,420,660,0]]
+    levelYList = [[0,0,120,450,390,0,240,0],
+                  [0,570,0,0,0,480,480,30,30,60,60,210,180,180,210],
+                  [0,90,270,0],
+                  [0,90,120,120,240,0,120,270,420,540,60],
+                  [0,0,0,0,0,180,300,420,540],
+                  [0,180,150,150,270,270,240,390]]
+    widthlist = [[180,240,60,630,450,210,240,150],
+                 [30,780,30,390,780,120,120,120,90,90,120,150,120,120,180],
+                 [360,60,300,420],
+                 [420,240,60,90,60,360,270,180,270,360,60],
+                 [120,120,120,120,210,120,120,120,240],
+                 [810,120,60,60,60,60,150,810]]
+    heightlist=[[600,120,60,150,60,390,90,180],
+                [600,30,570,60,60,90,90,120,90,60,90,120,210,210,120],
+                [90,510,330,600],
+                [90,390,360,90,360,90,90,90,90,60,480],
+                [450,330,210,90,600,420,300,180,60],
+                [180,120,120,120,120,120,150,210]]
+    win_width = [30,30,30,30,30,30,120,30]
+    win_xyCoordinates = [[420,0],[390,0],[360,570],[420,570],[570,0],[780,180]]
+    return position[level][0],position[level][1],levelXList[level],levelYList[level],widthlist[level],heightlist[level],win_width[level], win_xyCoordinates[level][0],win_xyCoordinates[level][1]
 
 def done_moving():
     if movement.get_next_move() == 'stationary':
@@ -383,31 +383,6 @@ def message_to_screen(msg,color, y_displace = 0, size = "small"):
     textRect.center = (map_width / 2), (map_height / 2) + y_displace
     gameDisplay.blit(textSurf, textRect)
 
-#def loadLevelOne():
-#    #load map
-#    #level 1 barriers
-#    #borders (x, y, width, height)
-#    global xlist,ylist,widthlist,heightlist
-#    xlist = [0,29,780,0,420,180,510,180,300,420,510,30,180,510,630]
-#    ylist = [600,600,569,59,59,569,569,149,119,119,149,329,389,389,329]
-#    widthlist=[29,781,30,389,784,119,119,119,89,89,119,149,119,119,149]
-#    heightlist=[600,31,569,59,59,89,89,123,95,60,89,119,209,209,119]
-    #barrier(0,600,29,600) #left border
-    #barrier(29,600,781,31)#bottom
-    #barrier(780,569, 30,569)#right
-    #barrier(0,59,389,59)# top part 1
-    #barrier(420,59, 784,59)# top part 2
-    #barrier(180,569,119,89)# bottom left extrusion
-    #barrier(510,569, 119,89)# bottom right
-    #barrier(180,149, 119,123)# top left extrusion part 1
-    #barrier(300,119, 89,95)# top left extrusion part 2
-    #barrier(420,119, 89,60)# top right extrusion part 1
-    #barrier(510,149, 119,89)# top right extrusion part 2
-    #barrier(30,329, 149,119)# left extrusion part 1
-    #barrier(180,389, 119,209)# left extrusion part 2
-    #barrier(510,389, 119,209)# right extrusion part 1
-    #barrier(630,329, 149,119)# right extrusion part 2
-
 
 
 def gameLoop():
@@ -422,10 +397,7 @@ def gameLoop():
     bottomCollision = False
     player = characterMove[1][2]
     lead_x,lead_y,xlist,ylist,widthlist,heightlist,win_width,win_xlocation,win_ylocation = loadLevel(level)
-##    xlist = [0,29,780,0,420,180,510,180,300,420,510,30,180,510,630]
-##    ylist = [0,569,0,0,0,480,480,30,30,60,60,210,180,180,210]
-##    widthlist=[29,781,30,389,784,119,119,119,89,89,119,149,119,119,190]
-##    heightlist=[600,31,569,59,59,89,89,123,95,60,89,119,209,209,119]#load level one barriers
+
     # WinGrid - size and location for win state to be triggered
 ##    win_width = 30
 ##    win_xlocation = 390
@@ -561,6 +533,8 @@ def gameLoop():
             xlocation = xlist[i]
             barrier_height = heightlist[i]
             barrier_width = widthlist[i]
+            #for debugging:
+            #pygame.draw.rect(gameDisplay,red,[xlocation,ylocation,barrier_width,barrier_height])
             if ylocation + barrier_height > lead_y and lead_y + block_size > ylocation:
                 if lead_x - (block_size/2) < xlocation + barrier_width and lead_x > xlocation + barrier_width/2:
                     leftCollision = True
