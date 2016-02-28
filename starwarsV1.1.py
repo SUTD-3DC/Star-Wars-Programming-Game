@@ -128,29 +128,30 @@ def loadLevel(level):
              [0,30,780,0,420,180,510,180,300,420,510,30,180,510,630],
              [0,0,60,390],
              [0,0,270,330,360,450,450,450,450,450,750],
-             [0,120,240,360,600,480,360,240,0],
+             [0,120,270,420,690,540,390,240,0],
              [0,0,300,540,180,420,660,0]]
     levelYList = [[0,0,120,450,390,0,240,0],
                   [0,570,0,0,0,480,480,30,30,60,60,210,180,180,210],
                   [0,90,270,0],
                   [0,90,120,120,240,0,120,270,420,540,60],
-                  [0,0,0,0,0,180,300,420,540],
-                  [0,180,150,150,270,270,240,390]]
+                  [0,0,0,0,0,150,270,390,510],
+                  [0,180,180,180,270,270,240,390]]
     widthlist = [[180,240,60,630,450,210,240,150],
                  [30,780,30,390,780,120,120,120,90,90,120,150,120,120,180],
                  [360,60,300,420],
                  [420,240,60,90,60,360,270,180,270,360,60],
-                 [120,120,120,120,210,120,120,120,240],
+                 [120,150,150,150,120,150,150,150,240],
                  [810,120,60,60,60,60,150,810]]
     heightlist=[[600,120,60,150,60,390,90,180],
                 [600,30,570,60,60,90,90,120,90,60,90,120,210,210,120],
                 [90,510,330,600],
                 [90,390,360,90,360,90,90,90,90,60,480],
-                [450,330,210,90,600,420,300,180,60],
+                [420,300,180,60,600,450,330,210,90],
                 [180,120,120,120,120,120,150,210]]
-    win_width = [30,30,30,30,30,30,120,30]
+    win_width = [30,30,30,30,120,30]
+    win_height = [30,30,30,30,30,60]
     win_xyCoordinates = [[420,0],[390,0],[360,570],[420,570],[570,0],[780,180]]
-    return position[level][0],position[level][1],levelXList[level],levelYList[level],widthlist[level],heightlist[level],win_width[level], win_xyCoordinates[level][0],win_xyCoordinates[level][1]
+    return position[level][0],position[level][1],levelXList[level],levelYList[level],widthlist[level],heightlist[level],win_width[level],win_height[level], win_xyCoordinates[level][0],win_xyCoordinates[level][1]
 
 def done_moving():
     if movement.get_next_move() == 'stationary':
@@ -396,7 +397,7 @@ def gameLoop():
     topCollision = False
     bottomCollision = False
     player = characterMove[1][2]
-    lead_x,lead_y,xlist,ylist,widthlist,heightlist,win_width,win_xlocation,win_ylocation = loadLevel(level)
+    lead_x,lead_y,xlist,ylist,widthlist,heightlist,win_width,win_height,win_xlocation,win_ylocation = loadLevel(level)
 
     # WinGrid - size and location for win state to be triggered
 ##    win_width = 30
@@ -484,9 +485,11 @@ def gameLoop():
                         gameExit = True
                         gameOver = False
                     if event.key == pygame.K_c:
+                        gameWon= False
                         pygame.mixer.music.stop()
                         pressC.play()
                         gameLoop()
+                        
 
     ############## timer ##########################
         if timerStart:
@@ -497,7 +500,7 @@ def gameLoop():
             #print (seconds) #print how many seconds
 
 ###################### WIN GAME CONDITIONS: Lands on the exit grid ###########################
-        if 0 < (lead_y+(block_size/2)) and (lead_y+(block_size/2)) < win_ylocation+win_width and \
+        if 0 < (lead_y+(block_size/2)) and (lead_y+(block_size/2)) < win_ylocation+win_height and \
             win_xlocation < (lead_x+(block_size/2)) and (lead_x+(block_size/2)) < win_xlocation+win_width:
             gameWon = True;
 
