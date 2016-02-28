@@ -151,7 +151,7 @@ def loadLevel(level):
     win_width = [30,30,30,30,120,30]
     win_height = [30,30,30,30,30,60]
     win_xyCoordinates = [[420,0],[390,0],[360,570],[420,570],[570,0],[780,180]]
-    return position[level][0],position[level][1],levelXList[level],levelYList[level],widthlist[level],heightlist[level],win_width[level],win_height[level], win_xyCoordinates[level][0],win_xyCoordinates[level][1]
+    return [position[level][0],position[level][1],levelXList[level],levelYList[level],widthlist[level],heightlist[level],win_width[level],win_height[level], win_xyCoordinates[level][0],win_xyCoordinates[level][1]]
 
 def done_moving():
     if movement.get_next_move() == 'stationary':
@@ -397,7 +397,7 @@ def gameLoop():
     topCollision = False
     bottomCollision = False
     player = characterMove[1][2]
-    lead_x,lead_y,xlist,ylist,widthlist,heightlist,win_width,win_height,win_xlocation,win_ylocation = loadLevel(level)
+    [lead_x,lead_y,xlist,ylist,widthlist,heightlist,win_width,win_height,win_xlocation,win_ylocation] = loadLevel(level)
 
     # WinGrid - size and location for win state to be triggered
 ##    win_width = 30
