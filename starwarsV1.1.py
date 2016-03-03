@@ -422,7 +422,7 @@ def gameLoop():
 
     #textbox
     txtbx = ezpztext.Textbox(lines=14, default_color=txtfont_default,
-                focus_color=txtfont_focus, maxlength=34, y=60, x=840)
+                focus_color=txtfont_focus, maxlength=28, y=60, x=840)
 
     for i in range(len(txtbx.txtbx)):
         txtbx.txtbx[i].prompt = "{:>2}: ".format(i + 1)
