@@ -21,13 +21,18 @@ class Hole:
                                                 self.coord[1] - 30,
                                                 30, 30)
         self.psuedo_holes['up'] = pygame.Rect(self.coord[0],
-                                           self.coord[1] + 30,
-                                           30, 30)
+                                              self.coord[1] + 30,
+                                              30, 30)
+        self.psuedo_holes['exact'] = pygame.Rect(self.coord[0],
+                                                 self.coord[1],
+                                                 30, 30)
 
     def collides(self, player_rect):
+        '''Return the direction of the hole with respect to the player when
+        (s)he is right in front of or exactly on it. Otherwise return None.'''
         for direction in self.psuedo_holes:
-            print "pseudo hole direction:", direction,
-            print self.psuedo_holes[direction]
+            # print "pseudo hole direction:", direction,
+            # print self.psuedo_holes[direction]
             if self.psuedo_holes[direction].colliderect(player_rect):
                 return direction
         return None

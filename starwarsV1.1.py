@@ -664,6 +664,13 @@ def gameLoop():
                 else:
                     lead_x, lead_y, player = rebel_jump(2, lead_x, lead_y, 10, 0, rebelScore, time_limit, seconds, xlocation, ylocation,
                                                     barrier_width, barrier_height, randBlueprintX, randBlueprintY)
+                    
+        # check if player is on a hole
+        for hole in holes:
+            player_rect = pygame.Rect(lead_x, lead_y, 30, 30)
+            collide_direction = hole.collides(player_rect)
+            if collide_direction == 'exact':
+                gameOver = True
 
         if parsing:
             movement_state = game_state[:4]
