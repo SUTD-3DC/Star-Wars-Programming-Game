@@ -163,6 +163,8 @@ def move(direction, steps):
     game_state = direction
 
     while True:
+        if game_state == 'gameover':
+            game_state = 'idle' # reset game_state
         if game_state == 'idle':
             steps -= 1
             if steps <= 0: break
@@ -472,7 +474,7 @@ def gameLoop():
             pygame.display.update()
 
         while gameOver == True or gameWon == True:
-
+            game_state = 'gameover'
             parser_thread.stop()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
