@@ -13,7 +13,7 @@ import ParserThread
 
 pygame.init()
 
-level = 2
+level = 0
 numOfLevels = 8
 white = (255,255,255)
 black = (0,0,0)
@@ -123,8 +123,7 @@ finnMoveLeft = [finnLeftWalk1, finnLeftWalk2, finnLeftStationary]
 blueprint_img = pygame.image.load('pictures/Blueprint.png')
 
 # holes
-holes = [Hole(gameDisplay, (750, 420)),
-         Hole(gameDisplay, (630, 420))]
+holes = []
 
 # for run button
 btnimg = pygame.image.load('pictures/runbtn.png').convert_alpha()
@@ -168,7 +167,10 @@ def loadLevel(level):
     win_height = [30,30,30,30,30,30,60,480]
     win_xyCoordinates = [[420,0],[570,0],[780,270],[390,0],[360,570],
                          [420,570],[780,180],[780,60]]
-    return [position[level][0],position[level][1],levelXList[level],levelYList[level],widthlist[level],heightlist[level],win_width[level],win_height[level], win_xyCoordinates[level][0],win_xyCoordinates[level][1]]
+    holeCoords = [[[570,180],[570,210]],[],[[390,0],[390,30],[390,60],[390,90],[390,120],[390,150],[390,180],[390,210],[390,240],[390,270],[390,300],[390,330],[390,360]
+                                            ,[390,390],[390,420],[390,450],[390,480],[390,510],[390,540],[390,570]]
+                  ,[],[],[],[],[]]
+    return [position[level][0],position[level][1],levelXList[level],levelYList[level],widthlist[level],heightlist[level],win_width[level],win_height[level], win_xyCoordinates[level][0],win_xyCoordinates[level][1],holeCoords[level]]
 
 def done_moving():
     if movement.get_next_move() == 'stationary':
@@ -322,8 +324,8 @@ def rebel_move(direction, playerX, playerY, xChange, yChange, rebelScore, time_l
                 #barrier(xlocation, randomHeight, barrier_width)
                 gameDisplay.blit(blueprint_img, (randBlueprintX, randBlueprintY))
 
-            holes[0].draw()
-            holes[1].draw()
+##            holes[0].draw()
+##            holes[1].draw()
             gameDisplay.blit(btnimg, btn_rect)
             gameDisplay.blit(img, (playerX, playerY))
 
@@ -376,9 +378,10 @@ def rebel_jump(direction, playerX, playerY, xChange, yChange, rebelScore, time_l
             if blueprintCollected == False:
                 #barrier(xlocation, randomHeight, barrier_width)
                 gameDisplay.blit(blueprint_img, (randBlueprintX, randBlueprintY))
-
-            holes[0].draw()
-            holes[1].draw()
+                
+            #for checking hole position
+##            for hole in holes:
+##                hole.draw()
             gameDisplay.blit(btnimg, btn_rect)
             gameDisplay.blit(img, (playerX, playerY))
 
@@ -410,7 +413,7 @@ def message_to_screen(msg,color, y_displace = 0, size = "small"):
 
 def gameLoop():
     global parsing, game_state, text_editor, elemNumber, level,txtbx, game_map, blueprintCollected, characterMove,numOfLevels
-    global lead_x, lead_y, lead_direction
+    global lead_x, lead_y, lead_direction,holes
     gameWon = False
     gameExit = False
     gameOver = False
@@ -419,7 +422,7 @@ def gameLoop():
     topCollision = False
     bottomCollision = False
     player = characterMove[1][2]
-    [lead_x,lead_y,xlist,ylist,widthlist,heightlist,win_width,win_height,win_xlocation,win_ylocation] = loadLevel(level)
+    [lead_x,lead_y,xlist,ylist,widthlist,heightlist,win_width,win_height,win_xlocation,win_ylocation,holeCoords] = loadLevel(level)
     
     lead_x_change = 0
     lead_y_change = 0
@@ -431,7 +434,9 @@ def gameLoop():
 
     timerStart=False
     seconds=0
-
+    del holes[:]
+    for i in range(len(holeCoords)):
+        holes.append(Hole(gameDisplay, (holeCoords[i][0], holeCoords[i][1])))
     # use get_ticks to time
     #timer.reset()
 
@@ -584,9 +589,9 @@ def gameLoop():
                     blueprintCollected = True
 
         clock.tick(30)
-
-        holes[0].draw()
-        holes[1].draw()
+            ##for checking holes in map
+##        for hole in holes:
+##            hole.draw()
 
     ######################### Player controls - Keypress or Typed text #########################
 
