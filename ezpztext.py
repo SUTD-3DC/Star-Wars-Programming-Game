@@ -103,6 +103,12 @@ class Textbox:
         text = '\n'.join(txt.value for txt in self.txtbx)
         return text.strip()
 
+    def get_linecount(self):
+        count = 0
+        for txt in self.txtbx:
+            if txt.value.strip() != '': count += 1
+        return count
+
     def clear(self):
         for i in range(len(self.txtbx)):
             self.txtbx[i].value = ''

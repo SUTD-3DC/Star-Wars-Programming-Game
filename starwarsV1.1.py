@@ -41,6 +41,12 @@ movement = Movement(1)
 game_state = 'idle'
 parsing = False
 
+#textbox
+txtbx = ezpztext.Textbox(lines=14, default_color=txtfont_default,
+            focus_color=txtfont_focus, maxlength=28, y=60, x=840)
+
+for i in range(len(txtbx.txtbx)):
+    txtbx.txtbx[i].prompt = "{:>2}: ".format(i + 1)
 
 # Use ParserThread to create a separate thread for parsing user code
 parser_thread = ParserThread.Thread()
@@ -55,6 +61,7 @@ lead_x = 750
 lead_y = 540
 lead_direction = 'down'
 blueprintCollected = False
+rebelScore = 0
 
 BlueprintThickness = 30
 block_size = 10
@@ -394,7 +401,8 @@ def rebel_jump(direction, playerX, playerY, xChange, yChange, rebelScore, time_l
 
     return playerX, playerY, image
 
-
+def linecount_to_score(n):
+    return txtbx.lines - n
 
 def text_objects(text,color,size):
     if size == "small":
@@ -413,7 +421,7 @@ def message_to_screen(msg,color, y_displace = 0, size = "small"):
 
 
 def gameLoop():
-    global parsing, game_state, text_editor, elemNumber, level,txtbx, game_map, blueprintCollected, characterMove,numOfLevels
+    global parsing, game_state, text_editor, elemNumber, level,txtbx, game_map, blueprintCollected, characterMove,numOfLevels, rebelScore
     global lead_x, lead_y, lead_direction,holes
     gameWon = False
     gameExit = False
@@ -427,11 +435,10 @@ def gameLoop():
     
     lead_x_change = 0
     lead_y_change = 0
-    rebelScore = 0
     randBlueprintX, randBlueprintY = randBlueprintGen()
     step_count = 0
     pause_duration = 0
-
+    code_lines = 0
 
     timerStart=False
     seconds=0
@@ -440,13 +447,6 @@ def gameLoop():
         holes.append(Hole(gameDisplay, (holeCoords[i][0], holeCoords[i][1])))
     # use get_ticks to time
     #timer.reset()
-
-    #textbox
-    txtbx = ezpztext.Textbox(lines=14, default_color=txtfont_default,
-                focus_color=txtfont_focus, maxlength=28, y=60, x=840)
-
-    for i in range(len(txtbx.txtbx)):
-        txtbx.txtbx[i].prompt = "{:>2}: ".format(i + 1)
 
     barrier_width = 30
     barrier_height = 30
@@ -474,6 +474,8 @@ def gameLoop():
                               50, size = "small")
             message_to_screen("or Q to quit", grey,
                               100, size = "small")
+
+            rebelScore += linecount_to_score(code_lines)
 
             pygame.display.update()
 
@@ -715,6 +717,7 @@ def gameLoop():
 
                     code = txtbx.get_text()
                     code = code.replace('self.', '')
+                    code_lines += txtbx.get_linecount()
                     parser_thread.start(parser_func, code)
                     txtbx.clear()
 
