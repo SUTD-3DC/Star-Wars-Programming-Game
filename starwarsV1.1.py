@@ -112,6 +112,11 @@ finnLeftStationary = pygame.image.load('pictures/finnMove/Finn_left_stationary.p
 finnLeftWalk1 = pygame.image.load('pictures/finnMove/Finn_left_walk_1.png')
 finnLeftWalk2 = pygame.image.load('pictures/finnMove/Finn_left_walk_2.png')
 
+darthUpStationary = pygame.image.load('pictures/darthMove/Darth_up.png')
+darthDownStationary = pygame.image.load('pictures/darthMove/Darth_down.png')
+darthRightStationary = pygame.image.load('pictures/darthMove/Darth_right.png')
+darthLeftStationary = pygame.image.load('pictures/darthMove/Darth_left.png')
+
 
 reyMoveUp = [reyUpWalk1, reyUpWalk2, reyUpStationary]
 reyMoveDown = [reyDownWalk1, reyDownWalk2, reyDownStationary]
@@ -178,7 +183,8 @@ def loadLevel(level):
     holeCoords = [[[570,180],[570,210]],[],[[390,0],[390,30],[390,60],[390,90],[390,120],[390,150],[390,180],[390,210],[390,240],[390,270],[390,300],[390,330],[390,360]
                                             ,[390,390],[390,420],[390,450],[390,480],[390,510],[390,540],[390,570]]
                   ,[],[],[],[],[]]
-    return [position[level][0],position[level][1],levelXList[level],levelYList[level],widthlist[level],heightlist[level],win_width[level],win_height[level], win_xyCoordinates[level][0],win_xyCoordinates[level][1],holeCoords[level]]
+    vader_face = [0,0,1,0,0,0,1,1] # 0-Down, 1-Left, 2- Up, 3-Right
+    return [position[level][0],position[level][1],levelXList[level],levelYList[level],widthlist[level],heightlist[level],win_width[level],win_height[level], win_xyCoordinates[level][0],win_xyCoordinates[level][1],holeCoords[level],vader_face[level]]
 
 def done_moving():
     if movement.get_next_move() == 'stationary':
@@ -280,6 +286,106 @@ def pause():
 
         clock.tick(5)
 
+def helpInstructions(level):
+    csmallfont = pygame.font.Font('diehund.ttf', 15)
+    csmallfont.set_italic(True);
+    
+    xsmallfont = pygame.font.Font('diehund.ttf', 15)
+    xsmallfont.set_underline(True)
+    xsmallfont.set_bold(True)
+    gameDisplay.blit(xsmallfont.render("Tips:", True, white),\
+                         [835, 375])
+    xsmallfont.set_underline(False)
+    xsmallfont.set_bold(False)
+
+    # 9 Lines max
+    helpMessage = {0 : ["Commands to move your player", # Learn move
+                        "c      self.moveUp()",
+                        "c      self.moveRight()",
+                        "c      self.moveDown()",
+                        "c      self.moveLeft()",
+                        "",
+                        "What happens if you try",
+                        "c      n = 15",
+                        "c      self.moveRight(n)"],
+                   1 : ["Loops can ease your pain of coding", # Learn basic loop
+                        "lines of the same thing.",
+                        "       x = 0",
+                        "       while x < 5 :",
+                        "           self.moveRight()",
+                        "           self.moveLeft()",
+                        "           x = x + 1",
+                        "'self' represents the object you are",
+                        " controling, in this case the player."],
+                   2 : ["The Blue Map earns you points",
+                        "",
+                        "Here are some useful actions to use", # Learn condition check
+                        "       if self.holeInFront() :",
+                        "           self.jumpRight()",
+                        "",
+                        "Don't forget how to use the loops!",
+                        "       while x < 5 :",
+                        "           self.jumpUp()"],
+                   3 : ["If you didn't realize, If and While", # Example conditions 1
+                        "statements require conditions.",
+                        "",
+                        "       x = 0",
+                        "       while x < 5 :",
+                        "           self.moveUp()",
+                        "           if x == 3",
+                        "               self.moveLeft()",
+                        ""],
+                   4 : ["I doubt you can jump over laser",
+                        "",
+                        "Use less than(<), more than(>) or" # Example conditions 2
+                        "equal to(==), within a condition",
+                        "check.",
+                        "c      while <condtion> :",
+                        "c          <do stuff>",
+                        "c      if <condition> :",
+                        "c          <do stuff>"],
+                   5 : ["Let's see how quickly you can get", # Test!
+                        "this over and done with",
+                        "",
+                        "c      x = <value>",
+                        "c      while <condtion> :",
+                        "c          <do stuff>",
+                        "c      if <condition> :",
+                        "c          <do stuff>",
+                        ""],
+                   6 : ["Condtitions result in either True",
+                        "or False.",
+                        "Try assigning 'True' as the x value",
+                        "",
+                        "c      x = <value>",
+                        "c      while <condtion> :",
+                        "c          <do stuff>",
+                        "c      if <condition> :",
+                        "c          <do stuff>"],
+                   7 : ["You may have heard of an infinite",
+                        "loop. 'break' is your friend, but",
+                        "where is it used?",
+                        "",
+                        "c      x = <value>",
+                        "c      while <condtion> :",
+                        "c          <do stuff>",
+                        "c      if <condition> :",
+                        "c          <do stuff>"]}
+    for lineNumber in range(len(helpMessage[level])):
+        isCode = False
+        if len(helpMessage[level][lineNumber]) > 0:
+            if helpMessage[level][lineNumber][0] == 'c':
+                helpMessage[level][lineNumber] = helpMessage[level][lineNumber][1:];
+                isCode = True;
+
+        if isCode:
+            gameDisplay.blit(csmallfont.render(helpMessage[level][lineNumber], True, grey),\
+                             [835, 395+lineNumber*xsmallfont.get_linesize()])
+        else:
+            gameDisplay.blit(xsmallfont.render(helpMessage[level][lineNumber], True, white),\
+                             [835, 395+lineNumber*xsmallfont.get_linesize()])
+
+
 def status(score,set_time,elapse_time):
     text = smallfont.render("Score:          " + str(score), True, black)
     gameDisplay.blit(text,[55,map_height])
@@ -352,6 +458,7 @@ def rebel_move(direction, playerX, playerY, xChange, yChange, rebelScore, time_l
             pygame.draw.line(gameDisplay,black,(map_width,display_height),(map_width,0), 2)#draw boundary for user to type code
             pygame.draw.line(gameDisplay,black,(0,map_height),(map_width,map_height), 2)#draw boundary for status bar
             status(rebelScore, time_limit,seconds)
+            helpInstructions(level)
             #if level one
             game_map=pygame.image.load(map_img[level]);
 
@@ -408,6 +515,7 @@ def rebel_jump(direction, playerX, playerY, xChange, yChange, rebelScore, time_l
             pygame.draw.line(gameDisplay,black,(map_width,display_height),(map_width,0), 2)#draw boundary for user to type code
             pygame.draw.line(gameDisplay,black,(0,map_height),(map_width,map_height), 2)#draw boundary for status bar
             status(rebelScore, time_limit,seconds)
+            helpInstructions(level)
             #if level one
             game_map=pygame.image.load(map_img[level]);
 
@@ -485,7 +593,7 @@ def gameLoop():
     topCollision = False
     bottomCollision = False
     player = characterMove[1][2]
-    [lead_x,lead_y,xlist,ylist,widthlist,heightlist,win_width,win_height,win_xlocation,win_ylocation,holeCoords] = loadLevel(level)
+    [lead_x,lead_y,xlist,ylist,widthlist,heightlist,win_width,win_height,win_xlocation,win_ylocation,holeCoords,vadarOrientation] = loadLevel(level)
     
     lead_x_change = 0
     lead_y_change = 0
@@ -523,9 +631,9 @@ def gameLoop():
             pygame.mixer.music.play(0)
             #-----sounds
             level = (level+1)%numOfLevels
-            message_to_screen("You won!", red,
+            message_to_screen("Level cleared!", red,
                               y_displace=-50, size = "large")
-            message_to_screen("Press C to play again", grey,
+            message_to_screen("Press C to proceed", grey,
                               50, size = "small")
             message_to_screen("or Q to quit", grey,
                               100, size = "small")
@@ -548,6 +656,11 @@ def gameLoop():
                               50, size = "medium")
             message_to_screen("or Q to quit", orange,
                               100, size = "medium")
+            #----- displays
+            if vadarOrientation == 0:
+                gameDisplay.blit(darthDownStationary, (win_xlocation, win_ylocation))
+            else:
+                gameDisplay.blit(darthLeftStationary, (win_xlocation, win_ylocation))
             pygame.display.update()
 
         while gameOver == True or gameWon == True:
@@ -606,9 +719,9 @@ def gameLoop():
         gameDisplay.blit(text_editor, (map_width,0))
         pygame.draw.line(gameDisplay,black,(map_width,display_height),(map_width,0), 2) #draw boundary for user to type code
         pygame.draw.line(gameDisplay,black,(0,map_height),(map_width,map_height), 2) #draw boundary for status bar
-
         gameDisplay.blit(player, (lead_x, lead_y))
         status(rebelScore, time_limit,seconds)
+        helpInstructions(level)
 
 
 
