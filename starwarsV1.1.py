@@ -15,6 +15,7 @@ from Movement import Movement
 from Hole import Hole
 from Timer import Timer
 import ParserThread
+import util
 
 pygame.init()
 
@@ -78,58 +79,60 @@ gameDisplay = pygame.display.set_mode((display_width,display_height))
 ##gameDisplay = pygame.display.set_mode((display_width,display_height),FULLSCREEN)
 pygame.display.set_caption('Star Wars: A programming education game')
 
-wallpaper_img = 'wallpaper/Wallpaper.png'
-text_editor_img = 'pictures/right panel/Text editor.png'
-map_img = ['pictures/Map/warm_up.png',
+wallpaper_img = util.load_image('wallpaper/Wallpaper.png')
+text_editor_img = util.load_image('pictures/right panel/Text editor.png')
+maps = ['pictures/Map/warm_up.png',
            'pictures/Map/Map_0.png','pictures/Map/Map_4.png','pictures/Map/Balcony_map.png',
            'pictures/Map/Map_1.png','pictures/Map/SU.png','pictures/Map/Map_3.png',
            'pictures/Map/Map_5.png','pictures/Map/docking_bay.png','pictures/Map/Last_level_map_space.png']
 
-lukeUpStationary = pygame.image.load('pictures/lukeMove/Luke_up_stationary.png')
-lukeUpWalk1 = pygame.image.load('pictures/lukeMove/Luke_up_walk_1.png')
-lukeUpWalk2 = pygame.image.load('pictures/lukeMove/Luke_up_walk_2.png')
-lukeDownStationary = pygame.image.load('pictures/lukeMove/Luke_down_stationary.png')
-lukeDownWalk1 = pygame.image.load('pictures/lukeMove/Luke_down_walk_1.png')
-lukeDownWalk2 = pygame.image.load('pictures/lukeMove/Luke_down_walk_2.png')
-lukeRightStationary = pygame.image.load('pictures/lukeMove/Luke_right_stationary.png')
-lukeRightWalk = pygame.image.load('pictures/lukeMove/Luke_right_walk_1.png')
-lukeLeftStationary = pygame.image.load('pictures/lukeMove/Luke_left_stationary.png')
-lukeLeftWalk = pygame.image.load('pictures/lukeMove/Luke_left_walk_1.png')
+map_img = [util.load_image(m) for m in maps]
 
-reyUpStationary = pygame.image.load('pictures/reyMove/Rey_up_stationary.png')
-reyUpWalk1 = pygame.image.load('pictures/reyMove/Rey_up_walk_1.png')
-reyUpWalk2 = pygame.image.load('pictures/reyMove/Rey_up_walk_2.png')
-reyDownStationary = pygame.image.load('pictures/reyMove/Rey_down_stationary.png')
-reyDownWalk1 = pygame.image.load('pictures/reyMove/Rey_down_walk_1.png')
-reyDownWalk2 = pygame.image.load('pictures/reyMove/Rey_down_walk_2.png')
-reyRightStationary = pygame.image.load('pictures/reyMove/Rey_right_stationary.png')
-reyRightWalk1 = pygame.image.load('pictures/reyMove/Rey_right_walk_1.png')
-reyRightWalk2 = pygame.image.load('pictures/reyMove/Rey_right_walk_2.png')
-reyLeftStationary = pygame.image.load('pictures/reyMove/Rey_left_walk_1.png')
-reyLeftWalk1 = pygame.image.load('pictures/reyMove/Rey_left_walk_1.png')
-reyLeftWalk2 = pygame.image.load('pictures/reyMove/Rey_left_walk_2.png')
+lukeUpStationary = util.load_image('pictures/lukeMove/Luke_up_stationary.png')
+lukeUpWalk1 = util.load_image('pictures/lukeMove/Luke_up_walk_1.png')
+lukeUpWalk2 = util.load_image('pictures/lukeMove/Luke_up_walk_2.png')
+lukeDownStationary = util.load_image('pictures/lukeMove/Luke_down_stationary.png')
+lukeDownWalk1 = util.load_image('pictures/lukeMove/Luke_down_walk_1.png')
+lukeDownWalk2 = util.load_image('pictures/lukeMove/Luke_down_walk_2.png')
+lukeRightStationary = util.load_image('pictures/lukeMove/Luke_right_stationary.png')
+lukeRightWalk = util.load_image('pictures/lukeMove/Luke_right_walk_1.png')
+lukeLeftStationary = util.load_image('pictures/lukeMove/Luke_left_stationary.png')
+lukeLeftWalk = util.load_image('pictures/lukeMove/Luke_left_walk_1.png')
 
-finnUpStationary = pygame.image.load('pictures/finnMove/Finn_up_stationary.png')
-finnUpWalk1 = pygame.image.load('pictures/finnMove/Finn_up_walk_1.png')
-finnUpWalk2 = pygame.image.load('pictures/finnMove/Finn_up_walk_2.png')
-finnDownStationary = pygame.image.load('pictures/finnMove/Finn_down_stationary.png')
-finnDownWalk1 = pygame.image.load('pictures/finnMove/Finn_down_walk_1.png')
-finnDownWalk2 = pygame.image.load('pictures/finnMove/Finn_down_walk_2.png')
-finnRightStationary = pygame.image.load('pictures/finnMove/Finn_right_stationary.png')
-finnRightWalk1 = pygame.image.load('pictures/finnMove/Finn_right_walk_1.png')
-finnRightWalk2 = pygame.image.load('pictures/finnMove/Finn_right_walk_2.png')
-finnLeftStationary = pygame.image.load('pictures/finnMove/Finn_left_stationary.png')
-finnLeftWalk1 = pygame.image.load('pictures/finnMove/Finn_left_walk_1.png')
-finnLeftWalk2 = pygame.image.load('pictures/finnMove/Finn_left_walk_2.png')
+reyUpStationary = util.load_image('pictures/reyMove/Rey_up_stationary.png')
+reyUpWalk1 = util.load_image('pictures/reyMove/Rey_up_walk_1.png')
+reyUpWalk2 = util.load_image('pictures/reyMove/Rey_up_walk_2.png')
+reyDownStationary = util.load_image('pictures/reyMove/Rey_down_stationary.png')
+reyDownWalk1 = util.load_image('pictures/reyMove/Rey_down_walk_1.png')
+reyDownWalk2 = util.load_image('pictures/reyMove/Rey_down_walk_2.png')
+reyRightStationary = util.load_image('pictures/reyMove/Rey_right_stationary.png')
+reyRightWalk1 = util.load_image('pictures/reyMove/Rey_right_walk_1.png')
+reyRightWalk2 = util.load_image('pictures/reyMove/Rey_right_walk_2.png')
+reyLeftStationary = util.load_image('pictures/reyMove/Rey_left_walk_1.png')
+reyLeftWalk1 = util.load_image('pictures/reyMove/Rey_left_walk_1.png')
+reyLeftWalk2 = util.load_image('pictures/reyMove/Rey_left_walk_2.png')
 
-darthUpStationary = pygame.image.load('pictures/darthMove/Darth_up.png')
-darthDownStationary = pygame.image.load('pictures/darthMove/Darth_down.png')
-darthRightStationary = pygame.image.load('pictures/darthMove/Darth_right.png')
-darthLeftStationary = pygame.image.load('pictures/darthMove/Darth_left.png')
+finnUpStationary = util.load_image('pictures/finnMove/Finn_up_stationary.png')
+finnUpWalk1 = util.load_image('pictures/finnMove/Finn_up_walk_1.png')
+finnUpWalk2 = util.load_image('pictures/finnMove/Finn_up_walk_2.png')
+finnDownStationary = util.load_image('pictures/finnMove/Finn_down_stationary.png')
+finnDownWalk1 = util.load_image('pictures/finnMove/Finn_down_walk_1.png')
+finnDownWalk2 = util.load_image('pictures/finnMove/Finn_down_walk_2.png')
+finnRightStationary = util.load_image('pictures/finnMove/Finn_right_stationary.png')
+finnRightWalk1 = util.load_image('pictures/finnMove/Finn_right_walk_1.png')
+finnRightWalk2 = util.load_image('pictures/finnMove/Finn_right_walk_2.png')
+finnLeftStationary = util.load_image('pictures/finnMove/Finn_left_stationary.png')
+finnLeftWalk1 = util.load_image('pictures/finnMove/Finn_left_walk_1.png')
+finnLeftWalk2 = util.load_image('pictures/finnMove/Finn_left_walk_2.png')
 
-mFalconStationary = pygame.image.load('pictures/milleniumFalcon/mFalcon_stationary.png')
-mFalconThrusterSmall = pygame.image.load('pictures/milleniumFalcon/mFalcon_thruster_small.png')
-mFalconThrusterBig = pygame.image.load('pictures/milleniumFalcon/mFalcon_thruster_big.png')
+darthUpStationary = util.load_image('pictures/darthMove/Darth_up.png')
+darthDownStationary = util.load_image('pictures/darthMove/Darth_down.png')
+darthRightStationary = util.load_image('pictures/darthMove/Darth_right.png')
+darthLeftStationary = util.load_image('pictures/darthMove/Darth_left.png')
+
+mFalconStationary = util.load_image('pictures/milleniumFalcon/mFalcon_stationary.png')
+mFalconThrusterSmall = util.load_image('pictures/milleniumFalcon/mFalcon_thruster_small.png')
+mFalconThrusterBig = util.load_image('pictures/milleniumFalcon/mFalcon_thruster_big.png')
 
 reyMoveUp = [reyUpWalk1, reyUpWalk2, reyUpStationary]
 reyMoveDown = [reyDownWalk1, reyDownWalk2, reyDownStationary]
@@ -149,13 +152,13 @@ finnMoveLeft = [finnLeftWalk1, finnLeftWalk2, finnLeftStationary]
 mFalconFireUp = [mFalconStationary, mFalconThrusterSmall, mFalconStationary, mFalconThrusterSmall,
                  mFalconThrusterBig, mFalconStationary, mFalconThrusterSmall, mFalconThrusterBig,
                  mFalconThrusterSmall, mFalconThrusterBig, mFalconThrusterBig, mFalconThrusterBig]
-blueprint_img = pygame.image.load('pictures/Blueprint.png')
+blueprint_img = util.load_image('pictures/Blueprint.png')
 
 # holes
 holes = []
 
 # for run button
-btnimg = pygame.image.load('pictures/runbtn.png').convert_alpha()
+btnimg = util.load_image('pictures/runbtn.png')
 btn_rect = pygame.Rect(1075, 590, *btnimg.get_rect().size)
 
 clock = pygame.time.Clock()
@@ -199,7 +202,7 @@ def loadLevel(level):
                          [420,570],[780,180],[780,60],[540,210]]
     holeCoords = [[],[[570,180],[570,210]],[],[[390,0],[390,30],[390,60],[390,90],[390,120],[390,150],[390,180],[390,210],[390,240],[390,270]
                                                ,[390,300],[390,330],[390,360],[390,390],[390,420],[390,450],[390,480],[390,510],[390,540],[390,570]]
-                  ,[],[[260,150]],[],[],[[180,210],[180,240],[210,450],[210,480],[210,510],[360,270],[360,270],[360,270],[360,300],[360,330],[570,150],
+                  ,[],[[360,150],[360,300],[360,420]],[],[],[[180,210],[180,240],[210,450],[210,480],[210,510],[360,270],[360,270],[360,270],[360,300],[360,330],[570,150],
                                 [570,180],[570,210],[510,390],[510,420]],[]]
     vader_face = [0,0,1,2,2,0,0,1,1,3] # 0-Down, 1-Left, 2- Up, 3-Right
     blueprint_xy = [[],[],[],[],[120,150],[],[],[],[],[]]
@@ -211,41 +214,46 @@ def done_moving():
         return True
     return False
 
-def move(direction, steps):
-    global game_state
-    game_state = direction
+class Player:
 
-    while True:
-        if game_state == 'gameover':
-            game_state = 'idle' # reset game_state
-        if game_state == 'idle':
-            steps -= 1
-            if steps <= 0: break
-            game_state = direction
+    def __init__(self):
+        self.moveUp = lambda steps = 1: self.move('move_up', steps)
+        self.moveDown = lambda steps = 1: self.move('move_down', steps)
+        self.moveLeft = lambda steps = 1: self.move('move_left', steps)
+        self.moveRight = lambda steps = 1: self.move('move_right', steps)
 
-moveUp = lambda steps = 1: move('move_up', steps)
-moveDown = lambda steps = 1: move('move_down', steps)
-moveLeft = lambda steps = 1: move('move_left', steps)
-moveRight = lambda steps = 1: move('move_right', steps)
+        self.jumpUp = lambda steps = 1: self.move('jump_up', steps)
+        self.jumpDown = lambda steps = 1: self.move('jump_down', steps)
+        self.jumpLeft = lambda steps = 1: self.move('jump_left', steps)
+        self.jumpRight = lambda steps = 1: self.move('jump_right', steps)
 
-jumpUp = lambda steps = 1: move('jump_up', steps)
-jumpDown = lambda steps = 1: move('jump_down', steps)
-jumpLeft = lambda steps = 1: move('jump_left', steps)
-jumpRight = lambda steps = 1: move('jump_right', steps)
+    def move(self, direction, steps):
+        global game_state
+        game_state = direction
 
-def holeInFront():
-    for hole in holes:
-        player_rect = pygame.Rect(lead_x, lead_y, 30, 30)
-        collide_direction = hole.collides(player_rect)
-        print player_rect
-        print 'psuedo_holes', collide_direction
-        print 'lead_direction', lead_direction
-        # if lead_direction == collide_direction: return True
-        if lead_direction == collide_direction:
-            print True
-            return True
-    print False
-    return False
+        while True:
+            if game_state == 'gameover':
+                game_state = 'idle' # reset game_state
+            if game_state == 'idle':
+                steps -= 1
+                if steps <= 0: break
+                game_state = direction
+
+    def holeInFront(self):
+        for hole in holes:
+            player_rect = pygame.Rect(lead_x, lead_y, 30, 30)
+            collide_direction = hole.collides(player_rect)
+            print player_rect
+            print 'psuedo_holes', collide_direction
+            print 'lead_direction', lead_direction
+            # if lead_direction == collide_direction: return True
+            if lead_direction == collide_direction:
+                print True
+                return True
+        print False
+        return False
+
+this_is_impossible_to_be_screwed_up = Player()
 
 def parser_func(code):
     global game_state
@@ -262,8 +270,12 @@ def parser_func(code):
 def display_error():
     global game_state
     paused = True
-    message_to_screen("Your code has an error.", red, -100, size = "medium")
-    message_to_screen("Press c to restart", red, 0, size = "medium")
+    message_to_screen("CODE ERROR", red,
+                      y_displace=-50, size = "large")
+    message_to_screen("Press C to play again", orange,
+                      50, size = "medium")
+    message_to_screen("or Q to quit", orange,
+                      100, size = "medium")
     pygame.display.update()
     while paused:
         for event in pygame.event.get():
@@ -332,35 +344,44 @@ def helpInstructions(level):
                         "c      self.moveDown()",
                         "c      self.moveLeft()",
                         "",
-                        "What happens if you try",
-                        "c      n = 15",
-                        "c      self.moveRight(n)"],
+                        "Python is indentation and case ",
+                        "sensitive!",
+                        "It could be the source of your bugs"],
+                   1 : ["Commands to move your player", # Learn move
+                        "c      self.moveUp()",
+                        "c      self.moveRight()",
+                        "c      self.moveDown()",
+                        "c      self.moveLeft()",
+                        "",
+                        "Python is indentation and case ",
+                        "sensitive!",
+                        "It could be the source of your bugs"],
                    2 : ["Loops can ease your pain of coding", # Learn basic loop
                         "lines of the same thing.",
-                        "       x = 0",
-                        "       while x < 5 :",
-                        "           self.moveRight()",
-                        "           self.moveLeft()",
-                        "           x = x + 1",
+                        "c      x = 0",
+                        "c      while x < 5 :",
+                        "c          self.moveRight()",
+                        "c          self.moveLeft()",
+                        "c          x = x + 1",
                         "'self' represents the object you are",
                         " controling, in this case the player."],
                    3 : ["The Death Star Blueprint earns you points",
                         "",
                         "Here are some useful actions to use", # Learn condition check
-                        "       if self.holeInFront() :",
-                        "           self.jumpRight()",
+                        "c      if self.holeInFront() :",
+                        "c          self.jumpRight()",
                         "",
                         "Don't forget how to use the loops!",
-                        "       while x < 5 :",
-                        "           self.jumpUp()"],
+                        "c      while x < 5 :",
+                        "c          self.jumpUp()"],
                    4 : ["If you didn't realize, If and While", # Example conditions 1
                         "statements require conditions.",
                         "",
-                        "       x = 0",
-                        "       while x < 5 :",
-                        "           self.moveUp()",
-                        "           if x == 3",
-                        "               self.moveLeft()",
+                        "c      x = 0",
+                        "c      while x < 5 :",
+                        "c          self.moveUp()",
+                        "c          if x == 3",
+                        "c              self.moveLeft()",
                         ""],
                    5 : ["I avoid getting detected by infrared sensor",
                         "",
@@ -461,7 +482,7 @@ def game_intro():
                     quit()
 
         gameDisplay.fill(white)
-        wp = pygame.image.load(wallpaper_img)
+        wp = wallpaper_img
         wp = pygame.transform.scale(wp,(display_width,display_height))
         gameDisplay.blit(wp, (0,0))
         pygame.display.update()
@@ -484,15 +505,10 @@ def rebel_move(direction, playerX, playerY, xChange, yChange, rebelScore, time_l
         pygame.draw.line(gameDisplay,black,(0,map_height),(map_width,map_height), 2)#draw boundary for status bar
         status(rebelScore, time_limit,seconds)
         #if level one
-        game_map=pygame.image.load(map_img[level]);
-        print blueprintCollected
-        print blueprintExist
+        game_map=map_img[level]
         if (blueprintCollected == False) and blueprintExist:
-            print 'blitting'
             gameDisplay.blit(blueprint_img, (randBlueprintX, randBlueprintY))
 
-##            holes[0].draw()
-##            holes[1].draw()
         gameDisplay.blit(btnimg, btn_rect)
         gameDisplay.blit(img, (playerX, playerY))
         draw_holes()
@@ -541,7 +557,7 @@ def rebel_jump(direction, playerX, playerY, xChange, yChange, rebelScore, time_l
         pygame.draw.line(gameDisplay,black,(0,map_height),(map_width,map_height), 2)#draw boundary for status bar
         status(rebelScore, time_limit,seconds)
         #if level one
-        game_map=pygame.image.load(map_img[level]);
+        game_map=map_img[level]
 
         if (blueprintCollected == False) and blueprintExist:
             #barrier(xlocation, randomHeight, barrier_width)
@@ -588,7 +604,7 @@ def mfalcon_fly(mFalconX, mFalconY, rebelScore, time_limit, seconds, randBluepri
             status(rebelScore, time_limit,seconds)
             helpInstructions(level)
             #if level one
-            game_map=pygame.image.load(map_img[level])
+            game_map=map_img[level]
 
             if (not blueprintCollected) and blueprintExist:
                 gameDisplay.blit(blueprint_img, (randBlueprintX, randBlueprintY))
@@ -783,8 +799,8 @@ def gameLoop():
 
 ####################### displaying it on screen ################################
         gameDisplay.fill(white)
-        game_map=pygame.image.load(map_img[level])
-        text_editor=pygame.image.load(text_editor_img)
+        game_map=map_img[level]
+        text_editor=text_editor_img
         gameDisplay.blit(game_map, (0,0))
         gameDisplay.blit(text_editor, (map_width,0))
         pygame.draw.line(gameDisplay,black,(map_width,display_height),(map_width,0), 2) #draw boundary for user to type code
@@ -823,11 +839,11 @@ def gameLoop():
             if lead_x >= randBlueprintX and lead_x <= randBlueprintX + BlueprintThickness or lead_x + block_size >= randBlueprintX and \
                lead_x + block_size <= randBlueprintX + BlueprintThickness:
                 if lead_y >= randBlueprintY and lead_y <= randBlueprintY + BlueprintThickness:
-                    rebelScore+=1
+                    rebelScore+=20
                     blueprintCollected = True
 
                 elif lead_y + block_size >= randBlueprintY and lead_y + block_size <= randBlueprintY + BlueprintThickness:
-                    rebelScore+=1
+                    rebelScore+=20
                     blueprintCollected = True
 
         clock.tick(30)
@@ -962,6 +978,7 @@ def gameLoop():
         gameDisplay.blit(btnimg, btn_rect)
         for event in events:
             if event.type == pygame.MOUSEBUTTONUP:
+                print pygame.mouse.get_pos()
                 if btn_rect.collidepoint(pygame.mouse.get_pos()):
                     if timerStart==False:
                         timer.set_ticks_func(pygame.time.get_ticks)
@@ -974,7 +991,7 @@ def gameLoop():
                     parsing = True
 
                     code = txtbx.get_text()
-                    code = code.replace('self.', '')
+                    code = code.replace('self', 'this_is_impossible_to_be_screwed_up')
                     code_lines += txtbx.get_linecount()
                     parser_thread.start(parser_func, code)
                     txtbx.clear()
