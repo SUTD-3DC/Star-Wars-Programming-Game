@@ -21,6 +21,7 @@ red = (255,0,0)
 green = (0, 255, 0)
 yellow = (255, 255, 0)
 grey = (96, 125, 139)
+orange = (255, 87, 34)
 
 # default colour for text editor font
 txtfont_default = white
@@ -131,9 +132,9 @@ btn_rect = pygame.Rect(1075, 590, *btnimg.get_rect().size)
 
 clock = pygame.time.Clock()
 
-smallfont = pygame.font.Font('diehund.ttf', 28)
-medfont = pygame.font.Font('diehund.ttf', 50)
-largefont = pygame.font.Font('diehund.ttf', 80)
+smallfont = pygame.font.Font('diehund.ttf', 30)
+medfont = pygame.font.Font('diehund.ttf', 40)
+largefont = pygame.font.Font('diehund.ttf', 90)
 
 #sounds
 collectSaber = pygame.mixer.Sound("sounds/saberswing2.wav")
@@ -246,8 +247,8 @@ def pause():
         clock.tick(5)
 
 def status(score,set_time,elapse_time):
-    text = smallfont.render("Score: "+str(score), True, black)
-    gameDisplay.blit(text,[15,map_height])
+    text = smallfont.render("Score:          " + str(score), True, black)
+    gameDisplay.blit(text,[55,map_height])
 
     if(elapse_time>set_time):
         elapse_time=set_time
@@ -484,12 +485,12 @@ def gameLoop():
             pygame.mixer.music.play(0)
             pygame.mixer.Sound(dvlist[randnumb]).play()
             #-----sounds
-            message_to_screen("Game over", red,
+            message_to_screen("GAME OVER", red,
                               y_displace=-50, size = "large")
-            message_to_screen("Press C to play again", grey,
-                              50, size = "small")
-            message_to_screen("or Q to quit", grey,
-                              100, size = "small")
+            message_to_screen("Press C to play again", orange,
+                              50, size = "medium")
+            message_to_screen("or Q to quit", orange,
+                              100, size = "medium")
             pygame.display.update()
 
         while gameOver == True or gameWon == True:
