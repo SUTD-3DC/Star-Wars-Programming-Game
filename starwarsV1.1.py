@@ -667,6 +667,11 @@ def gameLoop():
         # Use the Movement class to keep track of moves.
         if control_mode == 'TYPE':
             next_move = movement.get_next_move()
+            # print "next_move", next_move
+            # print "left collision", leftCollision
+            # print "right collision", rightCollision
+            # print "top collision", topCollision
+            # print "btm collision", bottomCollision
 
             # 0: up, 1: down, 2: right, 3: left
             if next_move == 'stationary':
@@ -676,7 +681,7 @@ def gameLoop():
                 if topCollision:
                     lead_x, lead_y, player = rebel_move(0, lead_x, lead_y, 0, 0, rebelScore, time_limit, seconds, xlocation, ylocation,
                                                     barrier_width, barrier_height, randBlueprintX, randBlueprintY)
-                    topCollision = False
+                    # topCollision = False
                 else:
                     lead_x, lead_y, player = rebel_move(0, lead_x, lead_y, 0, -10, rebelScore, time_limit, seconds, xlocation, ylocation,
                                                     barrier_width, barrier_height, randBlueprintX, randBlueprintY)
@@ -685,7 +690,7 @@ def gameLoop():
                 if bottomCollision:
                     lead_x, lead_y, player = rebel_move(1, lead_x, lead_y, 0, 0, rebelScore, time_limit, seconds, xlocation, ylocation,
                                                     barrier_width, barrier_height, randBlueprintX, randBlueprintY)
-                    bottomCollision = False
+                    # bottomCollision = False
                 else:
                     lead_x, lead_y, player = rebel_move(1, lead_x, lead_y, 0, 10, rebelScore, time_limit, seconds, xlocation, ylocation,
                                                     barrier_width, barrier_height, randBlueprintX, randBlueprintY)
@@ -694,7 +699,7 @@ def gameLoop():
                 if leftCollision:
                     lead_x, lead_y, player = rebel_move(3, lead_x, lead_y, 0, 0, rebelScore, time_limit, seconds, xlocation, ylocation,
                                                     barrier_width, barrier_height, randBlueprintX, randBlueprintY)
-                    leftCollision = False
+                    # leftCollision = False
                 else:
                     lead_x, lead_y, player = rebel_move(3, lead_x, lead_y, -10, 0, rebelScore, time_limit, seconds, xlocation, ylocation,
                                                     barrier_width, barrier_height, randBlueprintX, randBlueprintY)
@@ -704,7 +709,7 @@ def gameLoop():
                 if rightCollision:
                     lead_x, lead_y, player = rebel_move(2, lead_x, lead_y, 0, 0, rebelScore, time_limit, seconds, xlocation, ylocation,
                                                     barrier_width, barrier_height, randBlueprintX, randBlueprintY)
-                    rightCollision = False
+                    # rightCollision = False
                 else:
                     lead_x, lead_y, player = rebel_move(2, lead_x, lead_y, 10, 0, rebelScore, time_limit, seconds, xlocation, ylocation,
                                                     barrier_width, barrier_height, randBlueprintX, randBlueprintY)
@@ -713,7 +718,7 @@ def gameLoop():
                 if topCollision:
                     lead_x, lead_y, player = rebel_jump(0, lead_x, lead_y, 0, 0, rebelScore, time_limit, seconds, xlocation, ylocation,
                                                     barrier_width, barrier_height, randBlueprintX, randBlueprintY)
-                    topCollision = False
+                    # topCollision = False
                 else:
                     lead_x, lead_y, player = rebel_jump(0, lead_x, lead_y, 0, -10, rebelScore, time_limit, seconds, xlocation, ylocation,
                                                     barrier_width, barrier_height, randBlueprintX, randBlueprintY)
@@ -722,7 +727,7 @@ def gameLoop():
                 if bottomCollision:
                     lead_x, lead_y, player = rebel_jump(1, lead_x, lead_y, 0, 0, rebelScore, time_limit, seconds, xlocation, ylocation,
                                                     barrier_width, barrier_height, randBlueprintX, randBlueprintY)
-                    bottomCollision = False
+                    # bottomCollision = False
                 else:
                     lead_x, lead_y, player = rebel_jump(1, lead_x, lead_y, 0, 10, rebelScore, time_limit, seconds, xlocation, ylocation,
                                                     barrier_width, barrier_height, randBlueprintX, randBlueprintY)
@@ -732,7 +737,7 @@ def gameLoop():
                 if leftCollision:
                     lead_x, lead_y, player = rebel_jump(3, lead_x, lead_y, 0, 0, rebelScore, time_limit, seconds, xlocation, ylocation,
                                                     barrier_width, barrier_height, randBlueprintX, randBlueprintY)
-                    leftCollision = False
+                    # leftCollision = False
                 else:
                     lead_x, lead_y, player = rebel_jump(3, lead_x, lead_y, -10, 0, rebelScore, time_limit, seconds, xlocation, ylocation,
                                                     barrier_width, barrier_height, randBlueprintX, randBlueprintY)
@@ -742,10 +747,16 @@ def gameLoop():
                 if rightCollision:
                     lead_x, lead_y, player = rebel_jump(2, lead_x, lead_y, 0, 0, rebelScore, time_limit, seconds, xlocation, ylocation,
                                                     barrier_width, barrier_height, randBlueprintX, randBlueprintY)
-                    rightCollision = False
+                    # rightCollision = False
                 else:
                     lead_x, lead_y, player = rebel_jump(2, lead_x, lead_y, 10, 0, rebelScore, time_limit, seconds, xlocation, ylocation,
                                                     barrier_width, barrier_height, randBlueprintX, randBlueprintY)
+
+            # reset all collision state after moving (although right now it resets even when not moving)
+            topCollision = False
+            bottomCollision = False
+            leftCollision = False
+            rightCollision = False
 
         if crashed_into_wall(lead_x, lead_y, xlist, ylist, widthlist, heightlist):
             gameOver = True

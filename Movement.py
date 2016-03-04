@@ -23,7 +23,6 @@ class Movement:
                (self.steps_taken is None):
                 self.move = self.move_list.pop(0)
                 self.steps_taken = 0
-            else:
-                self.steps_taken += 1
+            self.steps_taken += 1
 
         return self.move
