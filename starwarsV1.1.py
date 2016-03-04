@@ -154,6 +154,16 @@ finnMoveDown = [finnDownWalk1, finnDownWalk2, finnDownStationary]
 finnMoveRight = [finnRightWalk1, finnRightWalk2, finnRightStationary]
 finnMoveLeft = [finnLeftWalk1, finnLeftWalk2, finnLeftStationary]
 
+darthMoveUp = [darthUpStationary, darthUpStationary, darthUpStationary]
+darthMoveDown = [darthDownStationary, darthDownStationary, darthDownStationary]
+darthMoveRight = [darthRightStationary, darthRightStationary, darthRightStationary]
+darthMoveLeft = [darthLeftStationary, darthLeftStationary, darthLeftStationary]
+
+stormtMoveUp = [stormtUpStationary, stormtUpStationary, stormtUpStationary]
+stormtMoveDown = [stormtDownStationary, stormtDownStationary, stormtDownStationary]
+stormtMoveRight = [stormtRightStationary, stormtRightStationary, stormtRightStationary]
+stormtMoveLeft = [stormtLeftStationary, stormtLeftStationary, stormtLeftStationary]
+
 mFalconFireUp = [mFalconStationary, mFalconThrusterSmall, mFalconStationary, mFalconThrusterSmall,
                  mFalconThrusterBig, mFalconStationary, mFalconThrusterSmall, mFalconThrusterBig,
                  mFalconThrusterSmall, mFalconThrusterBig, mFalconThrusterBig, mFalconThrusterBig]
