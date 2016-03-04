@@ -37,7 +37,7 @@ txtfont_focus = green
 
 # Global settings
 control_mode = 'TYPE' # 'KEYPRESS' or 'TYPE'
-time_limit = 50 # Time limit that affects Time Bar and Duration countdown
+time_limit = 20 # Time limit that affects Time Bar and Duration countdown
 
 # Use a timer
 timer = Timer()
@@ -206,7 +206,7 @@ def loadLevel(level):
                                                ,[390,300],[390,330],[390,360],[390,390],[390,420],[390,450],[390,480],[390,510],[390,540],[390,570]]
                   ,[],[[360,150],[360,300],[360,420]],[],[],[[180,210],[180,240],[210,450],[210,480],[210,510],[360,270],[360,270],[360,270],[360,300],[360,330],[570,150],
                                 [570,180],[570,210],[510,390],[510,420]],[]]
-    vader_face = [0,0,1,2,2,0,0,1,1,3] # 0-Down, 1-Left, 2- Up, 3-Right
+    vader_face = [1,0,0,1,0,2,0,1,1,3] # 0-Down, 1-Left, 2- Up, 3-Right
     blueprint_xy = [[],[],[],[],[120,150],[],[],[],[],[]]
     return [position[level][0],position[level][1],levelXList[level],levelYList[level],widthlist[level],heightlist[level],win_width[level],win_height[level],\
             win_xyCoordinates[level][0],win_xyCoordinates[level][1],holeCoords[level], vader_face[level],blueprint_xy[level]]
@@ -736,6 +736,7 @@ def gameLoop():
             pygame.display.update()
 
         elif gameOver == True:
+            rebelScore -= 5
             randnumb = random.randint(0,len(dvlist)-1)
             #-----sounds
             pygame.mixer.music.stop()
@@ -752,8 +753,12 @@ def gameLoop():
             #----- displays
             if vadarOrientation == 0:
                 gameDisplay.blit(darthDownStationary, (win_xlocation, win_ylocation))
-            else:
+            elif vadarOrientation == 2:
+                gameDisplay.blit(darthUpStationary, (win_xlocation, win_ylocation))
+            elif vadarOrientation == 1:
                 gameDisplay.blit(darthLeftStationary, (win_xlocation, win_ylocation))
+            else:
+                gameDisplay.blit(darthRightStationary, (win_xlocation, win_ylocation))
             pygame.display.update()
 
         while gameOver == True or gameWon == True:
@@ -798,6 +803,7 @@ def gameLoop():
 
         if game_state == 'error':
             display_error()
+            rebelScore -= 5
 
 
 ####################### UPDATES PLAYER LOCATION ################################
