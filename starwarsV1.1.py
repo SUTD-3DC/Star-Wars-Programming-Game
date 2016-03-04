@@ -19,7 +19,7 @@ import util
 
 pygame.init()
 
-level = 9
+level = 0
 numOfLevels = 10
 rebelScore = 0
 
