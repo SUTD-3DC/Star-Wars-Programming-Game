@@ -172,7 +172,7 @@ def loadLevel(level):
                 [90,390,360,90,360,90,90,90,90,60,480],
                 [180,120,120,120,120,120,150,210],[]]
     win_width = [30,120,30,30,30,30,30,30]
-    win_height = [30,30,30,30,30,30,60,480]
+    win_height = [30,30,30,30,30,30,60,510]
     win_xyCoordinates = [[420,0],[570,0],[780,270],[390,0],[360,570],
                          [420,570],[780,180],[780,60]]
     holeCoords = [[[570,180],[570,210]],[],[[390,0],[390,30],[390,60],[390,90],[390,120],[390,150],[390,180],[390,210],[390,240],[390,270],[390,300],[390,330],[390,360]
@@ -524,9 +524,10 @@ def gameLoop():
             #print (seconds) #print how many seconds
 
 ###################### WIN GAME CONDITIONS: Lands on the exit grid ###########################
-        if 0 < (lead_y+(block_size/2)) and (lead_y+(block_size/2)) < win_ylocation+win_height and \
-            win_xlocation < (lead_x+(block_size/2)) and (lead_x+(block_size/2)) < win_xlocation+win_width:
-            gameWon = True;
+        win_rect = pygame.Rect(win_xlocation, win_ylocation, win_width, win_height)
+        player_rect = pygame.Rect(lead_x, lead_y, 30, 30)
+        if win_rect.colliderect(player_rect):
+            gameWon = True
 
 ###################### END GAME CONDITIONS: Out of bound detection, Timelimit ###########################
         if lead_x > map_width - block_size or lead_x < 0 or lead_y > map_height - block_size \
