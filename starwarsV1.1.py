@@ -206,41 +206,46 @@ def done_moving():
         return True
     return False
 
-def move(direction, steps):
-    global game_state
-    game_state = direction
+class Player:
 
-    while True:
-        if game_state == 'gameover':
-            game_state = 'idle' # reset game_state
-        if game_state == 'idle':
-            steps -= 1
-            if steps <= 0: break
-            game_state = direction
+    def __init__(self):
+        self.moveUp = lambda steps = 1: self.move('move_up', steps)
+        self.moveDown = lambda steps = 1: self.move('move_down', steps)
+        self.moveLeft = lambda steps = 1: self.move('move_left', steps)
+        self.moveRight = lambda steps = 1: self.move('move_right', steps)
 
-moveUp = lambda steps = 1: move('move_up', steps)
-moveDown = lambda steps = 1: move('move_down', steps)
-moveLeft = lambda steps = 1: move('move_left', steps)
-moveRight = lambda steps = 1: move('move_right', steps)
+        self.jumpUp = lambda steps = 1: self.move('jump_up', steps)
+        self.jumpDown = lambda steps = 1: self.move('jump_down', steps)
+        self.jumpLeft = lambda steps = 1: self.move('jump_left', steps)
+        self.jumpRight = lambda steps = 1: self.move('jump_right', steps)
 
-jumpUp = lambda steps = 1: move('jump_up', steps)
-jumpDown = lambda steps = 1: move('jump_down', steps)
-jumpLeft = lambda steps = 1: move('jump_left', steps)
-jumpRight = lambda steps = 1: move('jump_right', steps)
+    def move(self, direction, steps):
+        global game_state
+        game_state = direction
 
-def holeInFront():
-    for hole in holes:
-        player_rect = pygame.Rect(lead_x, lead_y, 30, 30)
-        collide_direction = hole.collides(player_rect)
-        print player_rect
-        print 'psuedo_holes', collide_direction
-        print 'lead_direction', lead_direction
-        # if lead_direction == collide_direction: return True
-        if lead_direction == collide_direction:
-            print True
-            return True
-    print False
-    return False
+        while True:
+            if game_state == 'gameover':
+                game_state = 'idle' # reset game_state
+            if game_state == 'idle':
+                steps -= 1
+                if steps <= 0: break
+                game_state = direction
+
+    def holeInFront(self):
+        for hole in holes:
+            player_rect = pygame.Rect(lead_x, lead_y, 30, 30)
+            collide_direction = hole.collides(player_rect)
+            print player_rect
+            print 'psuedo_holes', collide_direction
+            print 'lead_direction', lead_direction
+            # if lead_direction == collide_direction: return True
+            if lead_direction == collide_direction:
+                print True
+                return True
+        print False
+        return False
+
+this_is_impossible_to_be_screwed_up = Player()
 
 def parser_func(code):
     global game_state
@@ -951,7 +956,7 @@ def gameLoop():
                     parsing = True
 
                     code = txtbx.get_text()
-                    code = code.replace('self.', '')
+                    code = code.replace('self', 'this_is_impossible_to_be_screwed_up')
                     code_lines += txtbx.get_linecount()
                     parser_thread.start(parser_func, code)
                     txtbx.clear()
