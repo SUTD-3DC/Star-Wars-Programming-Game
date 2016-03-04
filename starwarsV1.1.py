@@ -13,7 +13,7 @@ import ParserThread
 
 pygame.init()
 
-level = 7
+level = 0
 numOfLevels = 8
 white = (255,255,255)
 black = (0,0,0)
@@ -448,6 +448,13 @@ def draw_holes():
         for hole in holes:
             hole.draw()
 
+def crashed_into_wall(lead_x, lead_y, xlist, ylist, widthlist, heightlist):
+    player_rect = pygame.Rect(lead_x, lead_y, 30, 30)
+    for i in range(len(xlist)):
+        wall = pygame.Rect(xlist[i], ylist[i], widthlist[i], heightlist[i])
+        if wall.colliderect(player_rect): return True
+    return False
+
 def linecount_to_score(n):
     return txtbx.lines - n
 
@@ -479,6 +486,8 @@ def gameLoop():
     bottomCollision = False
     player = characterMove[1][2]
     [lead_x,lead_y,xlist,ylist,widthlist,heightlist,win_width,win_height,win_xlocation,win_ylocation,holeCoords] = loadLevel(level)
+
+
     
     lead_x_change = 0
     lead_y_change = 0
@@ -737,6 +746,9 @@ def gameLoop():
                 else:
                     lead_x, lead_y, player = rebel_jump(2, lead_x, lead_y, 10, 0, rebelScore, time_limit, seconds, xlocation, ylocation,
                                                     barrier_width, barrier_height, randBlueprintX, randBlueprintY)
+
+        if crashed_into_wall(lead_x, lead_y, xlist, ylist, widthlist, heightlist):
+            gameOver = True
                     
         # check if player is on a hole
         for hole in holes:
@@ -778,7 +790,6 @@ def gameLoop():
 
         if level == numOfLevels - 1:
             draw_holes()
-
         
         txtbx.update(events)
         txtbx.draw(gameDisplay)
