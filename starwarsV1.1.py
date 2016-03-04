@@ -265,8 +265,12 @@ def parser_func(code):
 def display_error():
     global game_state
     paused = True
-    message_to_screen("Your code has an error.", red, -100, size = "medium")
-    message_to_screen("Press c to restart", red, 0, size = "medium")
+    message_to_screen("CODE ERROR", red,
+                      y_displace=-50, size = "large")
+    message_to_screen("Press C to play again", orange,
+                      50, size = "medium")
+    message_to_screen("or Q to quit", orange,
+                      100, size = "medium")
     pygame.display.update()
     while paused:
         for event in pygame.event.get():
