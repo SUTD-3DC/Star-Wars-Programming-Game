@@ -211,7 +211,10 @@ def loadLevel(level):
                                                ,[390,300],[390,330],[390,360],[390,390],[390,420],[390,450],[390,480],[390,510],[390,540],[390,570]]
                   ,[],[[360,150],[360,300],[360,420]],[],[],[[180,210],[180,240],[210,450],[210,480],[210,510],[360,270],[360,270],[360,270],[360,300],[360,330],[570,150],
                                 [570,180],[570,210],[510,390],[510,420]],[]]
+<<<<<<< HEAD
 
+=======
+>>>>>>> 7845677a2b6f6b146da859786eb4a5dde935e742
     stormTCoords = [[],[],[],[],[],[],[330,210],[],[],[]]
     vader_face = [0,0,1,2,2,0,0,1,1,3] # 0-Down, 1-Left, 2- Up, 3-Right
     blueprint_xy = [[],[],[],[],[120,150],[],[],[],[],[]]
@@ -842,11 +845,14 @@ def gameLoop():
             gameDisplay.blit(player, (lead_x, lead_y))
         status(rebelScore, time_limit,seconds)
         helpInstructions(level)
+<<<<<<< HEAD
         
         if level == numOfLevels - 1:
             draw_holes()
         if level == 9 and not gameWon:
             gameDisplay.blit(mFalconStationary, (510, 225))
+=======
+>>>>>>> 7845677a2b6f6b146da859786eb4a5dde935e742
         if(len(stormT)>0):
             gameDisplay.blit(stormtRightStationary, (stormT[0], stormT[1]))
 
