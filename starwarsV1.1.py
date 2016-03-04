@@ -19,7 +19,7 @@ import util
 
 pygame.init()
 
-level = 9
+level = 0
 numOfLevels = 10
 rebelScore = 0
 
@@ -180,7 +180,7 @@ pressC = pygame.mixer.Sound("sounds/start.wav")
 wallbang = pygame.mixer.Sound("sounds/wallbang.ogg")
 
 def loadLevel(level):
-    position=[[360,570],[180,180],[0,450],[30,270],[750,540],[360,30],[420,30],[60,330],[30,270],[30,270]]
+    position=[[360,570],[180,180],[0,450],[30,270],[750,420],[360,30],[420,30],[60,330],[30,270],[30,270]]
     levelXList = [[510,0,0],[0,180,360,180,360,600,360,450],[0,120,270,420,690,540,390,240,0],
                   [0,0,0,30,780,780],[0,30,780,0,420,180,510,180,300,420,510,30,180,510,630],[0,0,60,390],
              [0,0,270,330,360,450,450,450,450,450,750],
@@ -211,10 +211,7 @@ def loadLevel(level):
                                                ,[390,300],[390,330],[390,360],[390,390],[390,420],[390,450],[390,480],[390,510],[390,540],[390,570]]
                   ,[],[[360,150],[360,300],[360,420]],[],[],[[180,210],[180,240],[210,450],[210,480],[210,510],[360,270],[360,270],[360,270],[360,300],[360,330],[570,150],
                                 [570,180],[570,210],[510,390],[510,420]],[]]
-<<<<<<< HEAD
 
-=======
->>>>>>> 7845677a2b6f6b146da859786eb4a5dde935e742
     stormTCoords = [[],[],[],[],[],[],[330,210],[],[],[]]
     vader_face = [0,0,1,2,2,0,0,1,1,3] # 0-Down, 1-Left, 2- Up, 3-Right
     blueprint_xy = [[],[],[],[],[120,150],[],[],[],[],[]]
@@ -377,8 +374,7 @@ def helpInstructions(level):
                         "c          x = x + 1",
                         "'self' represents the object you are",
                         " controling, in this case the player."],
-                   3 : ["The Death Star Blueprint earns you points",
-                        "",
+                   3 : ["",
                         "Here are some useful actions to use", # Learn condition check
                         "c      if self.holeInFront() :",
                         "c          self.jumpRight()",
@@ -386,26 +382,27 @@ def helpInstructions(level):
                         "Don't forget how to use the loops!",
                         "c      while x < 5 :",
                         "c          self.jumpUp()"],
-                   4 : ["If you didn't realize, If and While", # Example conditions 1
+                   4 : ["The Death Star Blueprint earns you ",
+                        "20 points!",
+                        "If you didn't realize, If and While", # Example conditions 1
                         "statements require conditions.",
-                        "",
                         "c      x = 0",
                         "c      while x < 5 :",
                         "c          self.moveUp()",
                         "c          if x == 3",
                         "c              self.moveLeft()",
                         ""],
-                   5 : ["I avoid getting detected by infrared sensor",
-                        "",
-                        "Use less than(<), more than(>) or" # Example conditions 2
-                        "equal to(==), within a condition",
-                        "check.",
-                        "c      while <condtion> :",
+                   5 : ["Avoid getting detected by infrared",
+                        "sensors! They're like holes!",
+                        "You can use less than(<), more ", # Example conditions 2
+                        "than(>) or equal to(==), within",
+                        "a condition check.",
+                        "c      while self.holeInFront() :",
                         "c          <do stuff>",
-                        "c      if <condition> :",
+                        "c      if self.holeInFront():",
                         "c          <do stuff>"],
                    6 : ["Let's see how quickly you can get", # Test!
-                        "this over and done with",
+                        "this over and done with!",
                         "",
                         "c      x = <value>",
                         "c      while <condtion> :",
@@ -418,7 +415,7 @@ def helpInstructions(level):
                         "Try assigning 'True' as the x value",
                         "",
                         "c      x = <value>",
-                        "c      while <condtion> :",
+                        "c      while x:",
                         "c          <do stuff>",
                         "c      if <condition> :",
                         "c          <do stuff>"],
@@ -427,15 +424,15 @@ def helpInstructions(level):
                         "where is it used?",
                         "",
                         "c      x = <value>",
-                        "c      while <condtion> :",
+                        "c      while <condition> :",
                         "c          <do stuff>",
                         "c      if <condition> :",
                         "c          <do stuff>"],
                    9 : ["Hop onto the Millenium Falcon and",
                         "escape!",
                         "Holes will randomly appear on the",
-                        "so try putting if-statement in ",
-                        "a loop"]}
+                        "map, so try putting if-statement ",
+                        "in a loop!"]}
     for lineNumber in range(len(helpMessage[level])):
         isCode = False
         if len(helpMessage[level][lineNumber]) > 0:
@@ -845,14 +842,13 @@ def gameLoop():
             gameDisplay.blit(player, (lead_x, lead_y))
         status(rebelScore, time_limit,seconds)
         helpInstructions(level)
-<<<<<<< HEAD
+
         
         if level == numOfLevels - 1:
             draw_holes()
         if level == 9 and not gameWon:
             gameDisplay.blit(mFalconStationary, (510, 225))
-=======
->>>>>>> 7845677a2b6f6b146da859786eb4a5dde935e742
+
         if(len(stormT)>0):
             gameDisplay.blit(stormtRightStationary, (stormT[0], stormT[1]))
 
