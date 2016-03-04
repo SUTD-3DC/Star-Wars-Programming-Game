@@ -3,10 +3,9 @@ import pygame
 class Hole:
 
     def __init__(self, display, coord=None):
+        self.hole_img = pygame.image.load('pictures/Hole.png').convert_alpha()
         self.coord = coord
         self.display = display
-        self.surface = pygame.Surface((30, 30), 0, display)
-        self.surface.fill((0, 0, 0))
         self.make_colliders()
 
     def make_colliders(self):
@@ -38,4 +37,4 @@ class Hole:
         return None
 
     def draw(self):
-        self.display.blit(self.surface, self.coord)
+        self.display.blit(self.hole_img, self.coord)

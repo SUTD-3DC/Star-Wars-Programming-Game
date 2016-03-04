@@ -13,7 +13,7 @@ import ParserThread
 
 pygame.init()
 
-level = 0
+level = 7
 numOfLevels = 8
 white = (255,255,255)
 black = (0,0,0)
@@ -363,6 +363,7 @@ def rebel_move(direction, playerX, playerY, xChange, yChange, rebelScore, time_l
 ##            holes[1].draw()
             gameDisplay.blit(btnimg, btn_rect)
             gameDisplay.blit(img, (playerX, playerY))
+            draw_holes()
 
             image = img
 
@@ -419,6 +420,7 @@ def rebel_jump(direction, playerX, playerY, xChange, yChange, rebelScore, time_l
 ##                hole.draw()
             gameDisplay.blit(btnimg, btn_rect)
             gameDisplay.blit(img, (playerX, playerY))
+            draw_holes()
 
             image = img
 
@@ -427,6 +429,24 @@ def rebel_jump(direction, playerX, playerY, xChange, yChange, rebelScore, time_l
             clock.tick(60)
 
     return playerX, playerY, image
+
+def place_random_holes():
+    del holes[:]
+    possible_locs = range(3, 25, 2)
+    vertical_locs = random.randint(6, 12)
+    for i in range (8): # number of columns of holes
+        x = possible_locs.pop(random.randrange(len(possible_locs)))
+        y = random.choice(xrange(6, 12))
+        make_hole_columns(x * 30, y * 30, random.choice((2, 3)))
+
+def make_hole_columns(x, y, height):
+    for i in range(height):
+        holes.append(Hole(gameDisplay, (x, y + (i * 30))))
+
+def draw_holes():
+    if level == numOfLevels - 1:
+        for hole in holes:
+            hole.draw()
 
 def linecount_to_score(n):
     return txtbx.lines - n
@@ -744,6 +764,10 @@ def gameLoop():
                         timer.set_ticks_func(pygame.time.get_ticks)
                         timer.reset()
                         timerStart=True
+
+                    if level == numOfLevels - 1:
+                        place_random_holes()
+
                     parsing = True
 
                     code = txtbx.get_text()
@@ -752,6 +776,10 @@ def gameLoop():
                     parser_thread.start(parser_func, code)
                     txtbx.clear()
 
+        if level == numOfLevels - 1:
+            draw_holes()
+
+        
         txtbx.update(events)
         txtbx.draw(gameDisplay)
         pygame.display.update()
