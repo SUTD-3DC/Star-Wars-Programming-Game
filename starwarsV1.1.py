@@ -14,7 +14,7 @@ import ParserThread
 pygame.init()
 
 level = 0
-numOfLevels = 6
+numOfLevels = 8
 white = (255,255,255)
 black = (0,0,0)
 red = (255,0,0)
@@ -63,9 +63,9 @@ pygame.display.set_caption('Star Wars: A programming education game')
 
 wallpaper_img = 'wallpaper/Wallpaper.png'
 text_editor_img = 'pictures/right panel/Text editor.png'
-map_img = ['pictures/Map/Map_0.png','pictures/Map/Map_1.png',
-           'pictures/Map/Map_2.png','pictures/Map/Map_3.png','pictures/Map/Map_4.png',
-           'pictures/Map/Map_5.png']
+map_img = ['pictures/Map/Map_0.png','pictures/Map/Map_4.png','pictures/Map/Balcony_map.png',
+           'pictures/Map/Map_1.png','pictures/Map/Map_2.png','pictures/Map/Map_3.png',
+           'pictures/Map/Map_5.png','pictures/Map/docking_bay.png']
 
 lukeUpStationary = pygame.image.load('pictures/lukeMove/Luke_up_stationary.png')
 lukeUpWalk1 = pygame.image.load('pictures/lukeMove/Luke_up_walk_1.png')
@@ -91,21 +91,39 @@ reyLeftStationary = pygame.image.load('pictures/reyMove/Rey_left_walk_1.png')
 reyLeftWalk1 = pygame.image.load('pictures/reyMove/Rey_left_walk_1.png')
 reyLeftWalk2 = pygame.image.load('pictures/reyMove/Rey_left_walk_2.png')
 
-lukeMoveUp = [lukeUpWalk1, lukeUpWalk2, lukeUpStationary]
-lukeMoveDown = [lukeDownWalk1, lukeDownWalk2, lukeDownStationary]
-lukeMoveRight = [lukeRightStationary, lukeRightWalk, lukeRightStationary]
-lukeMoveLeft = [lukeLeftStationary, lukeLeftWalk, lukeLeftStationary]
+finnUpStationary = pygame.image.load('pictures/finnMove/Finn_up_stationary.png')
+finnUpWalk1 = pygame.image.load('pictures/finnMove/Finn_up_walk_1.png')
+finnUpWalk2 = pygame.image.load('pictures/finnMove/Finn_up_walk_2.png')
+finnDownStationary = pygame.image.load('pictures/finnMove/Finn_down_stationary.png')
+finnDownWalk1 = pygame.image.load('pictures/finnMove/Finn_down_walk_1.png')
+finnDownWalk2 = pygame.image.load('pictures/finnMove/Finn_down_walk_2.png')
+finnRightStationary = pygame.image.load('pictures/finnMove/Finn_right_stationary.png')
+finnRightWalk1 = pygame.image.load('pictures/finnMove/Finn_right_walk_1.png')
+finnRightWalk2 = pygame.image.load('pictures/finnMove/Finn_right_walk_2.png')
+finnLeftStationary = pygame.image.load('pictures/finnMove/Finn_left_stationary.png')
+finnLeftWalk1 = pygame.image.load('pictures/finnMove/Finn_left_walk_1.png')
+finnLeftWalk2 = pygame.image.load('pictures/finnMove/Finn_left_walk_2.png')
+
 
 reyMoveUp = [reyUpWalk1, reyUpWalk2, reyUpStationary]
 reyMoveDown = [reyDownWalk1, reyDownWalk2, reyDownStationary]
 reyMoveRight = [reyRightWalk1, reyRightWalk2, reyRightStationary]
 reyMoveLeft = [reyLeftWalk1, reyLeftWalk2, reyLeftStationary]
 
+lukeMoveUp = [lukeUpWalk1, lukeUpWalk2, lukeUpStationary]
+lukeMoveDown = [lukeDownWalk1, lukeDownWalk2, lukeDownStationary]
+lukeMoveRight = [lukeRightStationary, lukeRightWalk, lukeRightStationary]
+lukeMoveLeft = [lukeLeftStationary, lukeLeftWalk, lukeLeftStationary]
+
+finnMoveUp = [finnUpWalk1, finnUpWalk2, finnUpStationary]
+finnMoveDown = [finnDownWalk1, finnDownWalk2, finnDownStationary]
+finnMoveRight = [finnRightWalk1, finnRightWalk2, finnRightStationary]
+finnMoveLeft = [finnLeftWalk1, finnLeftWalk2, finnLeftStationary]
+
 blueprint_img = pygame.image.load('pictures/Blueprint.png')
 
 # holes
-holes = [Hole(gameDisplay, (750, 420)),
-         Hole(gameDisplay, (630, 420))]
+holes = []
 
 # for run button
 btnimg = pygame.image.load('pictures/runbtn.png').convert_alpha()
@@ -123,35 +141,36 @@ pressC = pygame.mixer.Sound("sounds/start.wav")
 wallbang = pygame.mixer.Sound("sounds/wallbang.ogg")
 
 def loadLevel(level):
-    position=[[180,180],[750,540],[360,30],[420,30],[0,450],[0,330]]
-    levelXList = [[0,180,360,180,360,600,360,450],
-             [0,30,780,0,420,180,510,180,300,420,510,30,180,510,630],
-             [0,0,60,390],
+    position=[[180,180],[0,450],[30,270],[750,540],[360,30],[420,30],[0,330],[30,270]]
+    levelXList = [[0,180,360,180,360,600,360,450],[0,120,270,420,690,540,390,240,0],
+                  [],[0,30,780,0,420,180,510,180,300,420,510,30,180,510,630],[0,0,60,390],
              [0,0,270,330,360,450,450,450,450,450,750],
-             [0,120,270,420,690,540,390,240,0],
-             [0,0,300,540,180,420,660,0]]
-    levelYList = [[0,0,120,450,390,0,240,0],
+             [0,0,300,540,180,420,660,0],[]]
+    levelYList = [[0,0,120,450,390,0,240,0],[0,0,0,0,0,150,270,390,510],[],
                   [0,570,0,0,0,480,480,30,30,60,60,210,180,180,210],
                   [0,90,270,0],
                   [0,90,120,120,240,0,120,270,420,540,60],
-                  [0,0,0,0,0,150,270,390,510],
-                  [0,180,180,180,270,270,240,390]]
+                  [0,180,180,180,270,270,240,390],[]]
     widthlist = [[180,240,60,630,450,210,240,150],
+                 [120,150,150,150,120,150,150,150,240],[],
                  [30,780,30,390,780,120,120,120,90,90,120,150,120,120,180],
                  [360,60,300,420],
                  [420,240,60,90,60,360,270,180,270,360,60],
-                 [120,150,150,150,120,150,150,150,240],
-                 [810,120,60,60,60,60,150,810]]
+                 [810,120,60,60,60,60,150,810],[]]
     heightlist=[[600,120,60,150,60,390,90,180],
+                [420,300,180,60,600,450,330,210,90],[],
                 [600,30,570,60,60,90,90,120,90,60,90,120,210,210,120],
                 [90,510,330,600],
                 [90,390,360,90,360,90,90,90,90,60,480],
-                [420,300,180,60,600,450,330,210,90],
-                [180,120,120,120,120,120,150,210]]
-    win_width = [30,30,30,30,120,30]
-    win_height = [30,30,30,30,30,60]
-    win_xyCoordinates = [[420,0],[390,0],[360,570],[420,570],[570,0],[780,180]]
-    return [position[level][0],position[level][1],levelXList[level],levelYList[level],widthlist[level],heightlist[level],win_width[level],win_height[level], win_xyCoordinates[level][0],win_xyCoordinates[level][1]]
+                [180,120,120,120,120,120,150,210],[]]
+    win_width = [30,120,30,30,30,30,30,30]
+    win_height = [30,30,30,30,30,30,60,480]
+    win_xyCoordinates = [[420,0],[570,0],[780,270],[390,0],[360,570],
+                         [420,570],[780,180],[780,60]]
+    holeCoords = [[[570,180],[570,210]],[],[[390,0],[390,30],[390,60],[390,90],[390,120],[390,150],[390,180],[390,210],[390,240],[390,270],[390,300],[390,330],[390,360]
+                                            ,[390,390],[390,420],[390,450],[390,480],[390,510],[390,540],[390,570]]
+                  ,[],[],[],[],[]]
+    return [position[level][0],position[level][1],levelXList[level],levelYList[level],widthlist[level],heightlist[level],win_width[level],win_height[level], win_xyCoordinates[level][0],win_xyCoordinates[level][1],holeCoords[level]]
 
 def done_moving():
     if movement.get_next_move() == 'stationary':
@@ -227,7 +246,7 @@ def pause():
         clock.tick(5)
 
 def status(score,set_time,elapse_time):
-    text = smallfont.render("Score: " + str(score), True, black)
+    text = smallfont.render("Score: "+str(score), True, black)
     gameDisplay.blit(text,[15,map_height])
 
     if(elapse_time>set_time):
@@ -255,8 +274,11 @@ def game_intro():
                 pygame.quit()
                 quit()
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_m:
+                if event.key == pygame.K_p:
                     characterMove = [lukeMoveUp, lukeMoveDown, lukeMoveRight, lukeMoveLeft]
+                    intro=False
+                if event.key == pygame.K_m:
+                    characterMove = [finnMoveUp, finnMoveDown, finnMoveRight, finnMoveLeft]
                     intro=False
                 if event.key == pygame.K_f:
                     characterMove = [reyMoveUp, reyMoveDown, reyMoveRight, reyMoveLeft]
@@ -302,8 +324,8 @@ def rebel_move(direction, playerX, playerY, xChange, yChange, rebelScore, time_l
                 #barrier(xlocation, randomHeight, barrier_width)
                 gameDisplay.blit(blueprint_img, (randBlueprintX, randBlueprintY))
 
-            holes[0].draw()
-            holes[1].draw()
+##            holes[0].draw()
+##            holes[1].draw()
             gameDisplay.blit(btnimg, btn_rect)
             gameDisplay.blit(img, (playerX, playerY))
 
@@ -356,9 +378,10 @@ def rebel_jump(direction, playerX, playerY, xChange, yChange, rebelScore, time_l
             if blueprintCollected == False:
                 #barrier(xlocation, randomHeight, barrier_width)
                 gameDisplay.blit(blueprint_img, (randBlueprintX, randBlueprintY))
-
-            holes[0].draw()
-            holes[1].draw()
+                
+            #for checking hole position
+##            for hole in holes:
+##                hole.draw()
             gameDisplay.blit(btnimg, btn_rect)
             gameDisplay.blit(img, (playerX, playerY))
 
@@ -390,7 +413,7 @@ def message_to_screen(msg,color, y_displace = 0, size = "small"):
 
 def gameLoop():
     global parsing, game_state, text_editor, elemNumber, level,txtbx, game_map, blueprintCollected, characterMove,numOfLevels
-    global lead_x, lead_y, lead_direction
+    global lead_x, lead_y, lead_direction,holes
     gameWon = False
     gameExit = False
     gameOver = False
@@ -399,12 +422,7 @@ def gameLoop():
     topCollision = False
     bottomCollision = False
     player = characterMove[1][2]
-    [lead_x,lead_y,xlist,ylist,widthlist,heightlist,win_width,win_height,win_xlocation,win_ylocation] = loadLevel(level)
-
-    # WinGrid - size and location for win state to be triggered
-##    win_width = 30
-##    win_xlocation = 390
-##    win_ylocation = 0
+    [lead_x,lead_y,xlist,ylist,widthlist,heightlist,win_width,win_height,win_xlocation,win_ylocation,holeCoords] = loadLevel(level)
     
     lead_x_change = 0
     lead_y_change = 0
@@ -416,7 +434,9 @@ def gameLoop():
 
     timerStart=False
     seconds=0
-
+    del holes[:]
+    for i in range(len(holeCoords)):
+        holes.append(Hole(gameDisplay, (holeCoords[i][0], holeCoords[i][1])))
     # use get_ticks to time
     #timer.reset()
 
@@ -440,7 +460,6 @@ def gameLoop():
         playonce = 1
 
     while not gameExit:
-
         if gameWon == True:
             #-----sounds
             pygame.mixer.music.stop()
@@ -569,9 +588,9 @@ def gameLoop():
                     blueprintCollected = True
 
         clock.tick(30)
-
-        holes[0].draw()
-        holes[1].draw()
+            ##for checking holes in map
+##        for hole in holes:
+##            hole.draw()
 
     ######################### Player controls - Keypress or Typed text #########################
 
