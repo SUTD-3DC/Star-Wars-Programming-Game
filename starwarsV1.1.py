@@ -18,8 +18,10 @@ import ParserThread
 
 pygame.init()
 
-level = 0
-numOfLevels = 8
+level = 7
+numOfLevels = 9
+rebelScore = 0
+
 white = (255,255,255)
 black = (0,0,0)
 red = (255,0,0)
@@ -69,7 +71,8 @@ pygame.display.set_caption('Star Wars: A programming education game')
 
 wallpaper_img = 'wallpaper/Wallpaper.png'
 text_editor_img = 'pictures/right panel/Text editor.png'
-map_img = ['pictures/Map/Map_0.png','pictures/Map/Map_4.png','pictures/Map/Balcony_map.png',
+map_img = ['pictures/Map/warm_up.png',
+           'pictures/Map/Map_0.png','pictures/Map/Map_4.png','pictures/Map/Balcony_map.png',
            'pictures/Map/Map_1.png','pictures/Map/Map_2.png','pictures/Map/Map_3.png',
            'pictures/Map/Map_5.png','pictures/Map/docking_bay.png']
 
@@ -147,35 +150,36 @@ pressC = pygame.mixer.Sound("sounds/start.wav")
 wallbang = pygame.mixer.Sound("sounds/wallbang.ogg")
 
 def loadLevel(level):
-    position=[[180,180],[0,450],[30,270],[750,540],[360,30],[420,30],[0,330],[30,270]]
-    levelXList = [[0,180,360,180,360,600,360,450],[0,120,270,420,690,540,390,240,0],
-                  [],[0,30,780,0,420,180,510,180,300,420,510,30,180,510,630],[0,0,60,390],
+    position=[[360,570],[180,180],[0,450],[30,270],[750,540],[360,30],[420,30],[60,330],[30,270]]
+    levelXList = [[510,0,0],[0,180,360,180,360,600,360,450],[0,120,270,420,690,540,390,240,0],
+                  [0,0,0,30,780,780],[0,30,780,0,420,180,510,180,300,420,510,30,180,510,630],[0,0,60,390],
              [0,0,270,330,360,450,450,450,450,450,750],
-             [0,0,300,540,180,420,660,0],[]]
-    levelYList = [[0,0,120,450,390,0,240,0],[0,0,0,0,0,150,270,390,510],[],
+             [0,0,360,600,240,480,720,0,0],[0,0,0,30]]
+    levelYList = [[360,0,180],[0,0,120,450,390,0,240,0],[0,0,0,0,0,150,270,390,510],[0,30,300,570,30,300],
                   [0,570,0,0,0,480,480,30,30,60,60,210,180,180,210],
                   [0,90,270,0],
                   [0,90,120,120,240,0,120,270,420,540,60],
-                  [0,180,180,180,270,270,240,390],[]]
-    widthlist = [[180,240,60,630,450,210,240,150],
-                 [120,150,150,150,120,150,150,150,240],[],
+                  [0,180,180,180,270,270,240,390,300],[0,60,300,570]]
+    widthlist = [[300,810,270],[180,240,60,630,450,210,240,150],
+                 [120,150,150,150,120,150,150,150,240],[600,30,30,780,30,30],
                  [30,780,30,390,780,120,120,120,90,90,120,150,120,120,180],
                  [360,60,300,420],
                  [420,240,60,90,60,360,270,180,270,360,60],
-                 [810,120,60,60,60,60,150,810],[]]
-    heightlist=[[600,120,60,150,60,390,90,180],
-                [420,300,180,60,600,450,330,210,90],[],
+                 [810,180,60,60,60,60,90,810,60],[810,30,30,780]]
+    heightlist=[[240,180,420],[600,120,60,150,60,390,90,180],
+                [420,300,180,60,600,450,330,210,90],[60,240,270,30,240,270],
                 [600,30,570,60,60,90,90,120,90,60,90,120,210,210,120],
                 [90,510,330,600],
                 [90,390,360,90,360,90,90,90,90,60,480],
-                [180,120,120,120,120,120,150,210],[]]
-    win_width = [30,120,30,30,30,30,30,30]
-    win_height = [30,30,30,30,30,30,60,480]
-    win_xyCoordinates = [[420,0],[570,0],[780,270],[390,0],[360,570],
+                [180,120,120,120,120,120,150,210,90],[60,210,300,30]]
+    win_width = [30,30,120,30,30,30,30,30,30]
+    win_height = [240,30,30,30,30,30,30,60,480]
+    win_xyCoordinates = [[780,180],[420,0],[570,0],[780,270],[390,0],[360,570],
                          [420,570],[780,180],[780,60]]
-    holeCoords = [[[570,180],[570,210]],[],[[390,0],[390,30],[390,60],[390,90],[390,120],[390,150],[390,180],[390,210],[390,240],[390,270],[390,300],[390,330],[390,360]
-                                            ,[390,390],[390,420],[390,450],[390,480],[390,510],[390,540],[390,570]]
-                  ,[],[],[],[],[]]
+    holeCoords = [[],[[570,180],[570,210]],[],[[390,0],[390,30],[390,60],[390,90],[390,120],[390,150],[390,180],[390,210],[390,240],[390,270]
+                                               ,[390,300],[390,330],[390,360],[390,390],[390,420],[390,450],[390,480],[390,510],[390,540],[390,570]]
+                  ,[],[[260,150]],[],[],[[180,210],[180,240],[210,450],[210,480],[210,510],[360,270],[360,270],[360,270],[360,300],[360,330],[570,150],
+                                [570,180],[570,210],[510,390],[510,420]]]
     return [position[level][0],position[level][1],levelXList[level],levelYList[level],widthlist[level],heightlist[level],win_width[level],win_height[level], win_xyCoordinates[level][0],win_xyCoordinates[level][1],holeCoords[level]]
 
 def done_moving():
@@ -324,7 +328,7 @@ def rebel_move(direction, playerX, playerY, xChange, yChange, rebelScore, time_l
             pygame.draw.line(gameDisplay,black,(map_width,display_height),(map_width,0), 2)#draw boundary for user to type code
             pygame.draw.line(gameDisplay,black,(0,map_height),(map_width,map_height), 2)#draw boundary for status bar
             status(rebelScore, time_limit,seconds)
-            game_map=pygame.image.load(map_img[level]);
+            game_map=pygame.image.load(map_img[level])
             
             if blueprintCollected == False:
                 #barrier(xlocation, randomHeight, barrier_width)
@@ -379,7 +383,7 @@ def rebel_jump(direction, playerX, playerY, xChange, yChange, rebelScore, time_l
             pygame.draw.line(gameDisplay,black,(0,map_height),(map_width,map_height), 2)#draw boundary for status bar
             status(rebelScore, time_limit,seconds)
             #if level one
-            game_map=pygame.image.load(map_img[level]);
+            game_map=pygame.image.load(map_img[level])
 
             if blueprintCollected == False:
                 #barrier(xlocation, randomHeight, barrier_width)
@@ -419,7 +423,7 @@ def message_to_screen(msg,color, y_displace = 0, size = "small"):
 
 def gameLoop():
     global parsing, game_state, text_editor, elemNumber, level,txtbx, game_map, blueprintCollected, characterMove,numOfLevels
-    global lead_x, lead_y, lead_direction,holes
+    global lead_x, lead_y, lead_direction,holes, rebelScore
     gameWon = False
     gameExit = False
     gameOver = False
@@ -432,7 +436,6 @@ def gameLoop():
     
     lead_x_change = 0
     lead_y_change = 0
-    rebelScore = 0
     randBlueprintX, randBlueprintY = randBlueprintGen()
     step_count = 0
     pause_duration = 0
@@ -529,7 +532,7 @@ def gameLoop():
 ###################### WIN GAME CONDITIONS: Lands on the exit grid ###########################
         if 0 < (lead_y+(block_size/2)) and (lead_y+(block_size/2)) < win_ylocation+win_height and \
             win_xlocation < (lead_x+(block_size/2)) and (lead_x+(block_size/2)) < win_xlocation+win_width:
-            gameWon = True;
+            gameWon = True
 
 ###################### END GAME CONDITIONS: Out of bound detection, Timelimit ###########################
         if lead_x > map_width - block_size or lead_x < 0 or lead_y > map_height - block_size \
@@ -543,8 +546,8 @@ def gameLoop():
 
 ####################### displaying it on screen ################################
         gameDisplay.fill(white)
-        game_map=pygame.image.load(map_img[level]);
-        text_editor=pygame.image.load(text_editor_img);
+        game_map=pygame.image.load(map_img[level])
+        text_editor=pygame.image.load(text_editor_img)
         gameDisplay.blit(game_map, (0,0))
         gameDisplay.blit(text_editor, (map_width,0))
         pygame.draw.line(gameDisplay,black,(map_width,display_height),(map_width,0), 2) #draw boundary for user to type code
