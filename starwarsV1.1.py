@@ -64,9 +64,9 @@ pygame.display.set_caption('Star Wars: A programming education game')
 
 wallpaper_img = 'wallpaper/Wallpaper.png'
 text_editor_img = 'pictures/right panel/Text editor.png'
-map_img = ['pictures/Map/last_level_map.png', """'pictures/Map/Map_0.png',""" 'pictures/Map/Map_4.png', 'pictures/Map/Balcony_map.png',
-           'pictures/Map/Map_1.png', 'pictures/Map/Map_2.png', 'pictures/Map/Map_3.png',
-           'pictures/Map/Map_5.png', 'pictures/Map/docking_bay.png']
+map_img = ['pictures/Map/Map_0.png','pictures/Map/Map_4.png','pictures/Map/Balcony_map.png',
+           'pictures/Map/Map_1.png','pictures/Map/Map_2.png','pictures/Map/Map_3.png',
+           'pictures/Map/Map_5.png','pictures/Map/docking_bay.png']
 
 lukeUpStationary = pygame.image.load('pictures/lukeMove/Luke_up_stationary.png')
 lukeUpWalk1 = pygame.image.load('pictures/lukeMove/Luke_up_walk_1.png')
