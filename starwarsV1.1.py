@@ -5,6 +5,11 @@ import time
 import random
 import threading
 import traceback
+import pygame
+import os
+import sys
+from pygame import *
+from pygame.locals import *
 
 from Movement import Movement
 from Hole import Hole
@@ -58,7 +63,7 @@ blueprintCollected = False
 BlueprintThickness = 30
 block_size = 10
 FPS = 30
-gameDisplay = pygame.display.set_mode((display_width,display_height))
+gameDisplay = pygame.display.set_mode((display_width,display_height),FULLSCREEN)
 pygame.display.set_caption('Star Wars: A programming education game')
 
 wallpaper_img = 'wallpaper/Wallpaper.png'
@@ -296,6 +301,7 @@ def game_intro():
 ##                          black, 30,"small")
         gameDisplay.fill(white)
         wp = pygame.image.load(wallpaper_img)
+        wp = pygame.transform.scale(wp,(display_width,display_height))
         gameDisplay.blit(wp, (0,0))
         pygame.display.update()
         clock.tick(5)
@@ -317,9 +323,8 @@ def rebel_move(direction, playerX, playerY, xChange, yChange, rebelScore, time_l
             pygame.draw.line(gameDisplay,black,(map_width,display_height),(map_width,0), 2)#draw boundary for user to type code
             pygame.draw.line(gameDisplay,black,(0,map_height),(map_width,map_height), 2)#draw boundary for status bar
             status(rebelScore, time_limit,seconds)
-            #if level one
             game_map=pygame.image.load(map_img[level]);
-
+            
             if blueprintCollected == False:
                 #barrier(xlocation, randomHeight, barrier_width)
                 gameDisplay.blit(blueprint_img, (randBlueprintX, randBlueprintY))
