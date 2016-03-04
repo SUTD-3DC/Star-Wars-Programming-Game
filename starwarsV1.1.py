@@ -222,14 +222,41 @@ def holeInFront():
     return False
 
 def parser_func(code):
+    global game_state
     try:
         exec(code)
     except SystemExit:
         print "exit from loop."
     except:
         traceback.print_exc()
+        game_state = 'error'
     finally:
         parsing = False
+
+def display_error():
+    global game_state
+    paused = True
+    message_to_screen("Your code has an error.", red, -100, size = "medium")
+    message_to_screen("Press c to restart", red, 0, size = "medium")
+    pygame.display.update()
+    while paused:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_c:
+                    paused = False
+                elif event.key == pygame.K_q:
+                    pygame.quit()
+                    quit()
+
+        clock.tick(5)
+    game_state = 'idle'
+    pygame.mixer.music.stop()
+    pressC.play()
+    gameLoop()
+
 
 def barrier(xlocation,ylocation, barrier_width, barrier_height):
     pygame.draw.rect(gameDisplay,black, [xlocation, ylocation, barrier_width, barrier_height])
@@ -533,6 +560,9 @@ def gameLoop():
         if lead_x > map_width - block_size or lead_x < 0 or lead_y > map_height - block_size \
             or lead_y<0:
             gameOver = True
+
+        if game_state == 'error':
+            display_error()
 
 
 ####################### UPDATES PLAYER LOCATION ################################
