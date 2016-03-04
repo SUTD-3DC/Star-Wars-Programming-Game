@@ -20,7 +20,7 @@ import util
 pygame.init()
 
 level = 0
-numOfLevels = 9
+numOfLevels = 10
 rebelScore = 0
 
 white = (255,255,255)
@@ -74,15 +74,16 @@ rebelScore = 0
 BlueprintThickness = 30
 block_size = 10
 FPS = 30
-gameDisplay = pygame.display.set_mode((display_width,display_height),FULLSCREEN)
+gameDisplay = pygame.display.set_mode((display_width,display_height))
+# gameDisplay = pygame.display.set_mode((display_width,display_height),FULLSCREEN)
 pygame.display.set_caption('Star Wars: A programming education game')
 
 wallpaper_img = util.load_image('wallpaper/Wallpaper.png')
 text_editor_img = util.load_image('pictures/right panel/Text editor.png')
 maps = ['pictures/Map/warm_up.png',
            'pictures/Map/Map_0.png','pictures/Map/Map_4.png','pictures/Map/Balcony_map.png',
-           'pictures/Map/Map_1.png','pictures/Map/Map_2.png','pictures/Map/Map_3.png',
-           'pictures/Map/Map_5.png','pictures/Map/docking_bay.png']
+           'pictures/Map/Map_1.png','pictures/Map/SU.png','pictures/Map/Map_3.png',
+           'pictures/Map/Map_5.png','pictures/Map/docking_bay.png','pictures/Map/Last _level_map_space.png']
 map_img = [util.load_image(m) for m in maps]
 
 lukeUpStationary = util.load_image('pictures/lukeMove/Luke_up_stationary.png')
@@ -171,37 +172,38 @@ pressC = pygame.mixer.Sound("sounds/start.wav")
 wallbang = pygame.mixer.Sound("sounds/wallbang.ogg")
 
 def loadLevel(level):
-    position=[[360,570],[180,180],[0,450],[30,270],[750,540],[360,30],[420,30],[60,330],[30,270]]
+    position=[[360,570],[180,180],[0,450],[30,270],[750,540],[360,30],[420,30],[60,330],[30,270],[30,270]]
     levelXList = [[510,0,0],[0,180,360,180,360,600,360,450],[0,120,270,420,690,540,390,240,0],
                   [0,0,0,30,780,780],[0,30,780,0,420,180,510,180,300,420,510,30,180,510,630],[0,0,60,390],
              [0,0,270,330,360,450,450,450,450,450,750],
-             [0,0,360,600,240,480,720,0,0],[0,0,0,30]]
+             [0,0,360,600,240,480,720,0,0],[0,0,0,30],[0,0,0,30]]
     levelYList = [[360,0,180],[0,0,120,450,390,0,240,0],[0,0,0,0,0,150,270,390,510],[0,30,300,570,30,300],
                   [0,570,0,0,0,480,480,30,30,60,60,210,180,180,210],
                   [0,90,270,0],
                   [0,90,120,120,240,0,120,270,420,540,60],
-                  [0,180,180,180,270,270,240,390,300],[0,60,300,570]]
+                  [0,180,180,180,270,270,240,390,300],[0,60,300,570],[0,60,300,570]]
     widthlist = [[300,810,270],[180,240,60,630,450,210,240,150],
                  [120,150,150,150,120,150,150,150,240],[600,30,30,780,30,30],
                  [30,780,30,390,780,120,120,120,90,90,120,150,120,120,180],
                  [360,60,300,420],
                  [420,240,60,90,60,360,270,180,270,360,60],
-                 [810,180,60,60,60,60,90,810,60],[810,30,30,780]]
+                 [810,180,60,60,60,60,90,810,60],[810,30,30,780],[810,30,30,780]]
     heightlist=[[240,180,420],[600,120,60,150,60,390,90,180],
                 [420,300,180,60,600,450,330,210,90],[60,240,270,30,240,270],
                 [600,30,570,60,60,90,90,120,90,60,90,120,210,210,120],
                 [90,510,330,600],
                 [90,390,360,90,360,90,90,90,90,60,480],
-                [180,120,120,120,120,120,150,210,90],[60,210,300,30]]
-    win_width = [30,30,120,30,30,30,30,30,30]
-    win_height = [240,30,30,30,30,30,30,60,510]
+                [180,120,120,120,120,120,150,210,90],[60,210,300,30]
+                ,[60,210,300,30]]
+    win_width = [30,30,120,30,30,30,30,30,30,30]
+    win_height = [240,30,30,30,30,30,30,60,510,180]
     win_xyCoordinates = [[780,180],[420,0],[570,0],[780,270],[390,0],[360,570],
-                         [420,570],[780,180],[780,60]]
+                         [420,570],[780,180],[780,60],[540,210]]
     holeCoords = [[],[[570,180],[570,210]],[],[[390,0],[390,30],[390,60],[390,90],[390,120],[390,150],[390,180],[390,210],[390,240],[390,270]
                                                ,[390,300],[390,330],[390,360],[390,390],[390,420],[390,450],[390,480],[390,510],[390,540],[390,570]]
                   ,[],[[260,150]],[],[],[[180,210],[180,240],[210,450],[210,480],[210,510],[360,270],[360,270],[360,270],[360,300],[360,330],[570,150],
-                                [570,180],[570,210],[510,390],[510,420]]]
-    vader_face = [0,0,1,0,0,0,1,1] # 0-Down, 1-Left, 2- Up, 3-Right
+                                [570,180],[570,210],[510,390],[510,420]],[]]
+    vader_face = [0,0,1,2,2,0,0,1,1,3] # 0-Down, 1-Left, 2- Up, 3-Right
     return [position[level][0],position[level][1],levelXList[level],levelYList[level],widthlist[level],heightlist[level],win_width[level],win_height[level], win_xyCoordinates[level][0],win_xyCoordinates[level][1],holeCoords[level], vader_face[level]]
 
 def done_moving():
@@ -327,6 +329,13 @@ def helpInstructions(level):
 
     # 9 Lines max
     helpMessage = {0 : ["Commands to move your player", # Learn move
+                        "c      self.moveUp()",
+                        "c      self.moveRight()",
+                        "",
+                        "You can put in parameters, eg",
+                        "c      to move right 4 steps",
+                        "c      self.moveRight(4)"],
+                   1 : ["Commands to move your player", # Learn move
                         "c      self.moveUp()",
                         "c      self.moveRight()",
                         "c      self.moveDown()",
