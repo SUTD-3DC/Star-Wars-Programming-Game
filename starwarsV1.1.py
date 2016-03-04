@@ -629,11 +629,9 @@ def mfalcon_fly(mFalconX, mFalconY, rebelScore, time_limit, seconds, randBluepri
 
 def place_random_holes():
     del holes[:]
-    possible_locs = range(3, 25, 2)
-    vertical_locs = random.randint(6, 12)
     for i in range (8): # number of columns of holes
-        x = possible_locs.pop(random.randrange(len(possible_locs)))
-        y = random.choice(xrange(6, 12))
+        x = random.randrange(3, 16, 2)
+        y = random.randrange(6, 12)
         make_hole_columns(x * 30, y * 30, random.choice((2, 3)))
 
 def make_hole_columns(x, y, height):
@@ -641,7 +639,7 @@ def make_hole_columns(x, y, height):
         holes.append(Hole(gameDisplay, (x, y + (i * 30))))
 
 def draw_holes():
-    if level == numOfLevels - 1:
+    if level == numOfLevels - 1: # only draw holes for last level
         for hole in holes:
             hole.draw()
 
