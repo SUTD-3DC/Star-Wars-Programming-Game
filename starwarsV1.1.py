@@ -69,13 +69,14 @@ lead_x = 750
 lead_y = 540
 lead_direction = 'down'
 blueprintCollected = False
+blueprintExist = False
 rebelScore = 0
 
 BlueprintThickness = 30
 block_size = 10
 FPS = 30
 gameDisplay = pygame.display.set_mode((display_width,display_height))
-# gameDisplay = pygame.display.set_mode((display_width,display_height),FULLSCREEN)
+##gameDisplay = pygame.display.set_mode((display_width,display_height),FULLSCREEN)
 pygame.display.set_caption('Star Wars: A programming education game')
 
 wallpaper_img = util.load_image('wallpaper/Wallpaper.png')
@@ -204,7 +205,9 @@ def loadLevel(level):
                   ,[],[[260,150]],[],[],[[180,210],[180,240],[210,450],[210,480],[210,510],[360,270],[360,270],[360,270],[360,300],[360,330],[570,150],
                                 [570,180],[570,210],[510,390],[510,420]],[]]
     vader_face = [0,0,1,2,2,0,0,1,1,3] # 0-Down, 1-Left, 2- Up, 3-Right
-    return [position[level][0],position[level][1],levelXList[level],levelYList[level],widthlist[level],heightlist[level],win_width[level],win_height[level], win_xyCoordinates[level][0],win_xyCoordinates[level][1],holeCoords[level], vader_face[level]]
+    blueprint_xy = [[],[],[],[],[120,150],[],[],[],[],[]]
+    return [position[level][0],position[level][1],levelXList[level],levelYList[level],widthlist[level],heightlist[level],win_width[level],win_height[level],\
+            win_xyCoordinates[level][0],win_xyCoordinates[level][1],holeCoords[level], vader_face[level],blueprint_xy[level]]
 
 def done_moving():
     if movement.get_next_move() == 'stationary':
@@ -362,7 +365,7 @@ def helpInstructions(level):
                         "c          x = x + 1",
                         "'self' represents the object you are",
                         " controling, in this case the player."],
-                   3 : ["The Blue Map earns you points",
+                   3 : ["The Death Star Blueprint earns you points",
                         "",
                         "Here are some useful actions to use", # Learn condition check
                         "c      if self.holeInFront() :",
@@ -380,7 +383,7 @@ def helpInstructions(level):
                         "c          if x == 3",
                         "c              self.moveLeft()",
                         ""],
-                   5 : ["I doubt you can jump over laser",
+                   5 : ["I avoid getting detected by infrared sensor",
                         "",
                         "Use less than(<), more than(>) or" # Example conditions 2
                         "equal to(==), within a condition",
@@ -415,7 +418,12 @@ def helpInstructions(level):
                         "c      while <condtion> :",
                         "c          <do stuff>",
                         "c      if <condition> :",
-                        "c          <do stuff>"]}
+                        "c          <do stuff>"],
+                   9 : ["Hop onto the Millenium Falcon and",
+                        "escape!",
+                        "Holes will randomly appear on the",
+                        "so try putting if-statement in ",
+                        "a loop"]}
     for lineNumber in range(len(helpMessage[level])):
         isCode = False
         if len(helpMessage[level][lineNumber]) > 0:
@@ -498,9 +506,10 @@ def rebel_move(direction, playerX, playerY, xChange, yChange, rebelScore, time_l
         status(rebelScore, time_limit,seconds)
         #if level one
         game_map=map_img[level]
-
-        if blueprintCollected == False:
-            #barrier(xlocation, randomHeight, barrier_width)
+        print blueprintCollected
+        print blueprintExist
+        if (blueprintCollected == False) and blueprintExist:
+            print 'blitting'
             gameDisplay.blit(blueprint_img, (randBlueprintX, randBlueprintY))
 
 ##            holes[0].draw()
@@ -555,7 +564,7 @@ def rebel_jump(direction, playerX, playerY, xChange, yChange, rebelScore, time_l
         #if level one
         game_map=map_img[level]
 
-        if blueprintCollected == False:
+        if (blueprintCollected == False) and blueprintExist:
             #barrier(xlocation, randomHeight, barrier_width)
             gameDisplay.blit(blueprint_img, (randBlueprintX, randBlueprintY))
 
@@ -602,7 +611,7 @@ def mfalcon_fly(mFalconX, mFalconY, rebelScore, time_limit, seconds, randBluepri
             #if level one
             game_map=map_img[level]
 
-            if not blueprintCollected:
+            if (not blueprintCollected) and blueprintExist:
                 gameDisplay.blit(blueprint_img, (randBlueprintX, randBlueprintY))
             gameDisplay.blit(btnimg, btn_rect)
             draw_holes()
@@ -660,7 +669,7 @@ def message_to_screen(msg,color, y_displace = 0, size = "small"):
 
 def gameLoop():
     global parsing, game_state, text_editor, elemNumber, level,txtbx, game_map, blueprintCollected, characterMove,numOfLevels, rebelScore
-    global lead_x, lead_y, lead_direction,holes
+    global lead_x, lead_y, lead_direction,holes,blueprintExist
     gameWon = False
     gameExit = False
     gameOver = False
@@ -669,11 +678,17 @@ def gameLoop():
     topCollision = False
     bottomCollision = False
     player = characterMove[1][2]
-    [lead_x,lead_y,xlist,ylist,widthlist,heightlist,win_width,win_height,win_xlocation,win_ylocation,holeCoords,vadarOrientation] = loadLevel(level)
+    [lead_x,lead_y,xlist,ylist,widthlist,heightlist,win_width,win_height,win_xlocation,win_ylocation,holeCoords,vadarOrientation,blueprint] = loadLevel(level)
     
     lead_x_change = 0
     lead_y_change = 0
-    randBlueprintX, randBlueprintY = randBlueprintGen()
+    randBlueprintX = 0
+    randBlueprintY = 0
+    blueprintExist = False
+    if(len(blueprint)>0):
+        blueprintExist = True
+        randBlueprintX = blueprint[0]
+        randBlueprintY = blueprint[1]
     step_count = 0
     pause_duration = 0
     code_lines = 0
@@ -823,17 +838,16 @@ def gameLoop():
 
 
 
-######################## when apple have been collected ###########################
-        if blueprintCollected == False:
+######################## when blueprint have been collected ###########################
+        if (blueprintCollected == False) and blueprintExist:
             gameDisplay.blit(blueprint_img, (randBlueprintX, randBlueprintY))
-            if lead_x >= randBlueprintX and lead_x <= randBlueprintX + BlueprintThickness or lead_x + block_size >= randBlueprintX and lead_x + block_size <= randBlueprintX + BlueprintThickness:
+            if lead_x >= randBlueprintX and lead_x <= randBlueprintX + BlueprintThickness or lead_x + block_size >= randBlueprintX and \
+               lead_x + block_size <= randBlueprintX + BlueprintThickness:
                 if lead_y >= randBlueprintY and lead_y <= randBlueprintY + BlueprintThickness:
-                    randBlueprintX, randBlueprintY = randBlueprintGen()
                     rebelScore+=1
                     blueprintCollected = True
 
                 elif lead_y + block_size >= randBlueprintY and lead_y + block_size <= randBlueprintY + BlueprintThickness:
-                    randBlueprintX, randBlueprintY = randBlueprintGen()
                     rebelScore+=1
                     blueprintCollected = True
 
