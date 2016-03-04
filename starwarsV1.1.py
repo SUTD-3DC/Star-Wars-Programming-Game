@@ -130,6 +130,11 @@ darthDownStationary = util.load_image('pictures/darthMove/Darth_down.png')
 darthRightStationary = util.load_image('pictures/darthMove/Darth_right.png')
 darthLeftStationary = util.load_image('pictures/darthMove/Darth_left.png')
 
+stormtUpStationary = util.load_image('pictures/stormtMove/StormT_up.png')
+stormtDownStationary = util.load_image('pictures/stormtMove/StormT_down.png')
+stormtRightStationary = util.load_image('pictures/stormtMove/StormT_right.png')
+stormtLeftStationary = util.load_image('pictures/stormtMove/StormT_left.png')
+
 mFalconStationary = util.load_image('pictures/milleniumFalcon/mFalcon_stationary.png')
 mFalconThrusterSmall = util.load_image('pictures/milleniumFalcon/mFalcon_thruster_small.png')
 mFalconThrusterBig = util.load_image('pictures/milleniumFalcon/mFalcon_thruster_big.png')
@@ -206,10 +211,15 @@ def loadLevel(level):
                                                ,[390,300],[390,330],[390,360],[390,390],[390,420],[390,450],[390,480],[390,510],[390,540],[390,570]]
                   ,[],[[360,150],[360,300],[360,420]],[],[],[[180,210],[180,240],[210,450],[210,480],[210,510],[360,270],[360,270],[360,270],[360,300],[360,330],[570,150],
                                 [570,180],[570,210],[510,390],[510,420]],[]]
-    vader_face = [1,0,0,1,0,2,0,1,1,3] # 0-Down, 1-Left, 2- Up, 3-Right
+<<<<<<< HEAD
+
+=======
+>>>>>>> 7845677a2b6f6b146da859786eb4a5dde935e742
+    stormTCoords = [[],[],[],[],[],[],[330,210],[],[],[]]
+    vader_face = [0,0,1,2,2,0,0,1,1,3] # 0-Down, 1-Left, 2- Up, 3-Right
     blueprint_xy = [[],[],[],[],[120,150],[],[],[],[],[]]
     return [position[level][0],position[level][1],levelXList[level],levelYList[level],widthlist[level],heightlist[level],win_width[level],win_height[level],\
-            win_xyCoordinates[level][0],win_xyCoordinates[level][1],holeCoords[level], vader_face[level],blueprint_xy[level]]
+            win_xyCoordinates[level][0],win_xyCoordinates[level][1],holeCoords[level], vader_face[level],blueprint_xy[level],stormTCoords[level]]
 
 def done_moving():
     if movement.get_next_move() == 'stationary':
@@ -690,7 +700,7 @@ def gameLoop():
     topCollision = False
     bottomCollision = False
     player = characterMove[1][2]
-    [lead_x,lead_y,xlist,ylist,widthlist,heightlist,win_width,win_height,win_xlocation,win_ylocation,holeCoords,vadarOrientation,blueprint] = loadLevel(level)
+    [lead_x,lead_y,xlist,ylist,widthlist,heightlist,win_width,win_height,win_xlocation,win_ylocation,holeCoords,vadarOrientation,blueprint,stormT] = loadLevel(level)
     
     lead_x_change = 0
     lead_y_change = 0
@@ -701,6 +711,7 @@ def gameLoop():
         blueprintExist = True
         randBlueprintX = blueprint[0]
         randBlueprintY = blueprint[1]
+    
     step_count = 0
     pause_duration = 0
     code_lines = 0
@@ -834,10 +845,16 @@ def gameLoop():
             gameDisplay.blit(player, (lead_x, lead_y))
         status(rebelScore, time_limit,seconds)
         helpInstructions(level)
+<<<<<<< HEAD
+        
         if level == numOfLevels - 1:
             draw_holes()
         if level == 9 and not gameWon:
             gameDisplay.blit(mFalconStationary, (510, 225))
+=======
+>>>>>>> 7845677a2b6f6b146da859786eb4a5dde935e742
+        if(len(stormT)>0):
+            gameDisplay.blit(stormtRightStationary, (stormT[0], stormT[1]))
 
 
 ####################### barrier collision detection #############################
