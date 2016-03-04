@@ -13,7 +13,7 @@ import ParserThread
 
 pygame.init()
 
-level = 0
+level = 7
 numOfLevels = 8
 white = (255,255,255)
 black = (0,0,0)
@@ -117,6 +117,9 @@ darthDownStationary = pygame.image.load('pictures/darthMove/Darth_down.png')
 darthRightStationary = pygame.image.load('pictures/darthMove/Darth_right.png')
 darthLeftStationary = pygame.image.load('pictures/darthMove/Darth_left.png')
 
+mFalconStationary = pygame.image.load('pictures/milleniumFalcon/mFalcon_stationary.png')
+mFalconThrusterSmall = pygame.image.load('pictures/milleniumFalcon/mFalcon_thruster_small.png')
+mFalconThrusterBig = pygame.image.load('pictures/milleniumFalcon/mFalcon_thruster_big.png')
 
 reyMoveUp = [reyUpWalk1, reyUpWalk2, reyUpStationary]
 reyMoveDown = [reyDownWalk1, reyDownWalk2, reyDownStationary]
@@ -133,6 +136,9 @@ finnMoveDown = [finnDownWalk1, finnDownWalk2, finnDownStationary]
 finnMoveRight = [finnRightWalk1, finnRightWalk2, finnRightStationary]
 finnMoveLeft = [finnLeftWalk1, finnLeftWalk2, finnLeftStationary]
 
+mFalconFireUp = [mFalconStationary, mFalconThrusterSmall, mFalconStationary, mFalconThrusterSmall,
+                 mFalconThrusterBig, mFalconStationary, mFalconThrusterSmall, mFalconThrusterBig,
+                 mFalconThrusterSmall, mFalconThrusterBig, mFalconThrusterBig, mFalconThrusterBig]
 blueprint_img = pygame.image.load('pictures/Blueprint.png')
 
 # holes
@@ -428,13 +434,6 @@ def game_intro():
                     pygame.quit()
                     quit()
 
-
-##        message_to_screen("Star Wars", black, -100,
-##                          "medium")
-##        message_to_screen("A programming education game",
-##                          black, -30,"small")
-##        message_to_screen("Press C to play, P to pause, Q to Quit",
-##                          black, 30,"small")
         gameDisplay.fill(white)
         wp = pygame.image.load(wallpaper_img)
         gameDisplay.blit(wp, (0,0))
@@ -451,32 +450,30 @@ def rebel_move(direction, playerX, playerY, xChange, yChange, rebelScore, time_l
         playerX += xChange
         playerY += yChange
 
-        for i in range(2):
-            gameDisplay.fill(white)
-            gameDisplay.blit(game_map, (0,0))
-            gameDisplay.blit(text_editor, (map_width,0))
-            pygame.draw.line(gameDisplay,black,(map_width,display_height),(map_width,0), 2)#draw boundary for user to type code
-            pygame.draw.line(gameDisplay,black,(0,map_height),(map_width,map_height), 2)#draw boundary for status bar
-            status(rebelScore, time_limit,seconds)
-            helpInstructions(level)
-            #if level one
-            game_map=pygame.image.load(map_img[level]);
+        gameDisplay.fill(white)
+        gameDisplay.blit(game_map, (0,0))
+        gameDisplay.blit(text_editor, (map_width,0))
+        pygame.draw.line(gameDisplay,black,(map_width,display_height),(map_width,0), 2)#draw boundary for user to type code
+        pygame.draw.line(gameDisplay,black,(0,map_height),(map_width,map_height), 2)#draw boundary for status bar
+        status(rebelScore, time_limit,seconds)
+        #if level one
+        game_map=pygame.image.load(map_img[level]);
 
-            if blueprintCollected == False:
-                #barrier(xlocation, randomHeight, barrier_width)
-                gameDisplay.blit(blueprint_img, (randBlueprintX, randBlueprintY))
+        if blueprintCollected == False:
+            #barrier(xlocation, randomHeight, barrier_width)
+            gameDisplay.blit(blueprint_img, (randBlueprintX, randBlueprintY))
 
 ##            holes[0].draw()
 ##            holes[1].draw()
-            gameDisplay.blit(btnimg, btn_rect)
-            gameDisplay.blit(img, (playerX, playerY))
-            draw_holes()
+        gameDisplay.blit(btnimg, btn_rect)
+        gameDisplay.blit(img, (playerX, playerY))
+        draw_holes()
 
-            image = img
+        image = img
 
-            txtbx.draw(gameDisplay)
-            pygame.display.update()
-            clock.tick(60)
+        txtbx.draw(gameDisplay)
+        pygame.display.update()
+        clock.tick(10)
 
     return playerX, playerY, image
 
@@ -508,9 +505,53 @@ def rebel_jump(direction, playerX, playerY, xChange, yChange, rebelScore, time_l
             else:
                 playerY += int(1.7*abs(yChange))
 
-        for i in range(2):
+        gameDisplay.fill(white)
+        gameDisplay.blit(game_map, (0,0))
+        gameDisplay.blit(text_editor, (map_width,0))
+        pygame.draw.line(gameDisplay,black,(map_width,display_height),(map_width,0), 2)#draw boundary for user to type code
+        pygame.draw.line(gameDisplay,black,(0,map_height),(map_width,map_height), 2)#draw boundary for status bar
+        status(rebelScore, time_limit,seconds)
+        #if level one
+        game_map=pygame.image.load(map_img[level]);
+
+        if blueprintCollected == False:
+            #barrier(xlocation, randomHeight, barrier_width)
+            gameDisplay.blit(blueprint_img, (randBlueprintX, randBlueprintY))
+
+        #for checking hole position
+##            for hole in holes:
+##                hole.draw()
+        gameDisplay.blit(btnimg, btn_rect)
+        gameDisplay.blit(img, (playerX, playerY))
+        draw_holes()
+
+        image = img
+
+        txtbx.draw(gameDisplay)
+        pygame.display.update()
+        clock.tick(15)
+
+    return playerX, playerY, image
+
+
+def mfalcon_fly(mFalconX, mFalconY, rebelScore, time_limit, seconds, randBlueprintX, randBlueprintY):
+
+    global game_map
+
+    # millenium falcon initial coordinates: 570, 225
+
+    for i in range(len(mFalconFireUp) + 25):
+
+        if i > 11:
+            index = 11
+            mFalconX += 10
+        else:
+            index = i
+
+        for j in range(2):
             gameDisplay.fill(white)
             gameDisplay.blit(game_map, (0,0))
+            gameDisplay.blit(mFalconFireUp[index], (mFalconX, mFalconY))
             gameDisplay.blit(text_editor, (map_width,0))
             pygame.draw.line(gameDisplay,black,(map_width,display_height),(map_width,0), 2)#draw boundary for user to type code
             pygame.draw.line(gameDisplay,black,(0,map_height),(map_width,map_height), 2)#draw boundary for status bar
@@ -519,24 +560,16 @@ def rebel_jump(direction, playerX, playerY, xChange, yChange, rebelScore, time_l
             #if level one
             game_map=pygame.image.load(map_img[level]);
 
-            if blueprintCollected == False:
-                #barrier(xlocation, randomHeight, barrier_width)
+            if not blueprintCollected:
                 gameDisplay.blit(blueprint_img, (randBlueprintX, randBlueprintY))
-                
-            #for checking hole position
-##            for hole in holes:
-##                hole.draw()
             gameDisplay.blit(btnimg, btn_rect)
-            gameDisplay.blit(img, (playerX, playerY))
             draw_holes()
-
-            image = img
 
             txtbx.draw(gameDisplay)
             pygame.display.update()
-            clock.tick(60)
 
-    return playerX, playerY, image
+            if index != 11:
+                clock.tick(10)
 
 def place_random_holes():
     del holes[:]
@@ -722,8 +755,6 @@ def gameLoop():
         gameDisplay.blit(player, (lead_x, lead_y))
         status(rebelScore, time_limit,seconds)
         helpInstructions(level)
-
-
 
 
 ####################### barrier collision detection #############################
