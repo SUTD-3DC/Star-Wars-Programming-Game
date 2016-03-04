@@ -84,7 +84,7 @@ text_editor_img = util.load_image('pictures/right panel/Text editor.png')
 maps = ['pictures/Map/warm_up.png',
            'pictures/Map/Map_0.png','pictures/Map/Map_4.png','pictures/Map/Balcony_map.png',
            'pictures/Map/Map_1.png','pictures/Map/SU.png','pictures/Map/Map_3.png',
-           'pictures/Map/Map_5.png','pictures/Map/docking_bay.png','pictures/Map/Last _level_map_space.png']
+           'pictures/Map/Map_5.png','pictures/Map/docking_bay.png','pictures/Map/Last_level_map_space.png']
 map_img = [util.load_image(m) for m in maps]
 
 lukeUpStationary = util.load_image('pictures/lukeMove/Luke_up_stationary.png')
@@ -506,10 +506,7 @@ def rebel_move(direction, playerX, playerY, xChange, yChange, rebelScore, time_l
         status(rebelScore, time_limit,seconds)
         #if level one
         game_map=map_img[level]
-        print blueprintCollected
-        print blueprintExist
         if (blueprintCollected == False) and blueprintExist:
-            print 'blitting'
             gameDisplay.blit(blueprint_img, (randBlueprintX, randBlueprintY))
 
 ##            holes[0].draw()
