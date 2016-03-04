@@ -54,5 +54,6 @@ class Thread:
                 ctype_async_raise(self.t, SystemExit)
             self.t.join()
         except:
-            traceback.print_exc()
+            pass
+            # traceback.print_exc()
 
