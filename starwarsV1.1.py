@@ -19,7 +19,7 @@ import util
 
 pygame.init()
 
-level = 4
+level = 9
 numOfLevels = 10
 rebelScore = 0
 
@@ -830,12 +830,13 @@ def gameLoop():
         gameDisplay.blit(text_editor, (map_width,0))
         pygame.draw.line(gameDisplay,black,(map_width,display_height),(map_width,0), 2) #draw boundary for user to type code
         pygame.draw.line(gameDisplay,black,(0,map_height),(map_width,map_height), 2) #draw boundary for status bar
-        gameDisplay.blit(player, (lead_x, lead_y))
+        if not gameWon:
+            gameDisplay.blit(player, (lead_x, lead_y))
         status(rebelScore, time_limit,seconds)
         helpInstructions(level)
         if level == numOfLevels - 1:
             draw_holes()
-        if level == 9:
+        if level == 9 and not gameWon:
             gameDisplay.blit(mFalconStationary, (510, 225))
 
 
