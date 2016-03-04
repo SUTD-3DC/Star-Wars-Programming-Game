@@ -19,7 +19,7 @@ import util
 
 pygame.init()
 
-level = 0
+level = 9
 numOfLevels = 10
 rebelScore = 0
 
@@ -198,10 +198,10 @@ def loadLevel(level):
                 [90,390,360,90,360,90,90,90,90,60,480],
                 [180,120,120,120,120,120,150,210,90],[60,210,300,30]
                 ,[60,210,300,30]]
-    win_width = [30,30,120,30,30,30,30,30,30,30]
-    win_height = [240,30,30,30,30,30,30,60,510,180]
+    win_width = [30,30,120,30,30,30,30,30,30,60]
+    win_height = [240,30,30,30,30,30,30,60,510,120]
     win_xyCoordinates = [[780,180],[420,0],[570,0],[780,270],[390,0],[360,570],
-                         [420,570],[780,180],[780,60],[540,210]]
+                         [420,570],[780,180],[780,60],[510,240]]
     holeCoords = [[],[[570,180],[570,210]],[],[[390,0],[390,30],[390,60],[390,90],[390,120],[390,150],[390,180],[390,210],[390,240],[390,270]
                                                ,[390,300],[390,330],[390,360],[390,390],[390,420],[390,450],[390,480],[390,510],[390,540],[390,570]]
                   ,[],[[260,150]],[],[],[[180,210],[180,240],[210,450],[210,480],[210,510],[360,270],[360,270],[360,270],[360,300],[360,330],[570,150],
@@ -514,8 +514,10 @@ def rebel_move(direction, playerX, playerY, xChange, yChange, rebelScore, time_l
 ##            holes[0].draw()
 ##            holes[1].draw()
         gameDisplay.blit(btnimg, btn_rect)
-        gameDisplay.blit(img, (playerX, playerY))
         draw_holes()
+        gameDisplay.blit(img, (playerX, playerY))
+        if level == 9:
+            gameDisplay.blit(mFalconStationary, (510, 225))
 
         image = img
 
@@ -576,8 +578,10 @@ def rebel_jump(direction, playerX, playerY, xChange, yChange, rebelScore, time_l
 ##            for hole in holes:
 ##                hole.draw()
         gameDisplay.blit(btnimg, btn_rect)
-        gameDisplay.blit(img, (playerX, playerY))
         draw_holes()
+        gameDisplay.blit(img, (playerX, playerY))
+        if level == 9:
+            gameDisplay.blit(mFalconStationary, (510, 225))
 
         image = img
 
@@ -589,23 +593,26 @@ def rebel_jump(direction, playerX, playerY, xChange, yChange, rebelScore, time_l
     return playerX, playerY, image
 
 
-def mfalcon_fly(mFalconX, mFalconY, rebelScore, time_limit, seconds, randBlueprintX, randBlueprintY):
+def mfalcon_fly(rebelScore, time_limit, seconds, randBlueprintX, randBlueprintY):
 
     global game_map
 
-    # millenium falcon initial coordinates: 570, 225
+    # millenium falcon initial coordinates: 510, 225
+    mFalconX = 510
+    mFalconY = 225
 
-    for i in range(len(mFalconFireUp) + 25):
+    for i in range(len(mFalconFireUp) + 100):
 
         if i > 11:
             index = 11
-            mFalconX += 10
+            mFalconX += 5
         else:
             index = i
 
         for j in range(2):
             gameDisplay.fill(white)
             gameDisplay.blit(game_map, (0,0))
+            draw_holes()
             gameDisplay.blit(mFalconFireUp[index], (mFalconX, mFalconY))
             gameDisplay.blit(text_editor, (map_width,0))
             pygame.draw.line(gameDisplay,black,(map_width,display_height),(map_width,0), 2)#draw boundary for user to type code
@@ -618,7 +625,7 @@ def mfalcon_fly(mFalconX, mFalconY, rebelScore, time_limit, seconds, randBluepri
             if (not blueprintCollected) and blueprintExist:
                 gameDisplay.blit(blueprint_img, (randBlueprintX, randBlueprintY))
             gameDisplay.blit(btnimg, btn_rect)
-            draw_holes()
+
 
             txtbx.draw(gameDisplay)
             helpInstructions(level)
@@ -629,6 +636,11 @@ def mfalcon_fly(mFalconX, mFalconY, rebelScore, time_limit, seconds, randBluepri
 
 def place_random_holes():
     del holes[:]
+    if level == 9:
+        possible_locs = range(3, 20, 2)
+    else:
+        possible_locs = range(3, 25, 2)
+    vertical_locs = random.randint(6, 12)
     for i in range (8): # number of columns of holes
         x = random.randrange(3, 16, 2)
         y = random.randrange(6, 12)
@@ -790,6 +802,8 @@ def gameLoop():
         player_rect = pygame.Rect(lead_x, lead_y, 30, 30)
         if win_rect.colliderect(player_rect):
             gameWon = True
+            if level == 9:
+                mfalcon_fly(rebelScore, time_limit, seconds, randBlueprintX, randBlueprintY)
 
 ###################### END GAME CONDITIONS: Out of bound detection, Timelimit ###########################
         if lead_x > map_width - block_size or lead_x < 0 or lead_y > map_height - block_size \
@@ -815,6 +829,10 @@ def gameLoop():
         gameDisplay.blit(player, (lead_x, lead_y))
         status(rebelScore, time_limit,seconds)
         helpInstructions(level)
+        if level == numOfLevels - 1:
+            draw_holes()
+        if level == 9:
+            gameDisplay.blit(mFalconStationary, (510, 225))
 
 
 ####################### barrier collision detection #############################
@@ -1006,9 +1024,6 @@ def gameLoop():
                     code_lines += txtbx.get_linecount()
                     parser_thread.start(parser_func, code)
                     txtbx.clear()
-
-        if level == numOfLevels - 1:
-            draw_holes()
         
         txtbx.update(events)
         txtbx.draw(gameDisplay)
