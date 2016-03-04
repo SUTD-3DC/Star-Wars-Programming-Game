@@ -486,8 +486,6 @@ def gameLoop():
     bottomCollision = False
     player = characterMove[1][2]
     [lead_x,lead_y,xlist,ylist,widthlist,heightlist,win_width,win_height,win_xlocation,win_ylocation,holeCoords] = loadLevel(level)
-
-
     
     lead_x_change = 0
     lead_y_change = 0
@@ -495,6 +493,7 @@ def gameLoop():
     step_count = 0
     pause_duration = 0
     code_lines = 0
+    movement.reset()
 
     timerStart=False
     seconds=0
@@ -565,6 +564,7 @@ def gameLoop():
                         gameExit = True
                         gameOver = False
                     if event.key == pygame.K_c:
+                        game_state = 'idle'
                         gameWon= False
                         pygame.mixer.music.stop()
                         pressC.play()

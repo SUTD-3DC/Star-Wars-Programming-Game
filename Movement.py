@@ -3,8 +3,11 @@ class Movement:
     a defined number of steps. """
 
     def __init__(self, steps=1):
-        self.steps_taken = None
         self.steps = steps
+        self.reset()
+
+    def reset(self):
+        self.steps_taken = None
         self.move = 'stationary'
         self.move_list = []
 
