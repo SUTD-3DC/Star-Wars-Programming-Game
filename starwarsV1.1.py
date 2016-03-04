@@ -15,6 +15,7 @@ from Movement import Movement
 from Hole import Hole
 from Timer import Timer
 import ParserThread
+import util
 
 pygame.init()
 
@@ -76,58 +77,60 @@ FPS = 30
 gameDisplay = pygame.display.set_mode((display_width,display_height),FULLSCREEN)
 pygame.display.set_caption('Star Wars: A programming education game')
 
-wallpaper_img = 'wallpaper/Wallpaper.png'
-text_editor_img = 'pictures/right panel/Text editor.png'
-map_img = ['pictures/Map/warm_up.png',
+wallpaper_img = util.load_image('wallpaper/Wallpaper.png')
+text_editor_img = util.load_image('pictures/right panel/Text editor.png')
+maps = ['pictures/Map/warm_up.png',
            'pictures/Map/Map_0.png','pictures/Map/Map_4.png','pictures/Map/Balcony_map.png',
            'pictures/Map/Map_1.png','pictures/Map/Map_2.png','pictures/Map/Map_3.png',
            'pictures/Map/Map_5.png','pictures/Map/docking_bay.png']
+map_img = [util.load_image(m) for m in maps]
 
-lukeUpStationary = pygame.image.load('pictures/lukeMove/Luke_up_stationary.png')
-lukeUpWalk1 = pygame.image.load('pictures/lukeMove/Luke_up_walk_1.png')
-lukeUpWalk2 = pygame.image.load('pictures/lukeMove/Luke_up_walk_2.png')
-lukeDownStationary = pygame.image.load('pictures/lukeMove/Luke_down_stationary.png')
-lukeDownWalk1 = pygame.image.load('pictures/lukeMove/Luke_down_walk_1.png')
-lukeDownWalk2 = pygame.image.load('pictures/lukeMove/Luke_down_walk_2.png')
-lukeRightStationary = pygame.image.load('pictures/lukeMove/Luke_right_stationary.png')
-lukeRightWalk = pygame.image.load('pictures/lukeMove/Luke_right_walk_1.png')
-lukeLeftStationary = pygame.image.load('pictures/lukeMove/Luke_left_stationary.png')
-lukeLeftWalk = pygame.image.load('pictures/lukeMove/Luke_left_walk_1.png')
+lukeUpStationary = util.load_image('pictures/lukeMove/Luke_up_stationary.png')
+# lukeUpStationary = util.load_image('pictures/lukeMove/Luke_up_stationary.png')
+lukeUpWalk1 = util.load_image('pictures/lukeMove/Luke_up_walk_1.png')
+lukeUpWalk2 = util.load_image('pictures/lukeMove/Luke_up_walk_2.png')
+lukeDownStationary = util.load_image('pictures/lukeMove/Luke_down_stationary.png')
+lukeDownWalk1 = util.load_image('pictures/lukeMove/Luke_down_walk_1.png')
+lukeDownWalk2 = util.load_image('pictures/lukeMove/Luke_down_walk_2.png')
+lukeRightStationary = util.load_image('pictures/lukeMove/Luke_right_stationary.png')
+lukeRightWalk = util.load_image('pictures/lukeMove/Luke_right_walk_1.png')
+lukeLeftStationary = util.load_image('pictures/lukeMove/Luke_left_stationary.png')
+lukeLeftWalk = util.load_image('pictures/lukeMove/Luke_left_walk_1.png')
 
-reyUpStationary = pygame.image.load('pictures/reyMove/Rey_up_stationary.png')
-reyUpWalk1 = pygame.image.load('pictures/reyMove/Rey_up_walk_1.png')
-reyUpWalk2 = pygame.image.load('pictures/reyMove/Rey_up_walk_2.png')
-reyDownStationary = pygame.image.load('pictures/reyMove/Rey_down_stationary.png')
-reyDownWalk1 = pygame.image.load('pictures/reyMove/Rey_down_walk_1.png')
-reyDownWalk2 = pygame.image.load('pictures/reyMove/Rey_down_walk_2.png')
-reyRightStationary = pygame.image.load('pictures/reyMove/Rey_right_stationary.png')
-reyRightWalk1 = pygame.image.load('pictures/reyMove/Rey_right_walk_1.png')
-reyRightWalk2 = pygame.image.load('pictures/reyMove/Rey_right_walk_2.png')
-reyLeftStationary = pygame.image.load('pictures/reyMove/Rey_left_walk_1.png')
-reyLeftWalk1 = pygame.image.load('pictures/reyMove/Rey_left_walk_1.png')
-reyLeftWalk2 = pygame.image.load('pictures/reyMove/Rey_left_walk_2.png')
+reyUpStationary = util.load_image('pictures/reyMove/Rey_up_stationary.png')
+reyUpWalk1 = util.load_image('pictures/reyMove/Rey_up_walk_1.png')
+reyUpWalk2 = util.load_image('pictures/reyMove/Rey_up_walk_2.png')
+reyDownStationary = util.load_image('pictures/reyMove/Rey_down_stationary.png')
+reyDownWalk1 = util.load_image('pictures/reyMove/Rey_down_walk_1.png')
+reyDownWalk2 = util.load_image('pictures/reyMove/Rey_down_walk_2.png')
+reyRightStationary = util.load_image('pictures/reyMove/Rey_right_stationary.png')
+reyRightWalk1 = util.load_image('pictures/reyMove/Rey_right_walk_1.png')
+reyRightWalk2 = util.load_image('pictures/reyMove/Rey_right_walk_2.png')
+reyLeftStationary = util.load_image('pictures/reyMove/Rey_left_walk_1.png')
+reyLeftWalk1 = util.load_image('pictures/reyMove/Rey_left_walk_1.png')
+reyLeftWalk2 = util.load_image('pictures/reyMove/Rey_left_walk_2.png')
 
-finnUpStationary = pygame.image.load('pictures/finnMove/Finn_up_stationary.png')
-finnUpWalk1 = pygame.image.load('pictures/finnMove/Finn_up_walk_1.png')
-finnUpWalk2 = pygame.image.load('pictures/finnMove/Finn_up_walk_2.png')
-finnDownStationary = pygame.image.load('pictures/finnMove/Finn_down_stationary.png')
-finnDownWalk1 = pygame.image.load('pictures/finnMove/Finn_down_walk_1.png')
-finnDownWalk2 = pygame.image.load('pictures/finnMove/Finn_down_walk_2.png')
-finnRightStationary = pygame.image.load('pictures/finnMove/Finn_right_stationary.png')
-finnRightWalk1 = pygame.image.load('pictures/finnMove/Finn_right_walk_1.png')
-finnRightWalk2 = pygame.image.load('pictures/finnMove/Finn_right_walk_2.png')
-finnLeftStationary = pygame.image.load('pictures/finnMove/Finn_left_stationary.png')
-finnLeftWalk1 = pygame.image.load('pictures/finnMove/Finn_left_walk_1.png')
-finnLeftWalk2 = pygame.image.load('pictures/finnMove/Finn_left_walk_2.png')
+finnUpStationary = util.load_image('pictures/finnMove/Finn_up_stationary.png')
+finnUpWalk1 = util.load_image('pictures/finnMove/Finn_up_walk_1.png')
+finnUpWalk2 = util.load_image('pictures/finnMove/Finn_up_walk_2.png')
+finnDownStationary = util.load_image('pictures/finnMove/Finn_down_stationary.png')
+finnDownWalk1 = util.load_image('pictures/finnMove/Finn_down_walk_1.png')
+finnDownWalk2 = util.load_image('pictures/finnMove/Finn_down_walk_2.png')
+finnRightStationary = util.load_image('pictures/finnMove/Finn_right_stationary.png')
+finnRightWalk1 = util.load_image('pictures/finnMove/Finn_right_walk_1.png')
+finnRightWalk2 = util.load_image('pictures/finnMove/Finn_right_walk_2.png')
+finnLeftStationary = util.load_image('pictures/finnMove/Finn_left_stationary.png')
+finnLeftWalk1 = util.load_image('pictures/finnMove/Finn_left_walk_1.png')
+finnLeftWalk2 = util.load_image('pictures/finnMove/Finn_left_walk_2.png')
 
-darthUpStationary = pygame.image.load('pictures/darthMove/Darth_up.png')
-darthDownStationary = pygame.image.load('pictures/darthMove/Darth_down.png')
-darthRightStationary = pygame.image.load('pictures/darthMove/Darth_right.png')
-darthLeftStationary = pygame.image.load('pictures/darthMove/Darth_left.png')
+darthUpStationary = util.load_image('pictures/darthMove/Darth_up.png')
+darthDownStationary = util.load_image('pictures/darthMove/Darth_down.png')
+darthRightStationary = util.load_image('pictures/darthMove/Darth_right.png')
+darthLeftStationary = util.load_image('pictures/darthMove/Darth_left.png')
 
-mFalconStationary = pygame.image.load('pictures/milleniumFalcon/mFalcon_stationary.png')
-mFalconThrusterSmall = pygame.image.load('pictures/milleniumFalcon/mFalcon_thruster_small.png')
-mFalconThrusterBig = pygame.image.load('pictures/milleniumFalcon/mFalcon_thruster_big.png')
+mFalconStationary = util.load_image('pictures/milleniumFalcon/mFalcon_stationary.png')
+mFalconThrusterSmall = util.load_image('pictures/milleniumFalcon/mFalcon_thruster_small.png')
+mFalconThrusterBig = util.load_image('pictures/milleniumFalcon/mFalcon_thruster_big.png')
 
 reyMoveUp = [reyUpWalk1, reyUpWalk2, reyUpStationary]
 reyMoveDown = [reyDownWalk1, reyDownWalk2, reyDownStationary]
@@ -147,13 +150,13 @@ finnMoveLeft = [finnLeftWalk1, finnLeftWalk2, finnLeftStationary]
 mFalconFireUp = [mFalconStationary, mFalconThrusterSmall, mFalconStationary, mFalconThrusterSmall,
                  mFalconThrusterBig, mFalconStationary, mFalconThrusterSmall, mFalconThrusterBig,
                  mFalconThrusterSmall, mFalconThrusterBig, mFalconThrusterBig, mFalconThrusterBig]
-blueprint_img = pygame.image.load('pictures/Blueprint.png')
+blueprint_img = util.load_image('pictures/Blueprint.png')
 
 # holes
 holes = []
 
 # for run button
-btnimg = pygame.image.load('pictures/runbtn.png').convert_alpha()
+btnimg = util.load_image('pictures/runbtn.png')
 btn_rect = pygame.Rect(1075, 590, *btnimg.get_rect().size)
 
 clock = pygame.time.Clock()
@@ -449,7 +452,7 @@ def game_intro():
                     quit()
 
         gameDisplay.fill(white)
-        wp = pygame.image.load(wallpaper_img)
+        wp = wallpaper_img
         wp = pygame.transform.scale(wp,(display_width,display_height))
         gameDisplay.blit(wp, (0,0))
         pygame.display.update()
@@ -472,7 +475,7 @@ def rebel_move(direction, playerX, playerY, xChange, yChange, rebelScore, time_l
         pygame.draw.line(gameDisplay,black,(0,map_height),(map_width,map_height), 2)#draw boundary for status bar
         status(rebelScore, time_limit,seconds)
         #if level one
-        game_map=pygame.image.load(map_img[level]);
+        game_map=map_img[level]
 
         if blueprintCollected == False:
             #barrier(xlocation, randomHeight, barrier_width)
@@ -528,7 +531,7 @@ def rebel_jump(direction, playerX, playerY, xChange, yChange, rebelScore, time_l
         pygame.draw.line(gameDisplay,black,(0,map_height),(map_width,map_height), 2)#draw boundary for status bar
         status(rebelScore, time_limit,seconds)
         #if level one
-        game_map=pygame.image.load(map_img[level]);
+        game_map=map_img[level]
 
         if blueprintCollected == False:
             #barrier(xlocation, randomHeight, barrier_width)
@@ -575,7 +578,7 @@ def mfalcon_fly(mFalconX, mFalconY, rebelScore, time_limit, seconds, randBluepri
             status(rebelScore, time_limit,seconds)
             helpInstructions(level)
             #if level one
-            game_map=pygame.image.load(map_img[level])
+            game_map=map_img[level]
 
             if not blueprintCollected:
                 gameDisplay.blit(blueprint_img, (randBlueprintX, randBlueprintY))
@@ -764,8 +767,8 @@ def gameLoop():
 
 ####################### displaying it on screen ################################
         gameDisplay.fill(white)
-        game_map=pygame.image.load(map_img[level])
-        text_editor=pygame.image.load(text_editor_img)
+        game_map=map_img[level]
+        text_editor=text_editor_img
         gameDisplay.blit(game_map, (0,0))
         gameDisplay.blit(text_editor, (map_width,0))
         pygame.draw.line(gameDisplay,black,(map_width,display_height),(map_width,0), 2) #draw boundary for user to type code
