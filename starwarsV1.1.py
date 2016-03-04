@@ -157,6 +157,8 @@ blueprint_img = util.load_image('pictures/Blueprint.png')
 # holes
 holes = []
 
+trooper_LOS = pygame.Rect(420, 210, 30, 30)
+
 # for run button
 btnimg = util.load_image('pictures/runbtn.png')
 btn_rect = pygame.Rect(1075, 590, *btnimg.get_rect().size)
@@ -531,6 +533,11 @@ def rebel_jump(direction, playerX, playerY, xChange, yChange, rebelScore, time_l
     img = characterMove[direction][-1] # get stationary img
 
     for j in range(6):
+
+        # hardcoding storm trooper line of sight
+        player_rect = pygame.Rect(playerX, playerY, 30, 30)
+        if player_rect.colliderect(trooper_LOS) and level == 6:
+            break
 
         playerX += xChange
 
@@ -955,6 +962,11 @@ def gameLoop():
             rightCollision = False
 
         if crashed_into_wall(lead_x, lead_y, xlist, ylist, widthlist, heightlist):
+            gameOver = True
+
+        # hardcoding storm trooper line of sight
+        player_rect = pygame.Rect(lead_x, lead_y, 30, 30)
+        if level == 6 and player_rect.colliderect(trooper_LOS):
             gameOver = True
                     
         # check if player is on a hole
