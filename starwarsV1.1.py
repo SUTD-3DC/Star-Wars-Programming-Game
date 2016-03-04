@@ -338,7 +338,7 @@ def helpInstructions(level):
                         "c      self.moveRight()",
                         "",
                         "You can put in parameters, eg",
-                        "c      to move right 4 steps",
+                        "to move right 4 steps",
                         "c      self.moveRight(4)"],
                    1 : ["Commands to move your player", # Learn move
                         "c      self.moveUp()",
