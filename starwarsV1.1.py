@@ -125,6 +125,11 @@ finnLeftStationary = util.load_image('pictures/finnMove/Finn_left_stationary.png
 finnLeftWalk1 = util.load_image('pictures/finnMove/Finn_left_walk_1.png')
 finnLeftWalk2 = util.load_image('pictures/finnMove/Finn_left_walk_2.png')
 
+renUpStationary = util.load_image('pictures/renMove/Ren_up.png')
+renDownStationary = util.load_image('pictures/renMove/Ren_down.png')
+renRightStationary = util.load_image('pictures/renMove/Ren_right.png')
+renLeftStationary = util.load_image('pictures/renMove/Ren_left.png')
+
 darthUpStationary = util.load_image('pictures/darthMove/Darth_up.png')
 darthDownStationary = util.load_image('pictures/darthMove/Darth_down.png')
 darthRightStationary = util.load_image('pictures/darthMove/Darth_right.png')
@@ -154,6 +159,11 @@ finnMoveDown = [finnDownWalk1, finnDownWalk2, finnDownStationary]
 finnMoveRight = [finnRightWalk1, finnRightWalk2, finnRightStationary]
 finnMoveLeft = [finnLeftWalk1, finnLeftWalk2, finnLeftStationary]
 
+renMoveUp = [renUpStationary, renUpStationary, renUpStationary]
+renMoveDown = [renDownStationary, renDownStationary, renDownStationary]
+renMoveRight = [renRightStationary, renRightStationary, renRightStationary]
+renMoveLeft = [renLeftStationary, renLeftStationary, renLeftStationary]
+
 darthMoveUp = [darthUpStationary, darthUpStationary, darthUpStationary]
 darthMoveDown = [darthDownStationary, darthDownStationary, darthDownStationary]
 darthMoveRight = [darthRightStationary, darthRightStationary, darthRightStationary]
@@ -182,7 +192,7 @@ clock = pygame.time.Clock()
 
 smallfont = pygame.font.Font('diehund.ttf', 30)
 medfont = pygame.font.Font('diehund.ttf', 40)
-largefont = pygame.font.Font('diehund.ttf', 90)
+largefont = pygame.font.Font('diehund.ttf', 80)
 
 #sounds
 collectSaber = pygame.mixer.Sound("sounds/saberswing2.wav")
@@ -287,7 +297,8 @@ def parser_func(code):
         parsing = False
 
 def display_error():
-    global game_state
+    global game_state, rebelScore
+    rebelScore -= 5
     paused = True
     message_to_screen("CODE ERROR", red,
                       y_displace=-50, size = "large")
@@ -487,8 +498,17 @@ def game_intro():
                 pygame.quit()
                 quit()
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_p:
+                if event.key == pygame.K_i:
+                    characterMove = [renMoveUp, renMoveDown, renMoveRight, renMoveLeft]
+                    intro=False
+                if event.key == pygame.K_s:
+                    characterMove = [stormtMoveUp, stormtMoveDown, stormtMoveRight, stormtMoveLeft]
+                    intro=False
+                if event.key == pygame.K_t:
                     characterMove = [lukeMoveUp, lukeMoveDown, lukeMoveRight, lukeMoveLeft]
+                    intro=False
+                if event.key == pygame.K_d:
+                    characterMove = [darthMoveUp, darthMoveDown, darthMoveRight, darthMoveLeft]
                     intro=False
                 if event.key == pygame.K_m:
                     characterMove = [finnMoveUp, finnMoveDown, finnMoveRight, finnMoveLeft]
@@ -746,20 +766,30 @@ def gameLoop():
 
     while not gameExit:
         if gameWon == True:
+            rebelScore += linecount_to_score(code_lines)
             #-----sounds
             pygame.mixer.music.stop()
             pygame.mixer.music.load("sounds/lose - imperial march.ogg")
             pygame.mixer.music.play(0)
             #-----sounds
-            level = (level+1)%numOfLevels
-            message_to_screen("Level cleared!", red,
-                              y_displace=-50, size = "large")
-            message_to_screen("Press C to proceed", grey,
-                              50, size = "small")
-            message_to_screen("or Q to quit", grey,
-                              100, size = "small")
+            if level == 9:
+                message_to_screen("Congratulations!", green,
+                                  y_displace=-150, size = "large")
+                message_to_screen("Your Score is " + str(rebelScore), green,
+                                  y_displace=-50, size = "medium")
+                message_to_screen("Press C to proceed", orange,
+                                  50, size = "small")
+                message_to_screen("or Q to quit", orange,
+                                  100, size = "small")
+            else:
+                message_to_screen("Level cleared!", green,
+                                  y_displace=-50, size = "large")
+                message_to_screen("Press C to proceed", orange,
+                                  50, size = "small")
+                message_to_screen("or Q to quit", orange,
+                                  100, size = "small")
 
-            rebelScore += linecount_to_score(code_lines)
+            level = (level+1)%numOfLevels
 
             pygame.display.update()
 
@@ -833,7 +863,6 @@ def gameLoop():
 
         if game_state == 'error':
             display_error()
-            rebelScore -= 5
 
 
 ####################### UPDATES PLAYER LOCATION ################################
