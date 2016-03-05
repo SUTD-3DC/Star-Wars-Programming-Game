@@ -801,6 +801,8 @@ def gameLoop():
         
         if gameWon == True:
             rebelScore += linecount_to_score(code_lines)+int(time_limit-seconds)
+            pygame.draw.rect(gameDisplay, white, [240, map_height+4, 90, 31])
+            status(rebelScore, time_limit,seconds)
             #-----sounds
             pygame.mixer.music.stop()
             pygame.mixer.music.load("sounds/victorybgm.ogg")
@@ -853,7 +855,7 @@ def gameLoop():
 
         while gameOver == True or gameWon == True:
             game_state = 'gameover'
-            print "win liao lor"
+            #print "win liao lor"
             parser_thread.stop()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
