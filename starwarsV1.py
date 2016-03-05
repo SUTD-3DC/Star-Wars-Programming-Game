@@ -826,6 +826,7 @@ def gameLoop():
                                   100, size = "small")
 
             level = (level+1)%10
+            txtbx.clear()
 
 
             pygame.display.update()
