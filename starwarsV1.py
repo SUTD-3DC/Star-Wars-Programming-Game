@@ -19,7 +19,7 @@ import util
 
 pygame.init()
 
-level = 1
+level = 0
 numOfLevels = 10
 rebelScore = 0
 
@@ -402,33 +402,32 @@ def helpInstructions(level):
                         "c          self.moveLeft()",
                         "c",
                         "'self' represents the object you are",
-                        " controling, in this case, the player."],
-                   3 : ["",
-                        "Here are some useful actions to use", # Learn condition check
-                        "c      if self.holeInFront() :",
-                        "c          self.jumpRight()",
+                        "controlling, in this case, the player."],
+                   3 : ["Here are some useful actions to use", # Learn condition check
+                        "for jumping across holes.",
                         "",
-                        "Don't forget how to use the loops!",
-                        "c      while True:",
-                        "c          self.moveUp()"],
+                        "c        self.jumpRight()",
+                        "c        self.jumpLeft()",
+                        "c        self.jumpUp()",
+                        "c        self.jumpDown()",],
                    4 : ["The Death Star Blueprint earns you ",
                         "30 points!",
-                        "If you didn't realize, If and While", # Example conditions 1
-                        "statements require conditions.",
-                        "c      x = 0",
-                        "c      while x < 5 :",
-                        "c          self.moveUp()",
-                        "c          if x == 3",
-                        "c              self.moveLeft()",
+                        "Programming is about efficiency.",
+                        "If you didn't realize, points have", # Example conditions 1
+                        "been awarded based on how many",
+                        "line is your code and how much",
+                        "time is left upon reaching the ",
+                        "objective.",
+                        "",
                         ""],
                    5 : ["Avoid getting detected by infrared",
                         "sensors! They're like holes!",
                         "You can use jump to avoid them. ", # Example conditions 2
                         "",
                         "a condition check.",
-                        "c      while self.holeInFront() :",
-                        "c          <do stuff>",
-                        "c      if self.holeInFront():",
+                        "c      while True:",
+                        "c          if self.holeInFront():",
+                        "c              <do stuff>",
                         "c          <do stuff>"],
                    6 : ["Avoid getting detected by Storm", # Test!
                         "Troopers. Jumping isn't going to",
@@ -439,28 +438,25 @@ def helpInstructions(level):
                         "      Otherwise, take the right path.",
                         "",
                         ""],
-                   7 : ["Let's see how fast and simple you",
-                        "can get this over and done with.",
-                        "Try assigning 'True' as the x value",
-                        "",
-                        "c      x = <value>",
-                        "c      while x:",
-                        "c          <do stuff>",
-                        "c          <do stuff>"],
+                   7 : ["Let's see how fast you can get",
+                        "this over and done with.",
+                        "Hint:",
+                        "  You will need 4 moves in a ",
+                        "  loop."],
                    8 : ["You are close to completion. The ",
                         "Millenium Falcon is at the next ",
                         "docking bay!",
                         "",
-                        "c      x = <value>",
-                        "c      while <condition> :",
-                        "c          <do stuff>",
-                        "c      if <condition> :",
-                        "c          <do stuff>"],
+                        "c    while <condition>:",
+                        "c        if <condition>:",
+                        "c            <do stuff>",
+                        "c        else:",
+                        "c            <do stuff>"],
                    9 : ["Hop onto the Millenium Falcon and",
                         "escape!",
                         "Holes will randomly appear on the",
-                        "map, so try putting if-statement ",
-                        "in a loop!"]}
+                        "map, so try putting if-else ",
+                        "statement in a loop!"]}
     for lineNumber in range(len(helpMessage[level])):
         isCode = False
         if len(helpMessage[level][lineNumber]) > 0:
@@ -827,7 +823,7 @@ def gameLoop():
                 message_to_screen("or Q to quit", orange,
                                   100, size = "small")
 
-            level = (level+1)
+            level = (level+1)%10
 
 
             pygame.display.update()
