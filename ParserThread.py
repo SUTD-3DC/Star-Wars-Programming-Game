@@ -51,9 +51,10 @@ class Thread:
     def stop(self):
         try:
             if self.t.isAlive():
+                print "killing parsing thread..."
                 ctype_async_raise(self.t, SystemExit)
-            self.t.join()
+            # somehow i cannot join on windows??
+            #self.t.join()
         except:
-            pass
-            # traceback.print_exc()
+            traceback.print_exc()
 
