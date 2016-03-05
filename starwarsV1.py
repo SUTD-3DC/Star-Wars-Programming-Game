@@ -266,10 +266,10 @@ def done_moving():
 class Player:
 
     def __init__(self):
-        self.moveUp = lambda steps = 1: self.move('move_up', steps)
-        self.moveDown = lambda steps = 1: self.move('move_down', steps)
-        self.moveLeft = lambda steps = 1: self.move('move_left', steps)
-        self.moveRight = lambda steps = 1: self.move('move_right', steps)
+        self.moveUp = lambda steps = 1: self.move('move_up', steps * 3)
+        self.moveDown = lambda steps = 1: self.move('move_down', steps * 3)
+        self.moveLeft = lambda steps = 1: self.move('move_left', steps * 3)
+        self.moveRight = lambda steps = 1: self.move('move_right', steps * 3)
 
         self.jumpUp = lambda steps = 1: self.move('jump_up', steps)
         self.jumpDown = lambda steps = 1: self.move('jump_down', steps)
@@ -552,41 +552,15 @@ def game_intro():
         clock.tick(5)
 
 
-def rebel_move(direction, playerX, playerY, xChange, yChange, rebelScore, time_limit, seconds, xlocation, ylocation, barrier_width,barrier_height,randBlueprintX, randBlueprintY):
+def rebel_move(direction, playerX, playerY, xChange, yChange, img):
 
-    global game_map
-    image = None
-    for img in characterMove[direction]:
+    playerX += xChange
+    playerY += yChange
+    img += 1
+    img %= 3
+    image = characterMove[direction][img]
 
-        playerX += xChange
-        playerY += yChange
-
-        gameDisplay.fill(white)
-        gameDisplay.blit(game_map, (0,0))
-        gameDisplay.blit(text_editor, (map_width,0))
-        pygame.draw.line(gameDisplay,black,(map_width,display_height),(map_width,0), 2)#draw boundary for user to type code
-        pygame.draw.line(gameDisplay,black,(0,map_height),(map_width,map_height), 2)#draw boundary for status bar
-        status(rebelScore, time_limit,seconds)
-        #if level one
-        game_map=map_img[level]
-        if (blueprintCollected == False) and blueprintExist:
-            gameDisplay.blit(blueprint_img, (randBlueprintX, randBlueprintY))
-
-        gameDisplay.blit(btnimg, runbtn_rect)
-        gameDisplay.blit(eraseimg, erasebtn_rect)
-        draw_holes()
-        gameDisplay.blit(img, (playerX, playerY))
-        if level == 9:
-            gameDisplay.blit(mFalconStationary, (510, 225))
-
-        image = img
-
-        txtbx.draw(gameDisplay)
-        helpInstructions(level)
-        pygame.display.update()
-        clock.tick(10)
-
-    return playerX, playerY, image
+    return playerX, playerY, image, img
 
 
 def rebel_jump(direction, playerX, playerY, xChange, yChange, rebelScore, time_limit, seconds, xlocation, ylocation, barrier_width,barrier_height,randBlueprintX, randBlueprintY):
@@ -755,6 +729,7 @@ def gameLoop():
     player = characterMove[1][2]
     [lead_x,lead_y,xlist,ylist,widthlist,heightlist,win_width,win_height,win_xlocation,win_ylocation,holeCoords,vadarOrientation,blueprint] = loadLevel(level)
     
+    next_img_index = 0
     lead_x_change = 0
     lead_y_change = 0
     randBlueprintX = 0
@@ -994,43 +969,35 @@ def gameLoop():
             elif next_move == 'move_up':
                 if topCollision:
                     bangwall.play()
-                    lead_x, lead_y, player = rebel_move(0, lead_x, lead_y, 0, 0, rebelScore, time_limit, seconds, xlocation, ylocation,
-                                                    barrier_width, barrier_height, randBlueprintX, randBlueprintY)
+                    lead_x, lead_y, player, next_img_index = rebel_move(0, lead_x, lead_y, 0, 0, next_img_index)
                     # topCollision = False
                 else:
-                    lead_x, lead_y, player = rebel_move(0, lead_x, lead_y, 0, -10, rebelScore, time_limit, seconds, xlocation, ylocation,
-                                                    barrier_width, barrier_height, randBlueprintX, randBlueprintY)
+                    lead_x, lead_y, player, next_img_index = rebel_move(0, lead_x, lead_y, 0, -10, next_img_index)
 
             elif next_move == 'move_down':
                 if bottomCollision:
                     bangwall.play()
-                    lead_x, lead_y, player = rebel_move(1, lead_x, lead_y, 0, 0, rebelScore, time_limit, seconds, xlocation, ylocation,
-                                                    barrier_width, barrier_height, randBlueprintX, randBlueprintY)
+                    lead_x, lead_y, player, next_img_index = rebel_move(1, lead_x, lead_y, 0, 0, next_img_index)
                     # bottomCollision = False
                 else:
-                    lead_x, lead_y, player = rebel_move(1, lead_x, lead_y, 0, 10, rebelScore, time_limit, seconds, xlocation, ylocation,
-                                                    barrier_width, barrier_height, randBlueprintX, randBlueprintY)
+                    lead_x, lead_y, player, next_img_index = rebel_move(1, lead_x, lead_y, 0, 10, next_img_index)
 
             elif next_move == 'move_left':
                 if leftCollision:
                     bangwall.play()
-                    lead_x, lead_y, player = rebel_move(3, lead_x, lead_y, 0, 0, rebelScore, time_limit, seconds, xlocation, ylocation,
-                                                    barrier_width, barrier_height, randBlueprintX, randBlueprintY)
+                    lead_x, lead_y, player, next_img_index = rebel_move(3, lead_x, lead_y, 0, 0, next_img_index)
                     # leftCollision = False
                 else:
-                    lead_x, lead_y, player = rebel_move(3, lead_x, lead_y, -10, 0, rebelScore, time_limit, seconds, xlocation, ylocation,
-                                                    barrier_width, barrier_height, randBlueprintX, randBlueprintY)
+                    lead_x, lead_y, player, next_img_index = rebel_move(3, lead_x, lead_y, -10, 0, next_img_index)
 
             elif next_move == 'move_right':
 
                 if rightCollision:
                     bangwall.play()
-                    lead_x, lead_y, player = rebel_move(2, lead_x, lead_y, 0, 0, rebelScore, time_limit, seconds, xlocation, ylocation,
-                                                    barrier_width, barrier_height, randBlueprintX, randBlueprintY)
+                    lead_x, lead_y, player, next_img_index = rebel_move(2, lead_x, lead_y, 0, 0, next_img_index)
                     # rightCollision = False
                 else:
-                    lead_x, lead_y, player = rebel_move(2, lead_x, lead_y, 10, 0, rebelScore, time_limit, seconds, xlocation, ylocation,
-                                                    barrier_width, barrier_height, randBlueprintX, randBlueprintY)
+                    lead_x, lead_y, player, next_img_index = rebel_move(2, lead_x, lead_y, 10, 0, next_img_index)
 
             elif next_move == 'jump_up':
                 jump1.play()
@@ -1143,6 +1110,8 @@ def gameLoop():
     pygame.quit()
     quit()
 
+# import cProfile
 game_intro()
 gameLoop()
+# cProfile.run('gameLoop()')
 
