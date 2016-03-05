@@ -62,6 +62,7 @@ parser_thread = ParserThread.Thread()
 map_width = 800
 map_height = 600
 status_bar = 40
+status_bar_rect = pygame.Rect(0, 600, 800, 40)
 display_width = map_width +400
 display_height = map_height + status_bar
 
@@ -217,8 +218,88 @@ startGame = pygame.mixer.Sound("sounds/start.ogg")
 wallbang = pygame.mixer.Sound("sounds/bang1.ogg")
 dvlist = ["sounds/darth vader - die1.wav","sounds/darth vader - i have you now.wav","sounds/darth vaer - breath.wav","sounds/darth vader - thisistheend.wav"]
 
-
 BEGIN_LOOP = pygame.USEREVENT + 1
+
+# 9 Lines max
+helpMessage = {0 : ["Commands to move your player", # Learn move
+                    "c      self.moveUp()",
+                    "c      self.moveRight()",
+                    "",
+                    "You can put in parameters, eg",
+                    "to move right 4 steps",
+                    "c      self.moveRight(4)"],
+               1 : ["Commands to move your player", # Learn move
+                    "c      self.moveUp()",
+                    "c      self.moveRight()",
+                    "c      self.moveDown()",
+                    "c      self.moveLeft()",
+                    "",
+                    "Python is indentation and case ",
+                    "sensitive!",
+                    "It could be the source of your bugs"],
+               2 : ["Loops can ease your pain of coding", # Learn basic loop
+                    "lines of the same thing.",
+                    "c",
+                    "c      while True :",
+                    "c          self.moveRight()",
+                    "c          self.moveLeft()",
+                    "c",
+                    "'self' represents the object you are",
+                    "controlling, in this case, the player."],
+               3 : ["Here are some useful actions to use", # Learn condition check
+                    "for jumping across holes.",
+                    "",
+                    "c        self.jumpRight()",
+                    "c        self.jumpLeft()",
+                    "c        self.jumpUp()",
+                    "c        self.jumpDown()",],
+               4 : ["The Death Star Blueprint earns you ",
+                    "30 points!",
+                    "Programming is about efficiency.",
+                    "If you didn't realize, points have", # Example conditions 1
+                    "been awarded based on how many",
+                    "line is your code and how much",
+                    "time is left upon reaching the ",
+                    "objective.",
+                    "",
+                    ""],
+               5 : ["Avoid getting detected by infrared",
+                    "sensors! They're like holes!",
+                    "You can use jump to avoid them. ", # Example conditions 2
+                    "",
+                    "a condition check.",
+                    "c      while True:",
+                    "c          if self.holeInFront():",
+                    "c              <do stuff>",
+                    "c          <do stuff>"],
+               6 : ["Avoid getting detected by Storm", # Test!
+                    "Troopers. Jumping isn't going to",
+                    "help you.",
+                    "Hint:",
+                    "      If you like a challenge,",
+                    "      collect the blueprint.",
+                    "      Otherwise, take the right path.",
+                    "",
+                    ""],
+               7 : ["Let's see how fast you can get",
+                    "this over and done with.",
+                    "Hint:",
+                    "  You will need 4 moves in a ",
+                    "  loop."],
+               8 : ["You are close to completion. The ",
+                    "Millenium Falcon is at the next ",
+                    "docking bay!",
+                    "",
+                    "c    while <condition>:",
+                    "c        if <condition>:",
+                    "c            <do stuff>",
+                    "c        else:",
+                    "c            <do stuff>"],
+               9 : ["Hop onto the Millenium Falcon and",
+                    "escape!",
+                    "Holes will randomly appear on the",
+                    "map, so try putting if-else ",
+                    "statement in a loop!"]}
 
 def loadLevel(level):
     position=[[360,570],[180,180],[0,450],[30,270],[750,420],[360,30],[420,30],[60,330],[30,270],[30,270]]
@@ -366,6 +447,7 @@ def pause():
         clock.tick(5)
 
 def helpInstructions(level):
+    global helpMessage
     csmallfont = pygame.font.Font('diehund.ttf', 15)
     csmallfont.set_italic(True);
     
@@ -377,86 +459,6 @@ def helpInstructions(level):
     xsmallfont.set_underline(False)
     xsmallfont.set_bold(False)
 
-    # 9 Lines max
-    helpMessage = {0 : ["Commands to move your player", # Learn move
-                        "c      self.moveUp()",
-                        "c      self.moveRight()",
-                        "",
-                        "You can put in parameters, eg",
-                        "to move right 4 steps",
-                        "c      self.moveRight(4)"],
-                   1 : ["Commands to move your player", # Learn move
-                        "c      self.moveUp()",
-                        "c      self.moveRight()",
-                        "c      self.moveDown()",
-                        "c      self.moveLeft()",
-                        "",
-                        "Python is indentation and case ",
-                        "sensitive!",
-                        "It could be the source of your bugs"],
-                   2 : ["Loops can ease your pain of coding", # Learn basic loop
-                        "lines of the same thing.",
-                        "c",
-                        "c      while True :",
-                        "c          self.moveRight()",
-                        "c          self.moveLeft()",
-                        "c",
-                        "'self' represents the object you are",
-                        "controlling, in this case, the player."],
-                   3 : ["Here are some useful actions to use", # Learn condition check
-                        "for jumping across holes.",
-                        "",
-                        "c        self.jumpRight()",
-                        "c        self.jumpLeft()",
-                        "c        self.jumpUp()",
-                        "c        self.jumpDown()",],
-                   4 : ["The Death Star Blueprint earns you ",
-                        "30 points!",
-                        "Programming is about efficiency.",
-                        "If you didn't realize, points have", # Example conditions 1
-                        "been awarded based on how many",
-                        "line is your code and how much",
-                        "time is left upon reaching the ",
-                        "objective.",
-                        "",
-                        ""],
-                   5 : ["Avoid getting detected by infrared",
-                        "sensors! They're like holes!",
-                        "You can use jump to avoid them. ", # Example conditions 2
-                        "",
-                        "a condition check.",
-                        "c      while True:",
-                        "c          if self.holeInFront():",
-                        "c              <do stuff>",
-                        "c          <do stuff>"],
-                   6 : ["Avoid getting detected by Storm", # Test!
-                        "Troopers. Jumping isn't going to",
-                        "help you.",
-                        "Hint:",
-                        "      If you like a challenge,",
-                        "      collect the blueprint.",
-                        "      Otherwise, take the right path.",
-                        "",
-                        ""],
-                   7 : ["Let's see how fast you can get",
-                        "this over and done with.",
-                        "Hint:",
-                        "  You will need 4 moves in a ",
-                        "  loop."],
-                   8 : ["You are close to completion. The ",
-                        "Millenium Falcon is at the next ",
-                        "docking bay!",
-                        "",
-                        "c    while <condition>:",
-                        "c        if <condition>:",
-                        "c            <do stuff>",
-                        "c        else:",
-                        "c            <do stuff>"],
-                   9 : ["Hop onto the Millenium Falcon and",
-                        "escape!",
-                        "Holes will randomly appear on the",
-                        "map, so try putting if-else ",
-                        "statement in a loop!"]}
     for lineNumber in range(len(helpMessage[level])):
         isCode = False
         if len(helpMessage[level][lineNumber]) > 0:
@@ -509,8 +511,8 @@ def loadBGM(level):
 
 def game_intro():
     global characterMove
-    pygame.mixer.music.load("sounds/intro - star wars main theme.ogg")
-    pygame.mixer.music.play(0)
+    # pygame.mixer.music.load("sounds/intro - star wars main theme.ogg")
+    # pygame.mixer.music.play(0)
     intro = True
 
     while intro:
@@ -714,7 +716,33 @@ def message_to_screen(msg,color, y_displace = 0, size = "small"):
     textRect.center = (map_width / 2), (map_height / 2) + y_displace
     gameDisplay.blit(textSurf, textRect)
 
+def render(gameWon, player, lead_x, lead_y, seconds, randBlueprintX, randBlueprintY):
+    # status bar
+    gameDisplay.fill(white, status_bar_rect)
+    status(rebelScore, time_limit,seconds)
 
+    # editor area
+    gameDisplay.blit(text_editor, (map_width,0))
+    gameDisplay.blit(btnimg, runbtn_rect)
+    gameDisplay.blit(eraseimg, erasebtn_rect)
+    # helpInstructions seems to be quite slow
+    # helpInstructions(level)
+
+    # map area
+    gameDisplay.blit(map_img[level], (0,0))
+    pygame.draw.line(gameDisplay,black,(map_width,display_height),(map_width,0), 2) #draw boundary for user to type code
+    pygame.draw.line(gameDisplay,black,(0,map_height),(map_width,map_height), 2) #draw boundary for status bar
+    if (blueprintCollected == False) and blueprintExist:
+        gameDisplay.blit(blueprint_img, (randBlueprintX, randBlueprintY))
+    if level == numOfLevels - 1:
+        draw_holes()
+    if level == 9 and not gameWon:
+        gameDisplay.blit(mFalconStationary, (510, 225))
+
+    # player
+    if not gameWon:
+        gameDisplay.blit(player, (lead_x, lead_y))
+    txtbx.draw(gameDisplay)
 
 def gameLoop():
     global parsing, game_state, text_editor, elemNumber, level,txtbx, game_map, blueprintCollected, characterMove,numOfLevels, rebelScore
@@ -761,27 +789,27 @@ def gameLoop():
 
     #----------LOAD BGM-----------#
     beginloop = False
-    bgmlist = loadBGM(level)
-    pygame.mixer.music.stop() # make sure theres no music playing.
-    pygame.mixer.music.load(bgmlist[0])
-    pygame.mixer.music.play(0)
-    pygame.mixer.music.set_endevent(BEGIN_LOOP)
+    # bgmlist = loadBGM(level)
+    # pygame.mixer.music.stop() # make sure theres no music playing.
+    # pygame.mixer.music.load(bgmlist[0])
+    # pygame.mixer.music.play(0)
+    # pygame.mixer.music.set_endevent(BEGIN_LOOP)
 
     while not gameExit:
 
         #Check if bgm has finish playing
                
-        event = pygame.mixer.music.get_endevent()
-        pygame.mixer.music.queue(bgmlist[1])
+        # event = pygame.mixer.music.get_endevent()
+        # pygame.mixer.music.queue(bgmlist[1])
         
         if gameWon == True:
             rebelScore += linecount_to_score(code_lines)+int(time_limit-seconds)
             pygame.draw.rect(gameDisplay, white, [240, map_height+4, 90, 31])
             status(rebelScore, time_limit,seconds)
             #-----sounds
-            pygame.mixer.music.stop()
-            pygame.mixer.music.load("sounds/victorybgm.ogg")
-            pygame.mixer.music.play(-1)
+            # pygame.mixer.music.stop()
+            # pygame.mixer.music.load("sounds/victorybgm.ogg")
+            # pygame.mixer.music.play(-1)
             #-----sounds
             if level == 9:
                 message_to_screen("Congratulations!", green,
@@ -801,15 +829,16 @@ def gameLoop():
                                   100, size = "small")
 
             level = (level+1)%10
+            txtbx.clear()
 
 
             pygame.display.update()
 
         elif gameOver == True:
             rebelScore -= 2
-            pygame.mixer.music.stop()
-            pygame.mixer.music.load("sounds/lose - imperial march.ogg")
-            pygame.mixer.music.play(-1)
+            # pygame.mixer.music.stop()
+            # pygame.mixer.music.load("sounds/lose - imperial march.ogg")
+            # pygame.mixer.music.play(-1)
             #-----sounds
             message_to_screen("GAME OVER", red,
                               y_displace=-50, size = "large")
@@ -844,7 +873,7 @@ def gameLoop():
                     if event.key == pygame.K_c:
                         game_state = 'idle'
                         gameWon= False
-                        pygame.mixer.music.stop()
+                        # pygame.mixer.music.stop()
                         gameLoop()
                         
 
@@ -885,20 +914,6 @@ def gameLoop():
         gameDisplay.fill(white)
         game_map=map_img[level]
         text_editor=text_editor_img
-        gameDisplay.blit(game_map, (0,0))
-        gameDisplay.blit(text_editor, (map_width,0))
-        pygame.draw.line(gameDisplay,black,(map_width,display_height),(map_width,0), 2) #draw boundary for user to type code
-        pygame.draw.line(gameDisplay,black,(0,map_height),(map_width,map_height), 2) #draw boundary for status bar
-        if not gameWon:
-            gameDisplay.blit(player, (lead_x, lead_y))
-        status(rebelScore, time_limit,seconds)
-        helpInstructions(level)
-
-        if level == numOfLevels - 1:
-            draw_holes()
-        if level == 9 and not gameWon:
-            gameDisplay.blit(mFalconStationary, (510, 225))
-
 
 ####################### barrier collision detection #############################
 
@@ -925,7 +940,6 @@ def gameLoop():
 
 ######################## when blueprint have been collected ###########################
         if (blueprintCollected == False) and blueprintExist:
-            gameDisplay.blit(blueprint_img, (randBlueprintX, randBlueprintY))
             if lead_x >= randBlueprintX and lead_x <= randBlueprintX + BlueprintThickness or lead_x + block_size >= randBlueprintX and \
                lead_x + block_size <= randBlueprintX + BlueprintThickness:
                 
@@ -1078,8 +1092,6 @@ def gameLoop():
                 game_state = 'idle'
 
         # run code button
-        gameDisplay.blit(btnimg, runbtn_rect)
-        gameDisplay.blit(eraseimg, erasebtn_rect)
         for event in events:
             if event.type == pygame.MOUSEBUTTONUP:
                 print pygame.mouse.get_pos()
@@ -1102,7 +1114,7 @@ def gameLoop():
                     parser_thread.start(parser_func, code)
         
         txtbx.update(events)
-        txtbx.draw(gameDisplay)
+        render(gameWon, player, lead_x, lead_y, seconds, randBlueprintX, randBlueprintY)
         pygame.display.update()
 
 
@@ -1110,8 +1122,8 @@ def gameLoop():
     pygame.quit()
     quit()
 
-# import cProfile
+import cProfile
 game_intro()
-gameLoop()
-# cProfile.run('gameLoop()')
+# gameLoop()
+cProfile.run('gameLoop()')
 
