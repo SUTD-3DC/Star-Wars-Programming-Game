@@ -222,22 +222,22 @@ BEGIN_LOOP = pygame.USEREVENT + 1
 
 def loadLevel(level):
     position=[[360,570],[180,180],[0,450],[30,270],[750,420],[360,30],[420,30],[60,330],[30,270],[30,270]]
-    levelXList = [[510,0,0],[0,180,360,180,360,600,360,450],[0,120,270,420,690,540,390,240,0],
+    levelXList = [[510,0,0,810],[0,180,360,180,360,600,360,450,420],[0,120,270,420,690,540,390,240,0],
                   [0,0,0,30,780,780],[0,30,780,0,420,180,510,180,300,420,510,30,180,510,630],[0,0,60,390],
              [0,0,270,330,360,450,450,450,450,450,750],
              [0,0,360,600,240,480,720,0,0],[0,0,0,30],[0,0,0,30]]
-    levelYList = [[360,0,180],[0,0,120,450,390,0,240,0],[0,0,0,0,0,150,270,390,510],[0,30,300,570,30,300],
+    levelYList = [[360,0,180,180],[0,0,120,450,390,0,240,0,-30],[0,0,0,0,0,150,270,390,510],[0,30,300,570,30,300],
                   [0,570,0,0,0,480,480,30,30,60,60,210,180,180,210],
                   [0,90,270,0],
                   [0,90,120,120,240,0,120,270,420,540,60],
                   [0,180,180,180,270,270,240,390,300],[0,60,300,570],[0,60,300,570]]
-    widthlist = [[300,810,270],[180,240,60,630,450,210,240,150],
+    widthlist = [[300,810,270,30],[180,240,60,630,450,210,240,150,30],
                  [120,150,150,150,120,150,150,150,240],[600,30,30,780,30,30],
                  [30,780,30,390,780,120,120,120,90,90,120,150,120,120,180],
                  [360,60,300,420],
                  [420,240,60,90,60,360,270,180,270,360,60],
                  [810,180,60,60,60,60,90,810,60],[810,30,30,780],[810,30,30,780]]
-    heightlist=[[240,180,420],[600,120,60,150,60,390,90,180],
+    heightlist=[[240,180,420,240],[600,120,60,150,60,390,90,180,30],
                 [420,300,180,60,600,450,330,210,90],[60,240,270,30,240,270],
                 [600,30,570,60,60,90,90,120,90,60,90,120,210,210,120],
                 [90,510,330,600],
@@ -292,14 +292,12 @@ class Player:
         for hole in holes:
             player_rect = pygame.Rect(lead_x, lead_y, 30, 30)
             collide_direction = hole.collides(player_rect)
-            print player_rect
-            print 'psuedo_holes', collide_direction
-            print 'lead_direction', lead_direction
-            # if lead_direction == collide_direction: return True
+##            print player_rect
+##            print 'psuedo_holes', collide_direction
+##            print 'lead_direction', lead_direction
+##            # if lead_direction == collide_direction: return True
             if lead_direction == collide_direction:
-                print True
                 return True
-        print False
         return False
 
 this_is_impossible_to_be_screwed_up = Player()
@@ -308,8 +306,8 @@ def parser_func(code):
     global game_state
     try:
         exec(code)
-    except SystemExit:
-        print "exit from loop."
+##    except SystemExit:
+##        print "exit from loop."
     except:
         traceback.print_exc()
         game_state = 'error'
@@ -374,7 +372,7 @@ def helpInstructions(level):
     xsmallfont = pygame.font.Font('diehund.ttf', 15)
     xsmallfont.set_underline(True)
     xsmallfont.set_bold(True)
-    gameDisplay.blit(xsmallfont.render("Tips:", True, white),\
+    gameDisplay.blit(xsmallfont.render("Level "+str(level + 1), True, white),\
                          [835, 375])
     xsmallfont.set_underline(False)
     xsmallfont.set_bold(False)
@@ -404,66 +402,61 @@ def helpInstructions(level):
                         "c          self.moveLeft()",
                         "c",
                         "'self' represents the object you are",
-                        " controling, in this case, the player."],
-                   3 : ["",
-                        "Here are some useful actions to use", # Learn condition check
-                        "c      if self.holeInFront() :",
-                        "c          self.jumpRight()",
+                        "controlling, in this case, the player."],
+                   3 : ["Here are some useful actions to use", # Learn condition check
+                        "for jumping across holes.",
                         "",
-                        "Don't forget how to use the loops!",
-                        "c      while x < 5 :",
-                        "c          self.jumpUp()"],
+                        "c        self.jumpRight()",
+                        "c        self.jumpLeft()",
+                        "c        self.jumpUp()",
+                        "c        self.jumpDown()",],
                    4 : ["The Death Star Blueprint earns you ",
-                        "20 points!",
-                        "If you didn't realize, If and While", # Example conditions 1
-                        "statements require conditions.",
-                        "c      x = 0",
-                        "c      while x < 5 :",
-                        "c          self.moveUp()",
-                        "c          if x == 3",
-                        "c              self.moveLeft()",
+                        "30 points!",
+                        "Programming is about efficiency.",
+                        "If you didn't realize, points have", # Example conditions 1
+                        "been awarded based on how many",
+                        "line is your code and how much",
+                        "time is left upon reaching the ",
+                        "objective.",
+                        "",
                         ""],
                    5 : ["Avoid getting detected by infrared",
                         "sensors! They're like holes!",
-                        "You can use less than(<), more ", # Example conditions 2
-                        "than(>) or equal to(==), within",
+                        "You can use jump to avoid them. ", # Example conditions 2
+                        "",
                         "a condition check.",
-                        "c      while self.holeInFront() :",
-                        "c          <do stuff>",
-                        "c      if self.holeInFront():",
+                        "c      while True:",
+                        "c          if self.holeInFront():",
+                        "c              <do stuff>",
                         "c          <do stuff>"],
-                   6 : ["Let's see how quickly you can get", # Test!
-                        "this over and done with!",
+                   6 : ["Avoid getting detected by Storm", # Test!
+                        "Troopers. Jumping isn't going to",
+                        "help you.",
+                        "Hint:",
+                        "      If you like a challenge,",
+                        "      collect the blueprint.",
+                        "      Otherwise, take the right path.",
                         "",
-                        "c      x = <value>",
-                        "c      while <condtion> :",
-                        "c          <do stuff>",
-                        "c      if <condition> :",
-                        "c          <do stuff>",
                         ""],
-                   7 : ["Condtitions result in either True",
-                        "or False.",
-                        "Try assigning 'True' as the x value",
+                   7 : ["Let's see how fast you can get",
+                        "this over and done with.",
+                        "Hint:",
+                        "  You will need 4 moves in a ",
+                        "  loop."],
+                   8 : ["You are close to completion. The ",
+                        "Millenium Falcon is at the next ",
+                        "docking bay!",
                         "",
-                        "c      x = <value>",
-                        "c      while x:",
-                        "c          <do stuff>",
-                        "c      if <condition> :",
-                        "c          <do stuff>"],
-                   8 : ["You may have heard of an infinite",
-                        "loop. 'break' is your friend, but",
-                        "where is it used?",
-                        "",
-                        "c      x = <value>",
-                        "c      while <condition> :",
-                        "c          <do stuff>",
-                        "c      if <condition> :",
-                        "c          <do stuff>"],
+                        "c    while <condition>:",
+                        "c        if <condition>:",
+                        "c            <do stuff>",
+                        "c        else:",
+                        "c            <do stuff>"],
                    9 : ["Hop onto the Millenium Falcon and",
                         "escape!",
                         "Holes will randomly appear on the",
-                        "map, so try putting if-statement ",
-                        "in a loop!"]}
+                        "map, so try putting if-else ",
+                        "statement in a loop!"]}
     for lineNumber in range(len(helpMessage[level])):
         isCode = False
         if len(helpMessage[level][lineNumber]) > 0:
@@ -510,9 +503,7 @@ def loadBGM(level):
         
     elif level == 8 or level == 9:
         loadList = [bgm4, bgm4loop]
-        
-    else:
-        print "no sound loaded."
+    
 
     return loadList
 
@@ -667,7 +658,6 @@ def mfalcon_fly(rebelScore, time_limit, seconds, randBlueprintX, randBlueprintY)
 
     global game_map
     falcon.play()
-    # millenium falcon initial coordinates: 510, 225
     mFalconX = 510
     mFalconY = 225
 
@@ -797,9 +787,6 @@ def gameLoop():
     #----------LOAD BGM-----------#
     beginloop = False
     bgmlist = loadBGM(level)
-    print len(bgmlist)
-    print bgmlist[0]
-    print bgmlist[1]
     pygame.mixer.music.stop() # make sure theres no music playing.
     pygame.mixer.music.load(bgmlist[0])
     pygame.mixer.music.play(0)
@@ -824,9 +811,9 @@ def gameLoop():
                                   y_displace=-150, size = "large")
                 message_to_screen("Your Score is " + str(rebelScore), green,
                                   y_displace=-50, size = "medium")
-                message_to_screen("Press C to proceed", orange,
+                message_to_screen("Please notify your friendly TA", orange,
                                   50, size = "small")
-                message_to_screen("or Q to quit", orange,
+                message_to_screen("to collect your prize", orange,
                                   100, size = "small")
             else:
                 message_to_screen("Level cleared!", green,
@@ -836,8 +823,9 @@ def gameLoop():
                 message_to_screen("or Q to quit", orange,
                                   100, size = "small")
 
-            level = (level+1)%numOfLevels
-            txtbx.clear()
+            level = (level+1)%10
+
+
             pygame.display.update()
 
         elif gameOver == True:
@@ -865,6 +853,7 @@ def gameLoop():
 
         while gameOver == True or gameWon == True:
             game_state = 'gameover'
+            print "win liao lor"
             parser_thread.stop()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -878,8 +867,11 @@ def gameLoop():
                         gameOver = False
                     if event.key == pygame.K_c:
                         game_state = 'idle'
+                        print game_state
                         gameWon= False
+                        print "game won is set to false"
                         pygame.mixer.music.stop()
+                        print "music stop"
                         gameLoop()
                         
 
