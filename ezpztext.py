@@ -19,6 +19,7 @@ class Textbox:
         self.focus_color = focus_color
         self.txtbx = []
         self.foci = 0
+        self.pause = {K_RETURN: 0, K_UP: 0, K_DOWN: 0, K_LEFT: 0, K_RIGHT: 0}
 
         self.x = 0
         self.y = 0
@@ -62,9 +63,30 @@ class Textbox:
                     self.txtbx[self.foci].move_cursor_relative(-1)
                 elif event.key == K_RIGHT:
                     self.txtbx[self.foci].move_cursor_relative(1)
+            if event.type == KEYUP:
+                if event.key == K_RETURN:
+                    self.pause[K_RETURN] = 0
+                elif event.key == K_UP:
+                    self.pause[K_UP] = 0
+                elif event.key == K_DOWN:
+                    self.pause[K_DOWN] = 0
+                elif event.key == K_LEFT:
+                    self.pause[K_LEFT] = 0
+                elif event.key == K_RIGHT:
+                    self.pause[K_RIGHT] = 0
 
         pressed = pygame.key.get_pressed()
-        if pressed[K_BACKSPACE]:
+        if self.held_down(K_RETURN):
+            self.set_foci(self.foci + 1)
+        elif self.held_down(K_UP):
+            self.set_foci(self.foci - 1)
+        elif self.held_down(K_DOWN):
+            self.set_foci(self.foci + 1)
+        elif self.held_down(K_LEFT):
+            self.txtbx[self.foci].move_cursor_relative(-1)
+        elif self.held_down(K_RIGHT):
+            self.txtbx[self.foci].move_cursor_relative(1)
+        elif pressed[K_BACKSPACE]:
             if self.txtbx[self.foci].value == '':
                 self.set_foci(self.foci - 1)
                 self.txtbx[self.foci].set_cursor(len(self.txtbx[self.foci].value))
@@ -72,6 +94,14 @@ class Textbox:
                 # to_update = False
 
         self.txtbx[self.foci].update(events)
+
+    def held_down(self, key):
+        pressed = pygame.key.get_pressed()
+        if self.pause[key] > 6 and pressed[key]:
+            return True
+        elif pressed[key]:
+            self.pause[key] += 1
+        return False
 
     def set_foci(self, new_foci):
         self.txtbx[self.foci].focus = False
