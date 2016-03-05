@@ -186,7 +186,9 @@ trooper_LOS = pygame.Rect(420, 210, 30, 30)
 
 # for run button
 btnimg = util.load_image('pictures/runbtn.png')
-btn_rect = pygame.Rect(1075, 590, *btnimg.get_rect().size)
+eraseimg = util.load_image('pictures/erasebtn.png')
+runbtn_rect = pygame.Rect(1075, 590, *btnimg.get_rect().size)
+erasebtn_rect = pygame.Rect(830, 15, *eraseimg.get_rect().size)
 
 clock = pygame.time.Clock()
 
@@ -579,7 +581,8 @@ def rebel_move(direction, playerX, playerY, xChange, yChange, rebelScore, time_l
         if (blueprintCollected == False) and blueprintExist:
             gameDisplay.blit(blueprint_img, (randBlueprintX, randBlueprintY))
 
-        gameDisplay.blit(btnimg, btn_rect)
+        gameDisplay.blit(btnimg, runbtn_rect)
+        gameDisplay.blit(eraseimg, erasebtn_rect)
         draw_holes()
         gameDisplay.blit(img, (playerX, playerY))
         if level == 9:
@@ -643,7 +646,8 @@ def rebel_jump(direction, playerX, playerY, xChange, yChange, rebelScore, time_l
         #for checking hole position
 ##            for hole in holes:
 ##                hole.draw()
-        gameDisplay.blit(btnimg, btn_rect)
+        gameDisplay.blit(btnimg, runbtn_rect)
+        gameDisplay.blit(eraseimg, erasebtn_rect)
         draw_holes()
         gameDisplay.blit(img, (playerX, playerY))
         if level == 9:
@@ -690,7 +694,8 @@ def mfalcon_fly(rebelScore, time_limit, seconds, randBlueprintX, randBlueprintY)
 
             if (not blueprintCollected) and blueprintExist:
                 gameDisplay.blit(blueprint_img, (randBlueprintX, randBlueprintY))
-            gameDisplay.blit(btnimg, btn_rect)
+            gameDisplay.blit(btnimg, runbtn_rect)
+            gameDisplay.blit(eraseimg, erasebtn_rect)
 
 
             txtbx.draw(gameDisplay)
@@ -832,7 +837,7 @@ def gameLoop():
                                   100, size = "small")
 
             level = (level+1)%numOfLevels
-
+            txtbx.clear()
             pygame.display.update()
 
         elif gameOver == True:
@@ -1116,11 +1121,14 @@ def gameLoop():
                 game_state = 'idle'
 
         # run code button
-        gameDisplay.blit(btnimg, btn_rect)
+        gameDisplay.blit(btnimg, runbtn_rect)
+        gameDisplay.blit(eraseimg, erasebtn_rect)
         for event in events:
             if event.type == pygame.MOUSEBUTTONUP:
                 print pygame.mouse.get_pos()
-                if btn_rect.collidepoint(pygame.mouse.get_pos()):
+                if erasebtn_rect.collidepoint(pygame.mouse.get_pos()):
+                    txtbx.clear()
+                if runbtn_rect.collidepoint(pygame.mouse.get_pos()):
                     if timerStart==False:
                         timer.set_ticks_func(pygame.time.get_ticks)
                         timer.reset()
@@ -1135,7 +1143,6 @@ def gameLoop():
                     code = code.replace('self', 'this_is_impossible_to_be_screwed_up')
                     code_lines += txtbx.get_linecount()
                     parser_thread.start(parser_func, code)
-                    txtbx.clear()
         
         txtbx.update(events)
         txtbx.draw(gameDisplay)
