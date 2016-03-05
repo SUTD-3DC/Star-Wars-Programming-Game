@@ -151,6 +151,7 @@ class Input:
         self.prompt = self.options.prompt; self.value = ''
         self.shifted = False
         self.pause = 0
+        self.del_pause = 0
         self.focus = self.options.focus
         self.bar = False
         self.cursor_pos = 0
@@ -184,9 +185,13 @@ class Input:
     def move_cursor_relative(self, dx):
         self._move_cursor_relative(dx, len(self.value))
 
-    def delete_char(self):
+    def back_delete_char(self):
         if self.cursor_pos > 0:
             self.value = self.value[:self.cursor_pos-1] + self.value[self.cursor_pos:]
+
+    def forward_delete_char(self):
+        if self.cursor_pos < len(self.value):
+            self.value = self.value[:self.cursor_pos] + self.value[self.cursor_pos+1:]
 
     def insert_char(self, c):
         self.value = self.value[:self.cursor_pos] + c + self.value[self.cursor_pos:]
@@ -201,24 +206,33 @@ class Input:
         if self.focus != True:
             return
 
-        # support for holding down to backspace
+        # support for holding down to backspace and delete
         pressed = pygame.key.get_pressed()
         if self.pause > 6 and pressed[K_BACKSPACE]:
-            self.delete_char()
+            self.back_delete_char()
             self._move_cursor_relative(-1, self.maxlength)
         elif pressed[K_BACKSPACE]:
             self.pause += 1
+        if self.del_pause > 6 and pressed[K_DELETE]:
+            self.forward_delete_char()
+        elif pressed[K_DELETE]:
+            self.del_pause += 1
+
 
         for event in events:
             if event.type == KEYUP:
                 if event.key == K_LSHIFT or event.key == K_RSHIFT: self.shifted = False
                 if event.key == K_BACKSPACE:
                     self.pause = 0
+                if event.key == K_DELETE:
+                    self.del_pause = 0
             if event.type == KEYDOWN: #S: Removes cursor when new letter is typed
                 cursor_dx = 1
                 if event.key == K_BACKSPACE:
-                    self.delete_char()
+                    self.back_delete_char()
                     cursor_dx = -1
+                if event.key == K_DELETE:
+                    self.forward_delete_char()
                 elif event.key == K_TAB:
                     self.insert_char('    ')
                     cursor_dx = 4
