@@ -825,7 +825,8 @@ def gameLoop():
                 message_to_screen("or Q to quit", orange,
                                   100, size = "small")
 
-            level = (level+1)%10
+            level = (level+1)%numOfLevels
+            txtbx.clear()
 
 
             pygame.display.update()
