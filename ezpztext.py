@@ -19,7 +19,8 @@ class Textbox:
         self.focus_color = focus_color
         self.txtbx = []
         self.foci = 0
-        self.pause = {K_RETURN: 0, K_UP: 0, K_DOWN: 0, K_LEFT: 0, K_RIGHT: 0}
+        self.pause = {K_RETURN: 0, K_UP: 0, K_DOWN: 0, K_LEFT: 0, K_RIGHT: 0,
+                      K_BACKSPACE: 0}
 
         self.x = 0
         self.y = 0
@@ -86,7 +87,7 @@ class Textbox:
             self.txtbx[self.foci].move_cursor_relative(-1)
         elif self.held_down(K_RIGHT):
             self.txtbx[self.foci].move_cursor_relative(1)
-        elif pressed[K_BACKSPACE]:
+        elif self.held_down(K_BACKSPACE):
             if self.txtbx[self.foci].value == '':
                 self.set_foci(self.foci - 1)
                 self.txtbx[self.foci].set_cursor(len(self.txtbx[self.foci].value))
