@@ -26,7 +26,7 @@ def ctype_async_raise(thread_obj, exception):
         # So it is better to clean up the mess.
         ctypes.pythonapi.PyThreadState_SetAsyncExc(target_tid, NULL)
         raise SystemError("PyThreadState_SetAsyncExc failed")
-    print "Successfully set asynchronized exception for", target_tid
+    # print "Successfully set asynchronized exception for", target_tid
 
 # def parser_func(code):
     # print "parsing"
@@ -51,10 +51,11 @@ class Thread:
     def stop(self):
         try:
             if self.t.isAlive():
-                print "killing parsing thread..."
+                # print "killing parsing thread..."
                 ctype_async_raise(self.t, SystemExit)
             # somehow i cannot join on windows??
             #self.t.join()
         except:
-            traceback.print_exc()
+            pass
+            # traceback.print_exc()
 

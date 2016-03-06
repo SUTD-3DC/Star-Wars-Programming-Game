@@ -1115,7 +1115,7 @@ def gameLoop():
         gameDisplay.blit(eraseimg, erasebtn_rect)
         for event in events:
             if event.type == pygame.MOUSEBUTTONUP:
-                print pygame.mouse.get_pos()
+                # print pygame.mouse.get_pos()
                 if erasebtn_rect.collidepoint(pygame.mouse.get_pos()):
                     txtbx.clear()
                 if runbtn_rect.collidepoint(pygame.mouse.get_pos()):
