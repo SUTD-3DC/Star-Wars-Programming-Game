@@ -19,6 +19,7 @@ class Textbox:
         self.focus_color = focus_color
         self.txtbx = []
         self.foci = 0
+        self.pause = {K_RETURN: 0, K_UP: 0, K_DOWN: 0, K_LEFT: 0, K_RIGHT: 0}
 
         self.x = 0
         self.y = 0
@@ -47,7 +48,8 @@ class Textbox:
         self.txtbx[self.foci].color = self.focus_color
 
     def update(self, events):
-        to_update = True
+        # to_update = True
+
         for event in events:
             if event.type == KEYDOWN:
                 self.cursor_pos[self.foci] = self.txtbx[self.foci].get_cursor()
@@ -61,19 +63,52 @@ class Textbox:
                     self.txtbx[self.foci].move_cursor_relative(-1)
                 elif event.key == K_RIGHT:
                     self.txtbx[self.foci].move_cursor_relative(1)
-                elif event.key == K_BACKSPACE:
-                    if self.txtbx[self.foci].value == '':
-                        self.set_foci(self.foci - 1)
-                        self.txtbx[self.foci].set_cursor(len(self.txtbx[self.foci].value))
-                        self.cursor_pos[self.foci] = self.txtbx[self.foci].get_cursor()
-                        to_update = False
-        if to_update:
-            self.txtbx[self.foci].update(events)
+            if event.type == KEYUP:
+                if event.key == K_RETURN:
+                    self.pause[K_RETURN] = 0
+                elif event.key == K_UP:
+                    self.pause[K_UP] = 0
+                elif event.key == K_DOWN:
+                    self.pause[K_DOWN] = 0
+                elif event.key == K_LEFT:
+                    self.pause[K_LEFT] = 0
+                elif event.key == K_RIGHT:
+                    self.pause[K_RIGHT] = 0
+
+        pressed = pygame.key.get_pressed()
+        if self.held_down(K_RETURN):
+            self.set_foci(self.foci + 1)
+        elif self.held_down(K_UP):
+            self.set_foci(self.foci - 1)
+        elif self.held_down(K_DOWN):
+            self.set_foci(self.foci + 1)
+        elif self.held_down(K_LEFT):
+            self.txtbx[self.foci].move_cursor_relative(-1)
+        elif self.held_down(K_RIGHT):
+            self.txtbx[self.foci].move_cursor_relative(1)
+        elif pressed[K_BACKSPACE]:
+            if self.txtbx[self.foci].value == '':
+                self.set_foci(self.foci - 1)
+                self.txtbx[self.foci].set_cursor(len(self.txtbx[self.foci].value))
+                self.cursor_pos[self.foci] = self.txtbx[self.foci].get_cursor()
+                # to_update = False
+
+        self.txtbx[self.foci].update(events)
+
+    def held_down(self, key):
+        pressed = pygame.key.get_pressed()
+        if self.pause[key] > 6 and pressed[key]:
+            return True
+        elif pressed[key]:
+            self.pause[key] += 1
+        return False
 
     def set_foci(self, new_foci):
         self.txtbx[self.foci].focus = False
         self.txtbx[self.foci].color = self.default_color
         old_cursor = self.cursor_pos[self.foci]
+        old_pause = self.txtbx[self.foci].pause
+        self.txtbx[self.foci].pause = 0
         self.foci = new_foci
         if self.foci >= self.lines:
             self.foci = self.lines - 1
@@ -82,6 +117,7 @@ class Textbox:
         self.txtbx[self.foci].set_cursor(old_cursor)
         self.txtbx[self.foci].focus = True
         self.txtbx[self.foci].color = self.focus_color
+        self.txtbx[self.foci].pause = old_pause
 
     def draw(self, screen):
         for txt in self.txtbx:
@@ -145,6 +181,7 @@ class Input:
         self.prompt = self.options.prompt; self.value = ''
         self.shifted = False
         self.pause = 0
+        self.del_pause = 0
         self.focus = self.options.focus
         self.bar = False
         self.cursor_pos = 0
@@ -178,9 +215,13 @@ class Input:
     def move_cursor_relative(self, dx):
         self._move_cursor_relative(dx, len(self.value))
 
-    def delete_char(self):
+    def back_delete_char(self):
         if self.cursor_pos > 0:
             self.value = self.value[:self.cursor_pos-1] + self.value[self.cursor_pos:]
+
+    def forward_delete_char(self):
+        if self.cursor_pos < len(self.value):
+            self.value = self.value[:self.cursor_pos] + self.value[self.cursor_pos+1:]
 
     def insert_char(self, c):
         self.value = self.value[:self.cursor_pos] + c + self.value[self.cursor_pos:]
@@ -195,14 +236,33 @@ class Input:
         if self.focus != True:
             return
 
+        # support for holding down to backspace and delete
+        pressed = pygame.key.get_pressed()
+        if self.pause > 6 and pressed[K_BACKSPACE]:
+            self.back_delete_char()
+            self._move_cursor_relative(-1, self.maxlength)
+        elif pressed[K_BACKSPACE]:
+            self.pause += 1
+        if self.del_pause > 6 and pressed[K_DELETE]:
+            self.forward_delete_char()
+        elif pressed[K_DELETE]:
+            self.del_pause += 1
+
+
         for event in events:
             if event.type == KEYUP:
                 if event.key == K_LSHIFT or event.key == K_RSHIFT: self.shifted = False
+                if event.key == K_BACKSPACE:
+                    self.pause = 0
+                if event.key == K_DELETE:
+                    self.del_pause = 0
             if event.type == KEYDOWN: #S: Removes cursor when new letter is typed
                 cursor_dx = 1
                 if event.key == K_BACKSPACE:
-                    self.delete_char()
+                    self.back_delete_char()
                     cursor_dx = -1
+                if event.key == K_DELETE:
+                    self.forward_delete_char()
                 elif event.key == K_TAB:
                     self.insert_char('    ')
                     cursor_dx = 4
